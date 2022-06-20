@@ -5,13 +5,17 @@
     </div>
     <div class="header">
       <h2>Automatisierte SQL-Bewertung der Hochschule Hannover</h2>
+      <button id="logout">Abmelden</button>
     </div>
     <div class="navigation">
       <div class="navItem">
-          <router-link to="/">Home</router-link>
+        <router-link to="/">Home</router-link>
       </div>
       <div class="navItem">
-          <router-link to="/about">About</router-link>
+        <router-link to="/course">Kurs</router-link>
+      </div>
+      <div class="navItem">
+        <router-link to="/excercise">Aufgabe</router-link>
       </div>
     </div>
     <div class="content">
@@ -21,7 +25,11 @@
 </template>
 
 
-<script></script> 
+<script>
+export default {
+  name: 'App',
+}
+</script> 
 
 
 <style>
@@ -63,18 +71,28 @@ body {
 
 #userIcon{
   margin-top: 2vh;
+  margin-left: 1vw;
 }
 
 /* Überschrift */
 
 .header{
   background-color: #6c757d;
+  display: flex;
+  justify-content: space-between;
 }
 
 h2 {
   margin-left: 40px;
-  margin-top: 30px;
+  margin-top: 35px;
   text-decoration: underline;
+}
+
+#logout {
+  margin-right: 40px;
+  margin-top: 35px;
+  height: 30px;
+  width: 100px;
 }
 
 /* Navigation */

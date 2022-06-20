@@ -9,7 +9,7 @@
 import AppContainer from '@/components/AppContainer.vue'
 
 export default {
-  name: 'HomeView',
+  name: 'HomeViewStud',
   components: {
     AppContainer
   }
