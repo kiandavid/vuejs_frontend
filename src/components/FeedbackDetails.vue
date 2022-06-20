@@ -13,17 +13,9 @@
 
 <script>
 export default {
-  name: 'App',
+  name: 'FeedbackDetail',
   data() {
     return {
-      nutzer: 0,
-      master: {
-        id: 1,
-        vorname: "Kian",
-        nachname: "Zanjani",
-        email: "kian.zanjani@web.de",
-        isMaster: true
-      },
       bewertungsaspekt: {
         id: 1,
         typ: "Kostenprüfung",
@@ -38,16 +30,6 @@ export default {
       ]
     }
   },
-  computed: {
-    fullName() {
-      // das this-Objekt referenziert das data-Objekt
-      return `${this.master.vorname} ${this.master.nachname}`;
-    }
-  },
-  methods: {
-    addNutzer() {
-      this.nutzer++;
-    },
     toggleFeedback() {
       var x = document.getElementById("feedback-wrapper-2");
       if (x.style.display === "none") {
@@ -56,10 +38,6 @@ export default {
         x.style.display = "none";
       }
     }
-  },
-  mounted() {
-    this.addNutzer();
-  }
 }
 </script>
 

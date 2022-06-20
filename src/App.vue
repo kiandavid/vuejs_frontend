@@ -86,6 +86,7 @@ h2 {
   margin-left: 40px;
   margin-top: 35px;
   text-decoration: underline;
+  color: auto;
 }
 
 #logout {
