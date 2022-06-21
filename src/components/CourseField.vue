@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-      <span>Test</span> 
       <span class="courseField">{{ kurs.Bezeichnung }}</span> 
   </div>
 </template>
@@ -23,5 +22,8 @@ export default {
 <style>
   .courseField{
     color: black;
+    border: black 1px solid;
+    padding: 5px;
+    margin-left: 40px;
   }
 </style>

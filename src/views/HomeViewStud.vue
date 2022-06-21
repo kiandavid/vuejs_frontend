@@ -6,8 +6,7 @@
       <button>Suchen</button>
     </form>
     <div class="courseContainer">
-      Test
-      <CourseField></CourseField>
+      <CourseField/>
     </div>
   </div>
 </template>
@@ -20,7 +19,9 @@ import CourseField from '../components/CourseField.vue'
 
 export default {
     name: "HomeViewStud",
-    components: CourseField,
+    components: { 
+      CourseField
+    }
 }
 </script> 
 
@@ -32,7 +33,8 @@ export default {
  }
 
   .course-container{
-    background-color: black;
+    margin-left: 40px;
+    margin-top: 40px;
   }
 
 </style>
