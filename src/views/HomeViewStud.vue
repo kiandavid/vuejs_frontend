@@ -5,8 +5,10 @@
       <input type="search" id="query" placeholder="Kurs suchen...">
       <button>Suchen</button>
     </form>
-    <div class="courseContainer">
-      <CourseField/>
+    <div v-for="kurs in kurse" :key="kurs.id">
+      <router-link :to="{ name: 'courseStud', params:{ id: kurs.id}}">
+        <h2>{{kurs.bezeichnung}}</h2>
+      </router-link>
     </div>
   </div>
 </template>
@@ -15,12 +17,16 @@
 <script>
 
 
-import CourseField from '../components/CourseField.vue'
-
 export default {
     name: "HomeViewStud",
-    components: { 
-      CourseField
+    data() {
+      return {
+        kurse: [
+          {id: 1, bezeichnung: "Datenbank Kurs 1", semester: "SoSe22"},
+          {id: 2, bezeichnung: "Datenbank Kurs 2", semester: "SoSe22"},
+          {id: 3, bezeichnung: "Datenbank Kurs 3", semester: "WiSe22/23"}
+        ]
+      }
     }
 }
 </script> 
@@ -28,13 +34,13 @@ export default {
 
 <style>
 
- #query{
+#query{
   margin-left: 40px;
- }
+}
 
-  .course-container{
-    margin-left: 40px;
-    margin-top: 40px;
-  }
+.course-container{
+  margin-left: 40px;
+  margin-top: 40px;
+}
 
 </style>

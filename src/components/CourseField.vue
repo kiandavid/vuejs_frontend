@@ -1,21 +1,12 @@
 <template>
   <div class="container">
-      <span class="courseField">{{ kurs.Bezeichnung }}</span> 
+      <span class="courseField">Das ist die Kursseite</span> 
   </div>
 </template>
 
 <script>
 export default {
-  name: "CourseField",
-  data() {
-    return {
-      kurs: {
-        id: 1,
-        Bezeichnung: "Datenbank Kurs 1",
-        Semester: "SoSe22"
-      }
-    }
-  }
+  name: "CourseField"
 }
 </script>
 
