@@ -1,10 +1,10 @@
 <template>
   <div class="course-container">
-    <h2>Kurs {{ id }}</h2>
+    <h2 id="course-title">Kurs {{ id }}</h2>
   </div>
   <div class="excercises-container" v-for="aufgabe in aufgaben" :key="aufgabe.id">
-    <router-link :to="{ name: 'excerciseStud', params:{ id: aufgabe.id}}">       
-      <h2>{{aufgabe.bezeichnung}}</h2>
+    <router-link class="listItem" :to="{ name: 'excerciseStud', params:{ id: aufgabe.id}}">       
+      <strong >{{aufgabe.bezeichnung}}</strong>
     </router-link>
   </div>
 </template>
@@ -33,8 +33,25 @@ export default {
 
 <style>
 
+.course-container{
+  margin-top: 20px;
+  margin-left: 40px;
+  text-decoration: none;
+}
+
+#course-title{
+  margin-left: 0px;
+  text-decoration: none;
+}
+
 .excercises-container{
   margin-left: 40px;
+  margin-top: 20px;
+}
+
+.listItem{
+  text-decoration: none;
+  font-size: 24px;
 }
 
 

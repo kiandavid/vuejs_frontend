@@ -5,11 +5,11 @@
       <input type="search" id="query" placeholder="Kurs suchen...">
       <button>Suchen</button>
     </form>
-    <div v-for="kurs in kurse" :key="kurs.id">
-      <router-link :to="{ name: 'courseStud', params:{ id: kurs.id}}">
-        <h2>{{kurs.bezeichnung}}</h2>
-      </router-link>
-    </div>
+      <div class="courses-container" v-for="kurs in kurse" :key="kurs.id">
+        <router-link class="listItem" :to="{ name: 'courseStud', params:{ id: kurs.id}}">
+          <strong >{{kurs.bezeichnung}}</strong>
+        </router-link>
+      </div>
   </div>
 </template>
 
@@ -34,13 +34,21 @@ export default {
 
 <style>
 
+.listItem{
+  text-decoration: none;
+  font-size: 24px;
+}
+
+
 #query{
   margin-left: 40px;
 }
 
-.course-container{
-  margin-left: 40px;
+.courses-container{
   margin-top: 40px;
+  margin-left: 40px;
+  text-decoration: none;
 }
+
 
 </style>

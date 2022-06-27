@@ -4,7 +4,7 @@
       <img id="userIcon" src="./assets/profil.png" alt="Benutzerlogo">
     </div>
     <div class="header">
-      <h2>Automatisierte SQL-Bewertung der Hochschule Hannover</h2>
+      <h2 id="title">Automatisierte SQL-Bewertung der Hochschule Hannover</h2>
       <button id="logout">Abmelden</button>
     </div>
     <div class="navigation">
@@ -82,12 +82,19 @@ body {
   justify-content: space-between;
 }
 
-h2 {
+#title{
   margin-left: 40px;
   margin-top: 35px;
   text-decoration: underline;
-  color: auto;
+  color: white;
 }
+
+
+h2{
+  margin-left: 40px;
+}
+
+
 
 #logout {
   margin-right: 40px;

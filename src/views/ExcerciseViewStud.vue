@@ -1,5 +1,5 @@
 <template>
-  <div class="course-container">
+  <div class="excercise-container">
     <h2>Aufgabe {{id}}</h2>
   </div>
 </template>
@@ -14,6 +14,12 @@ export default {
 </script> 
 
 
-<style></style>
+<style>
+
+.excercise-container{
+  margin-left: 0;
+}
+
+</style>
 
 

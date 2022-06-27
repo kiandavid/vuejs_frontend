@@ -16,7 +16,9 @@ const routes = [
     props: true
   },
   {
-    path: '/excercise',
+    // So sollte es eigentlich sein, aber die IDs stimmen noch nicht
+    // path: '/course/:id/excercise/:id',
+    path: '/excercise/:id',
     name: 'excerciseStud',
     component: ExcerciseViewStud,
     props: true
