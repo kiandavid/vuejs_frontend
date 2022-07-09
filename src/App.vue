@@ -12,10 +12,10 @@
       <div class="navItem">
         <router-link to="/">Home</router-link>
       </div>
-      <!-- <div class="navItem">
+      <div class="navItem" v-if="$route.path=='/'">
         <router-link to="/course">Kurs</router-link>
       </div>
-      <div class="navItem">
+      <!-- <div class="navItem">
         <router-link to="/excercise">Aufgabe</router-link>
       </div> -->
     </div>
