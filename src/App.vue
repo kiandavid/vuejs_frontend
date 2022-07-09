@@ -5,7 +5,8 @@
     </div>
     <div class="header">
       <h2 id="title">Automatisierte SQL-Bewertung der Hochschule Hannover</h2>
-      <button id="logout">Abmelden</button>
+      <!-- Methodenaufruf der Logout-Methode der main.js -->
+      <button id="logout" @click="logoutFromKeycloak()" >Abmelden</button>
     </div>
     <div class="navigation">
       <div class="navItem">
@@ -26,8 +27,18 @@
 
 
 <script>
+
+// Hier wird die main.js importiert in der die logout-Funktion liegt
+import * as main from './main.js'
+
+// unter Methods wird die logout-Methode aufgerufen
 export default {
   name: 'App',
+  methods: {
+    logoutFromKeycloak(){
+      main.logout();
+    }
+  }
 }
 </script> 
 
@@ -101,6 +112,8 @@ h2{
   margin-top: 35px;
   height: 30px;
   width: 100px;
+  color: white;
+  font-weight: bold;
 }
 
 /* Navigation */
