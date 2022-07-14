@@ -10,6 +10,8 @@ function instantiateVueApp() {
         .mount('#app')
 }
 
+instantiateVueApp();
+
 export function logout() {
     console.log("Logout tried");
     keycloak.logout(logoutOptions).then((success) => {

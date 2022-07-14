@@ -1,11 +1,13 @@
 <template>
-  <div class="course-container">
-    <h2 id="course-title">Kurs {{ id }}</h2>
-  </div>
-  <div class="excercises-container" v-for="aufgabe in aufgaben" :key="aufgabe.id">
-    <router-link class="listItem" :to="{ name: 'excerciseStud', params:{ id: aufgabe.id}}">       
-      <strong >{{aufgabe.bezeichnung}}</strong>
-    </router-link>
+  <div class="container">
+    <div class="course-container">
+      <h2 id="course-title">Kurs {{ id }}</h2>
+    </div>
+    <div class="excercises-container" v-for="aufgabe in aufgaben" :key="aufgabe.id">
+      <router-link class="listItem" :to="{ name: 'excerciseStud', params:{ id: aufgabe.id}}">       
+        <strong >{{aufgabe.bezeichnung}}</strong>
+      </router-link>
+    </div>
   </div>
 </template>
 

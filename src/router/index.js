@@ -1,13 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeViewStud from '../views/HomeViewStud.vue'
+import HomeView from '../views/HomeView.vue'
 import CourseViewStud from '../views/CourseViewStud.vue'
 import ExcerciseViewStud from '../views/ExcerciseViewStud.vue'
+import PunkteUebersicht from '../views/Student/PunkteUebersicht.vue'
+import FeedbackView from '../views/Student/FeedbackView.vue'
+import KursAuswertung from '../views/Dozent/KursAuswertung.vue'
+import KursTeilnehmer from '../views/Dozent/KursTeilnehmer.vue'
 
 const routes = [
   {
     path: '/',
     name: 'homeStud',
-    component: HomeViewStud
+    component: HomeView
   },
   {
     path: '/course/:id',
@@ -22,7 +26,31 @@ const routes = [
     name: 'excerciseStud',
     component: ExcerciseViewStud,
     props: true
-  }
+  },
+  {
+    path: '/punkte',
+    name: 'PunkteStud',
+    component: PunkteUebersicht,
+    // props: true
+  },
+  {
+    path: '/feedback',
+    name: 'FeedbackStud',
+    component: FeedbackView,
+    // props: true
+  },
+  {
+    path: '/auswertung',
+    name: 'AuswertungDoz',
+    component: KursAuswertung,
+    // props: true
+  },
+  {
+    path: '/teilnehmer',
+    name: 'TeilnehmerDoz',
+    component: KursTeilnehmer,
+    // props: true
+  },
 ]
 
 const router = createRouter({

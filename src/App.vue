@@ -6,21 +6,27 @@
     <div class="header">
       <h2 id="title">Automatisierte SQL-Bewertung der Hochschule Hannover</h2>
       <!-- Methodenaufruf der Logout-Methode der main.js -->
-      <button id="logout" @click="logoutFromKeycloak()" >Abmelden</button>
+      <button id="logout" @click="logoutFromKeycloak()">Abmelden</button>
     </div>
     <div class="navigation">
-      <div class="navItem">
-        <router-link to="/">Home</router-link>
+      <div class="navItem" v-if="$route.path != '/'">
+        <router-link to="/">Kurse</router-link>
       </div>
-      <div class="navItem" v-if="$route.path=='/'">
-        <router-link to="/course">Kurs</router-link>
+      <div class="navItem" v-if="$route.name == 'courseStud' && user.isStudent">
+        <router-link to="/punkte">Punkte</router-link>
       </div>
-      <!-- <div class="navItem">
-        <router-link to="/excercise">Aufgabe</router-link>
-      </div> -->
+      <div class="navItem" v-if="$route.name == 'courseStud' && !user.isStudent">
+        <router-link to="/teilnehmer">Kursteilnehmer</router-link>
+      </div>
+      <div class="navItem" v-if="$route.name == 'courseStud' && !user.isStudent">
+        <router-link to="/auswertung">Kursauswertung</router-link>
+      </div>
+      <div class="navItem" v-if="$route.name == 'excerciseStud'">
+        <router-link to="/course/1">Kurs</router-link>
+      </div>
     </div>
     <div class="content">
-      <router-view/>
+      <router-view />
     </div>
   </div>
 </template>
@@ -34,8 +40,16 @@ import * as main from './main.js'
 // unter Methods wird die logout-Methode aufgerufen
 export default {
   name: 'App',
+  data() {
+    return {
+      user: {
+        name: "Zanjani",
+        isStudent: false
+      }
+    }
+  },
   methods: {
-    logoutFromKeycloak(){
+    logoutFromKeycloak() {
       main.logout();
     }
   }
@@ -65,7 +79,7 @@ body {
   height: 100vh;
 }
 
-.grid-container{
+.grid-container {
   margin: 0;
   width: 100%;
   height: 100%;
@@ -76,24 +90,24 @@ body {
 
 /* Profil */
 
-.profil{
+.profil {
   background-color: #6c757d;
 }
 
-#userIcon{
+#userIcon {
   margin-top: 2vh;
   margin-left: 1vw;
 }
 
 /* Überschrift */
 
-.header{
+.header {
   background-color: #6c757d;
   display: flex;
   justify-content: space-between;
 }
 
-#title{
+#title {
   margin-left: 40px;
   margin-top: 35px;
   text-decoration: underline;
@@ -101,7 +115,7 @@ body {
 }
 
 
-h2{
+h2 {
   margin-left: 40px;
 }
 
@@ -112,25 +126,25 @@ h2{
   margin-top: 35px;
   height: 30px;
   width: 100px;
-  color: white;
+  color: black;
   font-weight: bold;
 }
 
 /* Navigation */
 
-.navigation{
+.navigation {
   background-color: #565250;
   text-align: center;
 }
 
-.navItem{
+.navItem {
   padding: 10px;
   border-bottom: 1px black solid;
 }
 
 /* Content */
 
-.content{
+.content {
   background-color: #ffffff;
 }
 
