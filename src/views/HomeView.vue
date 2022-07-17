@@ -8,33 +8,66 @@
       <button @click="getCoursebyName()">Suchen</button>
     </div>
 
-    <!-- Add Button für Kurse der Dozenten -->
-    <div v-if="!user.isStudent">
-      <button id="KursBtn" @click="addKurs()">Hinzufügen</button>
+    <!-- Wird angezeigt, wenn kein neuer Kurs hinzugefügt wird -->
+    <div v-if="submitted">
+      <!-- Add Button für Kurse der Dozenten -->
+      <div v-if="!user.isStudent">
+        <button id="KursBtn" @click="addKurs()">Hinzufügen</button>
+      </div>
+
+      <!-- Kursliste für beide Rollen -->
+      <div class="courses-container" v-for="kurs in kurse" :key="kurs.id">
+        <router-link class="listItem" :to="{ name: 'courseStud', params:{ id: kurs.id}}">
+          <strong >{{kurs.bezeichnung}}</strong>
+        </router-link>
+      </div>
     </div>
 
-    <!-- Kursliste für beide Rollen -->
-    <div class="courses-container" v-for="kurs in kurse" :key="kurs.id">
-      <router-link class="listItem" :to="{ name: 'courseStud', params:{ id: kurs.id}}">
-        <strong >{{kurs.bezeichnung}}</strong>
-      </router-link>
+    <div v-if="!submitted">
+      <div class="form-group">
+        <label for="bezeichnung">Bezeichnung:</label><br>
+        <input
+          type="text"
+          class="form-control"
+          id="bezeichnung"
+          required
+          v-model="kurs.bezeichnung"
+          name="bezeichnung"
+        />
+      </div>
+      <div class="form-group">
+        <label for="semester">Semester:</label><br>
+        <input
+          class="form-control"
+          id="semester"
+          required
+          v-model="kurs.semester"
+          name="semester"
+        />
+      </div>
+      <button @click="saveKurs()" class="btn-success">Speichern</button>
     </div>
+    <!-- <div v-else>
+      <h4>You submitted successfully!</h4>
+      <button class="btn btn-success" @click="newTutorial">Add</button>
+    </div>   -->
   </div>
 </template>
 
 
 <script>
-
-
+import KursDataService from "../services/KursDataService";
 export default {
     name: "HomeView",
     data() {
       return {
-        kurse: [
-          {id: 1, bezeichnung: "Datenbank Kurs 1", semester: "SoSe22"},
-          {id: 2, bezeichnung: "Datenbank Kurs 2", semester: "SoSe22"},
-          {id: 3, bezeichnung: "Datenbank Kurs 3", semester: "WiSe22/23"}
-        ],
+        kurse: [],
+        kurs: {
+          id: null,
+          bezeichnung: "",
+          semester: ""
+        },
+        submitted: true,
         user: {
           name: "Zanjani",
           isStudent: false
@@ -46,14 +79,58 @@ export default {
         console.log("Suche nach Kurs");
       },
       addKurs(){
+        this.submitted = false;
         console.log("Füge Kurs hinzu");
+      },
+      saveKurs(){
+        var data = {
+          bezeichnung: this.kurs.bezeichnung,
+          semester: this.kurs.semester
+        };
+        KursDataService.create(data)
+          .then(response => {
+            this.kurs.id = response.data.id;
+            console.log(response.data);
+            this.submitted = true;
+          })
+          .catch(e => {
+            console.log(e);
+          });
+        this.getAllCourses();
+        console.log("Kurs speichern");
+        this.submitted = false;
+      },
+      getAllCourses() {
+      KursDataService.getAll()
+        .then(response => {
+          this.kurse = response.data;
+          console.log(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
       }
-    }
+    },
+    mounted() {
+    this.getAllCourses();
+    // this.kurse.sort(function(a,b){
+    //   return a.id - b.id;    
+    // });
+  }
 }
 </script> 
 
 
 <style>
+
+.form-group{
+  margin-left: 40px;
+  margin-bottom: 20px;
+}
+
+.btn-success{
+  margin-left: 40px;
+}
 
 #homeTitel{
   margin-left: 40px;
