@@ -61,7 +61,12 @@ export default {
     name: "HomeView",
     data() {
       return {
-        kurse: [],
+        kurse: [
+          {"id":1,"bezeichnung":"Joya","semester":"Meech"},
+          {"id":2,"bezeichnung":"Wilburt","semester":"Elizabeth"},
+          {"id":3,"bezeichnung":"Dora","semester":"McCobb"},
+          {"id":4,"bezeichnung":"Elwyn","semester":"Klimek"},
+          {"id":5,"bezeichnung":"Polly","semester":"Schriren"}],
         kurs: {
           id: null,
           bezeichnung: "",
@@ -70,7 +75,7 @@ export default {
         submitted: true,
         user: {
           name: "Zanjani",
-          isStudent: false
+          isStudent: true
         }
       }
     },
@@ -112,16 +117,14 @@ export default {
       }
     },
     mounted() {
-    this.getAllCourses();
-    // this.kurse.sort(function(a,b){
-    //   return a.id - b.id;    
-    // });
+    // this.getAllCourses();
   }
 }
 </script> 
 
 
-<style>
+<style scoped>
+
 
 .form-group{
   margin-left: 40px;

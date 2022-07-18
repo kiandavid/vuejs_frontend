@@ -6,9 +6,10 @@ import PunkteUebersicht from '../views/Student/PunkteUebersicht.vue'
 import FeedbackView from '../views/Student/FeedbackView.vue'
 import KursAuswertung from '../views/Dozent/KursAuswertung.vue'
 import KursTeilnehmer from '../views/Dozent/KursTeilnehmer.vue'
-import TutorialsList from '../components/TutorialsList.vue'
-import Tutorial from '../components/Tutorials.vue'
-import AddTutorial from '../components/AddTutorial.vue'
+import ProfileView from '../views/ProfileView.vue'
+// import TutorialsList from '../components/TutorialsList.vue'
+// import Tutorial from '../components/Tutorials.vue'
+// import AddTutorial from '../components/AddTutorial.vue'
 
 const routes = [
   {
@@ -53,21 +54,28 @@ const routes = [
     name: 'TeilnehmerDoz',
     component: KursTeilnehmer,
     // props: true
-  }, {
-    path: "/tutorials",
-    name: "tutorials",
-    component: TutorialsList
   },
   {
-    path: "/tutorials/:id",
-    name: "tutorial-details",
-    component: Tutorial
-  },
-  {
-    path: "/add",
-    name: "add",
-    component: AddTutorial
+    path: '/profil',
+    name: 'ProfilView',
+    component: ProfileView,
+    // props: true
   }
+  // , {
+  //   path: "/tutorials",
+  //   name: "tutorials",
+  //   component: TutorialsList
+  // },
+  // {
+  //   path: "/tutorials/:id",
+  //   name: "tutorial-details",
+  //   component: Tutorial
+  // },
+  // {
+  //   path: "/add",
+  //   name: "add",
+  //   component: AddTutorial
+  // }
 ]
 
 const router = createRouter({

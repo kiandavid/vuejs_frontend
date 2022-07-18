@@ -1,7 +1,9 @@
 <template>
   <div class="grid-container">
     <div class="profil">
-      <img id="userIcon" src="./assets/profil.png" alt="Benutzerlogo">
+      <router-link to="/profil">
+        <img id="userIcon" src="./assets/profil.png" alt="Benutzerlogo">
+      </router-link>
     </div>
     <div class="header">
       <h2 id="title">Automatisierte SQL-Bewertung der Hochschule Hannover</h2>
@@ -24,13 +26,19 @@
       <div class="navItem" v-if="$route.name == 'excerciseStud'">
         <router-link to="/course/1">Kurs</router-link>
       </div>
+      <div class="navItem" style="color:white">
+        <button @click="getRole()">Rolle</button>
+      </div>
+      <div class="navItem" style="color:white">
+        Benutzerrolle: {{user.role}}
+      </div>
       <!-- tutorial -->
-      <div class="navItem">
+      <!-- <div class="navItem">
         <router-link to="/tutorials">Tutorials</router-link>
       </div>
       <div class="navItem">
         <router-link to="/add">Add</router-link>
-      </div>
+      </div> -->
 
     </div>
     <div class="content">
@@ -43,7 +51,7 @@
 <script>
 
 // Hier wird die main.js importiert in der die logout-Funktion liegt
-// import * as main from './main.js'
+import * as main from './main.js'
 
 // unter Methods wird die logout-Methode aufgerufen
 export default {
@@ -52,13 +60,17 @@ export default {
     return {
       user: {
         name: "Zanjani",
-        isStudent: false
+        isStudent: true,
+        role: ""
       }
     }
   },
   methods: {
     logoutFromKeycloak() {
-      // main.logout();
+      main.logout();
+    },
+    getRole(){
+      this.user.role = main.getUserRole();
     }
   }
 }
