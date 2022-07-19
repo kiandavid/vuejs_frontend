@@ -26,12 +26,12 @@
       <div class="navItem" v-if="$route.name == 'excerciseStud'">
         <router-link to="/course/1">Kurs</router-link>
       </div>
-      <div class="navItem" style="color:white">
+      <!-- <div class="navItem" style="color:white">
         <button @click="getRole()">Rolle</button>
       </div>
       <div class="navItem" style="color:white">
         Benutzerrolle: {{user.role}}
-      </div>
+      </div> -->
       <!-- tutorial -->
       <!-- <div class="navItem">
         <router-link to="/tutorials">Tutorials</router-link>
@@ -51,7 +51,7 @@
 <script>
 
 // Hier wird die main.js importiert in der die logout-Funktion liegt
-import * as main from './main.js'
+// import * as main from './main.js'
 
 // unter Methods wird die logout-Methode aufgerufen
 export default {
@@ -67,10 +67,10 @@ export default {
   },
   methods: {
     logoutFromKeycloak() {
-      main.logout();
+      // main.logout();
     },
     getRole(){
-      this.user.role = main.getUserRole();
+      // this.user.role = main.getUserRole();
     }
   }
 }

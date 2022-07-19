@@ -59,14 +59,15 @@
 import KursDataService from "../services/KursDataService";
 export default {
     name: "HomeView",
+
     data() {
       return {
         kurse: [
-          {"id":1,"bezeichnung":"Joya","semester":"Meech"},
-          {"id":2,"bezeichnung":"Wilburt","semester":"Elizabeth"},
-          {"id":3,"bezeichnung":"Dora","semester":"McCobb"},
-          {"id":4,"bezeichnung":"Elwyn","semester":"Klimek"},
-          {"id":5,"bezeichnung":"Polly","semester":"Schriren"}],
+          {"id":1,"bezeichnung":"DB1","semester":"WiSe18/19"},
+          {"id":2,"bezeichnung":"DB2","semester":"SoSe19"},
+          {"id":3,"bezeichnung":"DB3","semester":"WiSe19/20"},
+          {"id":4,"bezeichnung":"DB1","semester":"SoSe20"},
+          {"id":5,"bezeichnung":"DB2","semester":"WiSe20/21"}],
         kurs: {
           id: null,
           bezeichnung: "",
@@ -79,6 +80,7 @@ export default {
         }
       }
     },
+
     methods: {
       getCoursebyName(){
         console.log("Suche nach Kurs");
