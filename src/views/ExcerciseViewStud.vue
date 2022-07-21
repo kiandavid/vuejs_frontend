@@ -75,7 +75,7 @@ export default {
       ],
       user: {
         name: "Zanjani",
-        isStudent: true
+        isStudent: false
       }
     }
   }

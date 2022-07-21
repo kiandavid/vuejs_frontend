@@ -1,13 +1,15 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+import store from './store'
 // import Keycloak from 'keycloak-js'
 
 // Methode zum Starten der Vue App
 function instantiateVueApp() {
-    createApp(App)
+    createApp(App).use(store).use(store)
         .use(router)
-        .mount('#app')
+        .mount('#app');
+    this.$store.dispatch('setAuth', true);
 }
 
 instantiateVueApp();
@@ -56,6 +58,7 @@ instantiateVueApp();
 //         instantiateVueApp();
 //         console.log('Authenticated');
 //         // Ab hier kann ich einen Boolean im State setzen, um zu wissen, wann ich auf den Token zugreifen kann
+//         // this.$store.dispatch('setAuth', true)
 //     }
 
 //     //Token Refresh

@@ -76,7 +76,7 @@ export default {
         submitted: true,
         user: {
           name: "Zanjani",
-          isStudent: true
+          isStudent: false
         }
       }
     },

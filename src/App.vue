@@ -1,49 +1,57 @@
 <template>
-  <div class="grid-container">
-    <div class="profil">
-      <router-link to="/profil">
-        <img id="userIcon" src="./assets/profil.png" alt="Benutzerlogo">
-      </router-link>
-    </div>
-    <div class="header">
-      <h2 id="title">Automatisierte SQL-Bewertung der Hochschule Hannover</h2>
-      <!-- Methodenaufruf der Logout-Methode der main.js -->
-      <button id="logout" @click="logoutFromKeycloak()">Abmelden</button>
-    </div>
-    <div class="navigation">
-      <div class="navItem" v-if="$route.path != '/'">
-        <router-link to="/">Kurse</router-link>
+  <div class="app-container">
+    <div class="grid-container">
+      <div class="profil">
+        <router-link to="/profil">
+          <img id="userIcon" src="./assets/profil.png" alt="Benutzerlogo">
+        </router-link>
       </div>
-      <div class="navItem" v-if="$route.name == 'courseStud' && user.isStudent">
-        <router-link to="/punkte">Punkte</router-link>
+      <div class="header">
+        <h2 id="title">Automatisierte SQL-Bewertung der Hochschule Hannover</h2>
+        <!-- Methodenaufruf der Logout-Methode der main.js -->
+        <button id="logout" @click="logoutFromKeycloak()">Abmelden</button>
       </div>
-      <div class="navItem" v-if="$route.name == 'courseStud' && !user.isStudent">
-        <router-link to="/teilnehmer">Kursteilnehmer</router-link>
-      </div>
-      <div class="navItem" v-if="$route.name == 'courseStud' && !user.isStudent">
-        <router-link to="/auswertung">Kursauswertung</router-link>
-      </div>
-      <div class="navItem" v-if="$route.name == 'excerciseStud'">
-        <router-link to="/course/1">Kurs</router-link>
-      </div>
-      <!-- <div class="navItem" style="color:white">
-        <button @click="getRole()">Rolle</button>
-      </div>
-      <div class="navItem" style="color:white">
-        Benutzerrolle: {{user.role}}
-      </div> -->
-      <!-- tutorial -->
-      <!-- <div class="navItem">
-        <router-link to="/tutorials">Tutorials</router-link>
-      </div>
-      <div class="navItem">
-        <router-link to="/add">Add</router-link>
-      </div> -->
+      <div class="navigation">
+        <div class="navItem" v-if="$route.path != '/'">
+          <router-link to="/">Kurse</router-link>
+        </div>
+        <div class="navItem" v-if="$route.name == 'courseStud' && user.isStudent">
+          <router-link to="/punkte">Punkte</router-link>
+        </div>
+        <div class="navItem" v-if="$route.name == 'courseStud' && !user.isStudent">
+          <router-link to="/teilnehmer">Kursteilnehmer</router-link>
+        </div>
+        <div class="navItem" v-if="$route.name == 'courseStud' && !user.isStudent">
+          <router-link to="/auswertung">Kursauswertung</router-link>
+        </div>
+        <div class="navItem" v-if="$route.name == 'excerciseStud'">
+          <router-link to="/course/1">Kurs</router-link>
+        </div>
+        <div class="navItem" style="color:white">
+          <button @click="getRole()">Rolle</button>
+        </div>
+        <div class="navItem" style="color:white">
+          <button @click="setUser()">Set</button>
+        </div>
+        <div class="navItem" style="color:white">
+          Benutzerrolle: {{auth}}
+        </div>
+        <!-- tutorial -->
+        <!-- <div class="navItem">
+          <router-link to="/tutorials">Tutorials</router-link>
+        </div>
+        <div class="navItem">
+          <router-link to="/add">Add</router-link>
+        </div> -->
 
+      </div>
+      <div class="content">
+        <router-view />
+      </div>
     </div>
-    <div class="content">
-      <router-view />
-    </div>
+    <!-- <div class="loadling_screen" v-if="!auth">
+        <img src="../assets/loading.gif" alt="loading" width="80">
+    </div> -->
   </div>
 </template>
 
@@ -60,9 +68,10 @@ export default {
     return {
       user: {
         name: "Zanjani",
-        isStudent: true,
-        role: ""
-      }
+        isStudent: false,
+        role: "Dozent"
+      },
+      auth: this.$store.state.auth
     }
   },
   methods: {
@@ -71,6 +80,15 @@ export default {
     },
     getRole(){
       // this.user.role = main.getUserRole();
+      console.log("User:"+JSON.stringify(this.$store.state.user,null,4));
+      console.log("UserRole:"+this.$store.state.userRole);
+      console.log("Auth:"+this.$store.state.auth);
+    },
+    setUser(){
+      this.$store.dispatch('setUser', this.user);
+      this.$store.dispatch('setUserRole', this.user.role);
+      this.$store.dispatch('setAuth', true);
+      console.log("Set");
     }
   }
 }
