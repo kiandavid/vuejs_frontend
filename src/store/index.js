@@ -3,7 +3,7 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     user: null,
-    userRole: null,
+    // userRole: null,
     auth: false
   },
 
@@ -15,9 +15,9 @@ export default createStore({
     SET_USER(state, user) {
       state.user = user;
     },
-    SET_USERROLE(state, userRole) {
-      state.userRole = userRole;
-    },
+    // SET_USERROLE(state, userRole) {
+    //   state.userRole = userRole;
+    // },
     SET_AUTH(state, auth) {
       state.auth = auth;
     }
@@ -28,9 +28,9 @@ export default createStore({
     setUser({ commit }, user) {
       commit('SET_USER', user);
     },
-    setUserRole({ commit }, userRole) {
-      commit('SET_USERROLE', userRole);
-    },
+    // setUserRole({ commit }, userRole) {
+    //   commit('SET_USERROLE', userRole);
+    // },
     setAuth({ commit }, auth) {
       commit('SET_AUTH', auth);
     }

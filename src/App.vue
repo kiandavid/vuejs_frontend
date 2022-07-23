@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="grid-container">
+    <div class="grid-container" v-if="auth">
       <div class="profil">
         <router-link to="/profil">
           <img id="userIcon" src="./assets/profil.png" alt="Benutzerlogo">
@@ -8,7 +8,6 @@
       </div>
       <div class="header">
         <h2 id="title">Automatisierte SQL-Bewertung der Hochschule Hannover</h2>
-        <!-- Methodenaufruf der Logout-Methode der main.js -->
         <button id="logout" @click="logoutFromKeycloak()">Abmelden</button>
       </div>
       <div class="navigation">
@@ -27,31 +26,31 @@
         <div class="navItem" v-if="$route.name == 'excerciseStud'">
           <router-link to="/course/1">Kurs</router-link>
         </div>
-        <div class="navItem" style="color:white">
-          <button @click="getRole()">Rolle</button>
+        <div class="navItem" style="color:white" v-if="userRole=='Dozent'">
+          <button @click="getRole()">Get</button>
         </div>
-        <div class="navItem" style="color:white">
+        <div class="navItem" style="color:white" v-if="userRole=='Master'">
           <button @click="setUser()">Set</button>
         </div>
         <div class="navItem" style="color:white">
-          Benutzerrolle: {{auth}}
+          Role:{{userRole}}
         </div>
-        <!-- tutorial -->
-        <!-- <div class="navItem">
+      </div>
+      <div class="content">
+          <router-view />
+      </div>
+    </div>
+    <div class="loadling_screen" v-if="!auth">
+        <img src="./assets/loading.gif" alt="loading" width="80">
+    </div>
+    
+    
+    <!-- <div class="navItem">
           <router-link to="/tutorials">Tutorials</router-link>
         </div>
         <div class="navItem">
           <router-link to="/add">Add</router-link>
         </div> -->
-
-      </div>
-      <div class="content">
-        <router-view />
-      </div>
-    </div>
-    <!-- <div class="loadling_screen" v-if="!auth">
-        <img src="../assets/loading.gif" alt="loading" width="80">
-    </div> -->
   </div>
 </template>
 
@@ -59,37 +58,39 @@
 <script>
 
 // Hier wird die main.js importiert in der die logout-Funktion liegt
-// import * as main from './main.js'
+import * as main from './main.js'
 
 // unter Methods wird die logout-Methode aufgerufen
 export default {
   name: 'App',
   data() {
     return {
-      user: {
-        name: "Zanjani",
-        isStudent: false,
-        role: "Dozent"
-      },
-      auth: this.$store.state.auth
+      user: null,
+      userRole: null,
+      auth: false,
     }
   },
   methods: {
     logoutFromKeycloak() {
-      // main.logout();
+      this.auth = false;
+      main.logout();
     },
-    getRole(){
-      // this.user.role = main.getUserRole();
-      console.log("User:"+JSON.stringify(this.$store.state.user,null,4));
-      console.log("UserRole:"+this.$store.state.userRole);
+    getRole() {
+      console.log("User:" + JSON.stringify(this.$store.state.user, null, 4));
+      console.log("UserRole:"+this.$store.state.user.realm_access.roles[0]);
       console.log("Auth:"+this.$store.state.auth);
     },
-    setUser(){
-      this.$store.dispatch('setUser', this.user);
-      this.$store.dispatch('setUserRole', this.user.role);
-      this.$store.dispatch('setAuth', true);
-      console.log("Set");
+    setUser() {
+      console.log('It works');
+      this.user = this.$store.state.user;
+      this.userRole = this.user.realm_access.roles[0];
     }
+  },
+  mounted() {  
+    console.log('mounted!');
+    this.$store.dispatch('setAuth', true);
+    this.auth = this.$store.state.auth;
+    setTimeout(() => this.setUser(), 500);
   }
 }
 </script> 
@@ -102,6 +103,12 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
+}
+
+.loadling_screen {
+  display: grid;
+  justify-content: center;
+  margin-top: 42vh;
 }
 
 #app {
