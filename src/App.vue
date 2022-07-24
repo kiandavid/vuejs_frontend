@@ -90,7 +90,7 @@ export default {
     console.log('mounted!');
     this.$store.dispatch('setAuth', true);
     this.auth = this.$store.state.auth;
-    setTimeout(() => this.setUser(), 500);
+    setTimeout(() => this.setUser(), 100);
   }
 }
 </script> 

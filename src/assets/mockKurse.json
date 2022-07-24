@@ -1,13 +1,13 @@
 [
     {
         "id": 1,
-        "bezeichnung": "Joya",
-        "semester": "Meech"
+        "bezeichnung": "DB1",
+        "semester": "WiSe18/19"
     },
     {
         "id": 2,
-        "bezeichnung": "Wilburt",
-        "semester": "Elizabeth"
+        "bezeichnung": "DB2",
+        "semester": "SoSe19"
     },
     {
         "id": 3,

@@ -3,7 +3,7 @@
     <h2 id="homeTitel">Meine Kurse</h2>
 
     <!-- Suchfeld der Kurse für Studenten -->
-    <div id="kurssuche" v-if="user.isStudent">
+    <div id="kurssuche" v-if="userRole=='Student'">
       <input type="search" id="query" placeholder="Kurs suchen...">
       <button @click="getCoursebyName()">Suchen</button>
     </div>
@@ -11,7 +11,7 @@
     <!-- Wird angezeigt, wenn kein neuer Kurs hinzugefügt wird -->
     <div v-if="submitted">
       <!-- Add Button für Kurse der Dozenten -->
-      <div v-if="!user.isStudent">
+      <div v-if="userRole=='Dozent'">
         <button id="KursBtn" @click="addKurs()">Hinzufügen</button>
       </div>
 
@@ -46,11 +46,8 @@
         />
       </div>
       <button @click="saveKurs()" class="btn-success">Speichern</button>
+      <button @click="cancel()" class="btn-success">Abbrechen</button>
     </div>
-    <!-- <div v-else>
-      <h4>You submitted successfully!</h4>
-      <button class="btn btn-success" @click="newTutorial">Add</button>
-    </div>   -->
   </div>
 </template>
 
@@ -59,25 +56,17 @@
 import KursDataService from "../services/KursDataService";
 export default {
     name: "HomeView",
-
     data() {
       return {
-        kurse: [
-          {"id":1,"bezeichnung":"DB1","semester":"WiSe18/19"},
-          {"id":2,"bezeichnung":"DB2","semester":"SoSe19"},
-          {"id":3,"bezeichnung":"DB3","semester":"WiSe19/20"},
-          {"id":4,"bezeichnung":"DB1","semester":"SoSe20"},
-          {"id":5,"bezeichnung":"DB2","semester":"WiSe20/21"}],
+        kurse: [],
         kurs: {
           id: null,
           bezeichnung: "",
           semester: ""
         },
         submitted: true,
-        user: {
-          name: "Zanjani",
-          isStudent: false
-        }
+        user: null,
+        userRole: null
       }
     },
 
@@ -85,28 +74,45 @@ export default {
       getCoursebyName(){
         console.log("Suche nach Kurs");
       },
+
       addKurs(){
         this.submitted = false;
         console.log("Füge Kurs hinzu");
       },
+
       saveKurs(){
-        var data = {
-          bezeichnung: this.kurs.bezeichnung,
-          semester: this.kurs.semester
-        };
-        KursDataService.create(data)
-          .then(response => {
-            this.kurs.id = response.data.id;
-            console.log(response.data);
-            this.submitted = true;
-          })
-          .catch(e => {
-            console.log(e);
-          });
-        this.getAllCourses();
-        console.log("Kurs speichern");
-        this.submitted = false;
+        if(this.kurs.bezeichnung != "" && this.kurs.semester != ""){
+          var data = {
+            bezeichnung: this.kurs.bezeichnung,
+            semester: this.kurs.semester
+          };
+          KursDataService.create(data)
+            .then(response => {
+              this.kurs.id = response.data.id;
+              console.log(response.data);
+            })
+            .catch(e => {
+              console.log(e);
+            });
+          this.getAllCourses();
+          this.flushKurs();
+          console.log("Kurs speichern");
+          this.submitted = true;
+        } else{
+          alert("Bitte vervollständigen Sie das Formular!");
+        }
       },
+      
+      flushKurs(){
+        this.kurs.bezeichnung = "",
+        this.kurs.semester = "",
+        this.kurs.id = null
+      },
+
+      cancel(){
+        this.submitted = true;
+      },
+
       getAllCourses() {
       KursDataService.getAll()
         .then(response => {
@@ -116,10 +122,17 @@ export default {
         .catch(e => {
           console.log(e);
         });
-      }
+      },
+
+      setUser() {
+        console.log('It works');
+        this.user = this.$store.state.user;
+        this.userRole = this.user.realm_access.roles[0];
+    }
     },
     mounted() {
-    // this.getAllCourses();
+    this.getAllCourses();
+    setTimeout(() => this.setUser(), 100);
   }
 }
 </script> 
