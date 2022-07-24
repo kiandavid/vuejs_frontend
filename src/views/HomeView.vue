@@ -1,21 +1,22 @@
 <template>
   <div> 
+    <!-- Hier muss noch ein Extra Div für die Mastersicht hin -->
     <h2 id="homeTitel">Meine Kurse</h2>
 
-    <!-- Suchfeld der Kurse für Studenten -->
+    <!-- Student: Suchfeld der Kurse -->
     <div id="kurssuche" v-if="userRole=='Student'">
       <input type="search" id="query" placeholder="Kurs suchen...">
       <button @click="getCoursebyName()">Suchen</button>
     </div>
 
-    <!-- Wird angezeigt, wenn kein neuer Kurs hinzugefügt wird -->
-    <div v-if="submittedAdd">
-      <!-- Add Button für Kurse der Dozenten -->
+    <!-- Dozent & Student: Kursansicht-->
+    <div v-if="submittedAdd && submittedUpdate">
+      <!-- Dozent: Add Button für Kurse -->
       <div v-if="userRole=='Dozent'">
         <button id="KursBtn" @click="addKurs()">Hinzufügen</button>
       </div>
 
-      <!-- Kursliste für beide Rollen -->
+      <!-- Dozent & Student: Kursliste -->
       <div class="courses-container" v-for="kurs in kurse" :key="kurs.id">
         <div>
             <router-link class="listItem" :to="{ name: 'courseStud', params:{ id: kurs.id}}">
@@ -29,8 +30,9 @@
       </div>
     </div>
 
-    <!-- Pop-up für die Kurserstellung -->
+    <!-- Dozent: Pop-up für die Kurserstellung -->
     <div v-if="!submittedAdd">
+      <h3>Kurs hinzufügen</h3>
       <div class="form-group">
         <label for="bezeichnung">Bezeichnung:</label><br>
         <input
@@ -56,7 +58,7 @@
       <button @click="cancel()" class="btn-success">Abbrechen</button>
     </div>
 
-    <!-- Pop-up für die Änderung -->
+    <!-- Dozent: Pop-up für die Änderung -->
     <div v-if="!submittedUpdate">
       <h3>Kurs ändern</h3>
       <div class="form-group">
@@ -153,35 +155,43 @@ export default {
         }
       },
 
+      // Setzt den ausgewählten Kurs und öffnent das Update-Pop-up
       update(kurs){
         this.currentKurs = kurs;
         this.submittedUpdate = false;
       },
 
-
+      // Updatet den Kurs in der DB
       updateKurs(){
         KursDataService.update(this.currentKurs.id, this.currentKurs)
         .then(response => {
           console.log(response.data);
-          this.message = 'The tutorial was updated successfully!';
+          this.message = 'The Course was updated successfully!';
         })
         .catch(e => {
           console.log(e);
         });
         this.getAllCourses();
+        this.submittedUpdate = true;
+        alert("Kurs "+ this.currentKurs.bezeichnung + " wurde geändert!");
+
       },
 
+      // Setzt den Kurs zurück
       flushKurs(){
         this.kurs.bezeichnung = "",
         this.kurs.semester = "",
         this.kurs.id = null
       },
 
+      // Schließt das Pop-up-Fenster
       cancel(){
         this.submittedAdd = true;
         this.submittedUpdate = true;
       },
 
+
+      // Liefert alle Kurse aus der DB
       getAllCourses() {
       KursDataService.getAll()
         .then(response => {
@@ -193,12 +203,14 @@ export default {
         });
       },
 
+      // Funktion um das User-Objekt aus dem State (von Keycloak) zu setzen
       setUser() {
         console.log('It works');
         this.user = this.$store.state.user;
         this.userRole = this.user.realm_access.roles[0];
     }
     },
+    // Holt alle Kurse aus der Datenbank und setzt den User
     mounted() {
     this.getAllCourses();
     setTimeout(() => this.setUser(), 100);
@@ -224,6 +236,10 @@ export default {
 }
 
 h2{
+  margin-left: 40px;
+}
+
+h3{
   margin-left: 40px;
 }
 

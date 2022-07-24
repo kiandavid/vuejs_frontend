@@ -43,7 +43,7 @@
 // Hier wird die main.js importiert in der die logout-Funktion liegt
 import * as main from './main.js'
 
-// unter Methods wird die logout-Methode aufgerufen
+
 export default {
   name: 'App',
   data() {
@@ -54,23 +54,22 @@ export default {
     }
   },
   methods: {
+
+    // Ruft die keycloak-logout-Methode aus der main.js auf 
     logoutFromKeycloak() {
       this.auth = false;
       main.logout();
     },
-    getRole() {
-      console.log("User:" + JSON.stringify(this.$store.state.user, null, 4));
-      console.log("UserRole:"+this.$store.state.user.realm_access.roles[0]);
-      console.log("Auth:"+this.$store.state.auth);
-    },
+
+    // lokaler User+Userrolle <- store state user (von Keycloak)
     setUser() {
       console.log('It works');
       this.user = this.$store.state.user;
       this.userRole = this.user.realm_access.roles[0];
     }
   },
+  // Auth wird hier bestätigt und User auf globalem User gesetzt
   mounted() {  
-    console.log('mounted!');
     this.$store.dispatch('setAuth', true);
     this.auth = this.$store.state.auth;
     setTimeout(() => this.setUser(), 100);
