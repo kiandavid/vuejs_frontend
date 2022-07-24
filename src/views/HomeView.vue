@@ -9,7 +9,7 @@
     </div>
 
     <!-- Wird angezeigt, wenn kein neuer Kurs hinzugefügt wird -->
-    <div v-if="submitted">
+    <div v-if="submittedAdd">
       <!-- Add Button für Kurse der Dozenten -->
       <div v-if="userRole=='Dozent'">
         <button id="KursBtn" @click="addKurs()">Hinzufügen</button>
@@ -17,13 +17,20 @@
 
       <!-- Kursliste für beide Rollen -->
       <div class="courses-container" v-for="kurs in kurse" :key="kurs.id">
-        <router-link class="listItem" :to="{ name: 'courseStud', params:{ id: kurs.id}}">
-          <strong >{{kurs.bezeichnung}}</strong>
-        </router-link>
+        <div>
+            <router-link class="listItem" :to="{ name: 'courseStud', params:{ id: kurs.id}}">
+            <strong >{{kurs.bezeichnung}}</strong>
+          </router-link>
+        </div>
+        <div id="controls">
+          <img src="../assets/pen.png" alt="Edit" width="20" @click="update(kurs)" >&nbsp;
+          <img src="../assets/trash.png" alt="Delete" width="20" @click="deleteById(kurs.id, kurs.bezeichnung)">
+        </div> 
       </div>
     </div>
 
-    <div v-if="!submitted">
+    <!-- Pop-up für die Kurserstellung -->
+    <div v-if="!submittedAdd">
       <div class="form-group">
         <label for="bezeichnung">Bezeichnung:</label><br>
         <input
@@ -48,6 +55,34 @@
       <button @click="saveKurs()" class="btn-success">Speichern</button>
       <button @click="cancel()" class="btn-success">Abbrechen</button>
     </div>
+
+    <!-- Pop-up für die Änderung -->
+    <div v-if="!submittedUpdate">
+      <h3>Kurs ändern</h3>
+      <div class="form-group">
+        <label for="bezeichnung">Bezeichnung:</label><br>
+        <input
+          type="text"
+          class="form-control"
+          id="bezeichnung"
+          required
+          v-model="currentKurs.bezeichnung"
+          name="bezeichnung"
+        />
+      </div>
+      <div class="form-group">
+        <label for="semester">Semester:</label><br>
+        <input
+          class="form-control"
+          id="semester"
+          required
+          v-model="currentKurs.semester"
+          name="semester"
+        />
+      </div>
+      <button @click="updateKurs()" class="btn-success">Änderungen speichern</button>
+      <button @click="cancel()" class="btn-success">Abbrechen</button>
+    </div>
   </div>
 </template>
 
@@ -64,22 +99,37 @@ export default {
           bezeichnung: "",
           semester: ""
         },
-        submitted: true,
+        currentKurs: {
+          id: null,
+          bezeichnung: "",
+          semester: ""
+        },
+        submittedAdd: true,
+        submittedUpdate: true,
         user: null,
         userRole: null
       }
     },
 
     methods: {
+      // Sucht Kurse nach Namen, Funktion der Studentensicht
       getCoursebyName(){
         console.log("Suche nach Kurs");
       },
 
+      // Öffnet das Add-Pop-up Fenster 
       addKurs(){
-        this.submitted = false;
-        console.log("Füge Kurs hinzu");
+        this.submittedAdd = false;
       },
 
+      // Löscht einen Kurs nach ID
+      deleteById(id, bezeichnung){
+        KursDataService.delete(id);
+        alert("Kurs "+ bezeichnung + " wurde gelöscht!");
+        this.getAllCourses();
+      },
+
+      // Erzeugt einen neuen Kurs in der DB und schließt das Add-Pop-up
       saveKurs(){
         if(this.kurs.bezeichnung != "" && this.kurs.semester != ""){
           var data = {
@@ -97,12 +147,30 @@ export default {
           this.getAllCourses();
           this.flushKurs();
           console.log("Kurs speichern");
-          this.submitted = true;
+          this.submittedAdd = true;
         } else{
           alert("Bitte vervollständigen Sie das Formular!");
         }
       },
-      
+
+      update(kurs){
+        this.currentKurs = kurs;
+        this.submittedUpdate = false;
+      },
+
+
+      updateKurs(){
+        KursDataService.update(this.currentKurs.id, this.currentKurs)
+        .then(response => {
+          console.log(response.data);
+          this.message = 'The tutorial was updated successfully!';
+        })
+        .catch(e => {
+          console.log(e);
+        });
+        this.getAllCourses();
+      },
+
       flushKurs(){
         this.kurs.bezeichnung = "",
         this.kurs.semester = "",
@@ -110,7 +178,8 @@ export default {
       },
 
       cancel(){
-        this.submitted = true;
+        this.submittedAdd = true;
+        this.submittedUpdate = true;
       },
 
       getAllCourses() {
@@ -167,6 +236,13 @@ h2{
   font-size: 24px;
 }
 
+#controls{
+  margin-right: 800px;
+}
+
+img{
+  cursor: pointer;
+}
 
 #query{
   margin-left: 40px;
@@ -176,6 +252,8 @@ h2{
   margin-top: 40px;
   margin-left: 40px;
   text-decoration: none;
+  display: flex;
+  justify-content: space-between;
 }
 
 

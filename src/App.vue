@@ -26,31 +26,14 @@
         <div class="navItem" v-if="$route.name == 'excerciseStud'">
           <router-link to="/course/1">Kurs</router-link>
         </div>
-        <div class="navItem" style="color:white" v-if="userRole=='Dozent'">
-          <button @click="getRole()">Get</button>
-        </div>
-        <div class="navItem" style="color:white" v-if="userRole=='Master'">
-          <button @click="setUser()">Set</button>
-        </div>
-        <div class="navItem" style="color:white">
-          Role:{{userRole}}
-        </div>
       </div>
       <div class="content">
           <router-view />
       </div>
     </div>
-    <div class="loadling_screen" v-if="!auth">
+    <div class="loading_screen" v-if="!auth">
         <img src="./assets/loading.gif" alt="loading" width="80">
     </div>
-    
-    
-    <!-- <div class="navItem">
-          <router-link to="/tutorials">Tutorials</router-link>
-        </div>
-        <div class="navItem">
-          <router-link to="/add">Add</router-link>
-        </div> -->
   </div>
 </template>
 
@@ -105,7 +88,7 @@ body {
   height: 100vh;
 }
 
-.loadling_screen {
+.loading_screen {
   display: grid;
   justify-content: center;
   margin-top: 42vh;
