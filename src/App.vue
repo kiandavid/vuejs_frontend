@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="grid-container" v-if="auth">
       <div class="profil">
-        <router-link to="/profil">
+        <router-link to="/profil" v-if="userRole!='Master'">
           <img id="userIcon" src="./assets/profil.png" alt="Benutzerlogo">
         </router-link>
       </div>

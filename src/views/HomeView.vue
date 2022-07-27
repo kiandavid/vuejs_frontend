@@ -1,7 +1,35 @@
 <template>
   <div> 
-    <!-- Hier muss noch ein Extra Div für die Mastersicht hin -->
-    <h2 id="homeTitel">Meine Kurse</h2>
+    <h2 v-if="userRole!='Master'" id="homeTitel">Meine Kurse</h2>
+
+    <!-- Master: Benutzerverwaltung -->
+    <div class="master" v-if="userRole=='Master'">
+      <h3 id="master_h3">Übersicht der Benutzer</h3>
+      <button @click="addUser()">Hinzufügen</button><br><br>
+      <table>
+        <tr>
+          <th>Vorname</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Benutzerrolle</th>
+          <th>Aktion</th>
+        </tr>
+        <tr class="benutzer-container" v-for="pers in studenten" :key="pers.id">
+          <td>{{pers.vorname}}</td>
+          <td>{{pers.nachname}}</td>
+          <td>{{pers.email}}</td>
+          <td>Student</td>
+          <td></td>
+        </tr>
+        <tr class="benutzer-container" v-for="pers in dozenten" :key="pers.id">
+          <td>{{pers.vorname}}</td>
+          <td>{{pers.nachname}}</td>
+          <td>{{pers.email}}</td>
+          <td>Dozent</td>
+          <td></td>
+        </tr>
+      </table>
+    </div>
 
     <!-- Student: Suchfeld der Kurse -->
     <div id="kurssuche" v-if="userRole=='Student'">
@@ -23,7 +51,7 @@
             <strong >{{kurs.bezeichnung}}</strong>
           </router-link>
         </div>
-        <div id="controls">
+        <div id="controls" v-if="userRole=='Dozent'">
           <img src="../assets/pen.png" alt="Edit" width="20" @click="update(kurs)" >&nbsp;
           <img src="../assets/trash.png" alt="Delete" width="20" @click="deleteById(kurs.id, kurs.bezeichnung)">
         </div> 
@@ -91,10 +119,14 @@
 
 <script>
 import KursDataService from "../services/KursDataService";
+import StudentDataService from "../services/StudentDataService";
+import DozentDataService from "../services/DozentDataService";
 export default {
     name: "HomeView",
     data() {
       return {
+        studenten: [],
+        dozenten: [],
         kurse: [],
         kurs: {
           id: null,
@@ -118,6 +150,12 @@ export default {
       getCoursebyName(){
         console.log("Suche nach Kurs");
       },
+
+      // Öffnet das Add-Pop-up Fenster 
+      addUser(){
+        console.log("Dozent: "+ JSON.stringify(this.dozenten, null, 4));
+      },
+
 
       // Öffnet das Add-Pop-up Fenster 
       addKurs(){
@@ -208,19 +246,48 @@ export default {
         console.log('It works');
         this.user = this.$store.state.user;
         this.userRole = this.user.realm_access.roles[0];
-    }
+      },
+
+      getDozenten(){
+        this.dozenten = DozentDataService.getAll()
+          .then(response => {
+            this.dozenten = response.data;
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      },
+
+      getStudenten(){
+        this.studenten = StudentDataService.getAll()
+          .then(response => {
+            this.studenten = response.data;
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      }
     },
     // Holt alle Kurse aus der Datenbank und setzt den User
     mounted() {
-    this.getAllCourses();
-    setTimeout(() => this.setUser(), 100);
-  }
+      this.getAllCourses();
+      setTimeout(() => this.setUser(), 100);
+      this.getStudenten();
+      this.getDozenten();
+    }
 }
 </script> 
 
 
 <style scoped>
 
+.master{
+  margin-left: 40px;
+}
+
+#master_h3{
+  margin-left: 0px;
+}
 
 .form-group{
   margin-left: 40px;
