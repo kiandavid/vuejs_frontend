@@ -124,6 +124,7 @@ export default {
 
       // Funktion um das User-Objekt aus dem State (von Keycloak) zu setzen
       setUser() {
+        console.log("User set");
         this.user = this.$store.state.user;
         this.userRole = this.user.realm_access.roles[0];
       },

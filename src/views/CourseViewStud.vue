@@ -1,33 +1,76 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="submittedAdd">
     <div class="course-container">
-      <h2 id="course-title">Kurs {{ id }}</h2>
+      <h2 id="course-title">{{ kurs.bezeichnung }}</h2>
+      <span> Semester: {{kurs.semester}}</span>
     </div>
+    <div v-if="userRole=='Dozent'">
+      <button @click="addAufgabe()">Aufgabe hinzufügen</button>
+    </div>
+
     <div class="excercises-container" v-for="aufgabe in aufgaben" :key="aufgabe.id">
       <router-link class="listItem" :to="{ name: 'excerciseStud', params:{ id: aufgabe.id}}">       
         <strong >{{aufgabe.bezeichnung}}</strong>
       </router-link>
     </div>
   </div>
+  <div v-if="!submittedAdd">
+    <button @click="cancel()">Abbrechen</button>
+  </div>
 </template>
 
 
 <script>
+import KursDataService from '@/services/KursDataService';
+
+
 export default {
   name: 'CourseViewStud',
   props: ['id'],
   data() {
     return {
-      aufgaben: [
-        {id: 1, bezeichnung: "Aufgabe 1", Punkte: 5},
-        {id: 2, bezeichnung: "Aufgabe 2", Punkte: 5},
-        {id: 3, bezeichnung: "Aufgabe 3", Punkte: 5},
-        {id: 4, bezeichnung: "Aufgabe 4", Punkte: 5},
-        {id: 5, bezeichnung: "Aufgabe 5", Punkte: 5},
-        {id: 6, bezeichnung: "Aufgabe 6", Punkte: 5},
-        {id: 7, bezeichnung: "Aufgabe 7", Punkte: 5},
-      ]
+      aufgaben: [],
+      kurs: {
+        id: this.id,
+        bezeichnung: "",
+        semester: ""
+      },
+      userRole: "",
+      submittedAdd: true
     }
+  },    
+  methods: {
+
+    // Holt die Kursdaten mit den dazugehörigen Aufgaben des Kurses
+    getKursById(id){
+      KursDataService.get(id)
+        .then(response => {
+            this.aufgaben = response.data.aufgaben;
+            this.kurs.bezeichnung = response.data.bezeichnung;
+            this.kurs.semester = response.data.semester;
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
+
+    setUserRole() {
+      this.userRole = this.$store.state.user.realm_access.roles[0];
+    },
+
+    addAufgabe(){
+        this.submittedAdd = false;
+    },
+
+    // Schließt das Pop-up-Fenster
+      cancel(){
+        this.submittedAdd = true;
+      },
+  },
+  mounted() {
+    console.log("Mounted");
+    this.getKursById(this.kurs.id);
+    this.setUserRole();
   }
 }
 </script> 
@@ -35,9 +78,13 @@ export default {
 
 <style>
 
+.container{
+  margin-left: 40px;
+}
+
 .course-container{
   margin-top: 20px;
-  margin-left: 40px;
+  margin-bottom: 20px;
   text-decoration: none;
 }
 
@@ -47,7 +94,6 @@ export default {
 }
 
 .excercises-container{
-  margin-left: 40px;
   margin-top: 20px;
 }
 

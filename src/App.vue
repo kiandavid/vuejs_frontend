@@ -14,13 +14,13 @@
         <div class="navItem" v-if="$route.path != '/'">
           <router-link to="/">Kurse</router-link>
         </div>
-        <div class="navItem" v-if="$route.name == 'courseStud' && user.isStudent">
+        <div class="navItem" v-if="$route.name == 'courseStud' && userRole=='Student'">
           <router-link to="/punkte">Punkte</router-link>
         </div>
-        <div class="navItem" v-if="$route.name == 'courseStud' && !user.isStudent">
+        <div class="navItem" v-if="$route.name == 'courseStud' && userRole=='Dozent'">
           <router-link to="/teilnehmer">Kursteilnehmer</router-link>
         </div>
-        <div class="navItem" v-if="$route.name == 'courseStud' && !user.isStudent">
+        <div class="navItem" v-if="$route.name == 'courseStud' && userRole=='Dozent'">
           <router-link to="/auswertung">Kursauswertung</router-link>
         </div>
         <div class="navItem" v-if="$route.name == 'excerciseStud'">
