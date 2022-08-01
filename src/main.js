@@ -21,10 +21,14 @@ export function getUserToken() {
     return token;
 }
 
+export function switchUserRole() {
+    keycloak.realmAccess.roles[0] = "Dozent";
+    console.log("User Role: " + keycloak.realmAccess.roles[0]);
+}
+
 
 // Meldet den Benutzer ab
 export function logout() {
-    console.log("Logout tried");
     keycloak.logout(logoutOptions).then((success) => {
         console.log("Logout success: " + success);
     }).catch((error) => {
@@ -71,6 +75,7 @@ keycloak.init({ onLoad: initOptions.onLoad }).then((auth) => {
 }).catch(() => {
     console.log("Authenticated Failed");
 });
+
 
 
 

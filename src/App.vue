@@ -63,7 +63,6 @@ export default {
 
     // lokaler User+Userrolle <- store state user (von Keycloak)
     setUser() {
-      console.log('It works');
       this.user = this.$store.state.user;
       this.userRole = this.user.realm_access.roles[0];
     }
@@ -100,6 +99,13 @@ body {
   text-align: left;
   color: #2c3e50;
   margin: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.app-container{
   top: 0;
   left: 0;
   width: 100vw;
