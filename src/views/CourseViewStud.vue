@@ -1,17 +1,20 @@
 <template>
-  <div class="container" v-if="submittedAdd">
-    <div class="course-container">
-      <h2 id="course-title">{{ kurs.bezeichnung }}</h2>
-      <span> Semester: {{kurs.semester}}</span>
-    </div>
-    <div v-if="userRole=='Dozent'">
-      <button @click="addAufgabe()">Aufgabe hinzufügen</button>
-    </div>
+  <div>
+    <div class="container" v-if="submittedAdd">
+    
+      <div class="course-container">
+        <h2 id="course-title">{{ kurs.bezeichnung }}</h2>
+        <span> Semester: {{kurs.semester}}</span>
+      </div>
+      <div v-if="userRole=='Dozent'">
+        <button @click="addAufgabe()">Aufgabe hinzufügen</button>
+      </div>
 
-    <div class="excercises-container" v-for="aufgabe in aufgaben" :key="aufgabe.id">
-      <router-link class="listItem" :to="{ name: 'excerciseStud', params:{ id: aufgabe.id}}">       
-        <strong >{{aufgabe.bezeichnung}}</strong>
-      </router-link>
+      <div class="excercises-container" v-for="aufgabe in aufgaben" :key="aufgabe.id">
+        <router-link class="listItem" :to="{ name: 'excerciseStud', params:{ id: aufgabe.id}}">       
+          <strong >{{aufgabe.bezeichnung}}</strong>
+        </router-link>
+      </div>
     </div>
 
     <PopupAddExcercise/>

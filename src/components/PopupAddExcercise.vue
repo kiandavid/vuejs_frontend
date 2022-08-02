@@ -22,6 +22,8 @@
           v-model="aufgabe.punkte_max"
           name="punkte_max"
         />
+      </div>
+      <div class="form-group">
 				<label for="aufgabenpfad">Dateipfad der Aufgabe:</label><br>
         <input
           type="text"
@@ -33,8 +35,8 @@
         />
       </div>
 
-			<button @click="saveAufgabe()">Abbrechen</button>
-			<button @click="cancel()">Abbrechen</button>
+			<button @click="saveAufgabe()" class="btn">Aufgabe speichern</button>
+			<button @click="cancel()" class="btn">Abbrechen</button>
   
 	</div>
 </template>
@@ -82,8 +84,7 @@ export default {
             console.log(e);
           });
           this.$parent.getKursbyId(this.aufgabe.kursId);
-          this.flushAufgabe();
-          this.$parent.submittedAdd = true;
+          this.cancel();
         } else{
           alert("Bitte vervollständigen Sie das Formular!");
         }
@@ -99,8 +100,12 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 	.container{
 		margin-left: 40px;
 	}
+
+  .btn{
+    margin-right: 20px;
+  }
 </style>
