@@ -50,8 +50,7 @@ import MasterControls from "@/components/MasterControls.vue";
 
 // Services
 import KursDataService from "../services/KursDataService";
-// import StudentDataService from "../services/StudentDataService";
-// import DozentDataService from "../services/DozentDataService";
+
 export default {
     name: "HomeView",
     components: {

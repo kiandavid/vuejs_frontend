@@ -13,9 +13,9 @@
         <strong >{{aufgabe.bezeichnung}}</strong>
       </router-link>
     </div>
-  </div>
-  <div v-if="!submittedAdd">
-    <button @click="cancel()">Abbrechen</button>
+
+    <PopupAddExcercise/>
+
   </div>
 </template>
 
@@ -23,10 +23,14 @@
 <script>
 import KursDataService from '@/services/KursDataService';
 
+import PopupAddExcercise from '@/components/PopupAddExcercise.vue';
 
 export default {
   name: 'CourseViewStud',
   props: ['id'],
+  components: {
+    PopupAddExcercise
+  },
   data() {
     return {
       aufgaben: [],
@@ -60,12 +64,7 @@ export default {
 
     addAufgabe(){
         this.submittedAdd = false;
-    },
-
-    // Schließt das Pop-up-Fenster
-      cancel(){
-        this.submittedAdd = true;
-      },
+    }
   },
   mounted() {
     console.log("Mounted");
