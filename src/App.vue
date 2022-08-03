@@ -50,7 +50,7 @@ export default {
     return {
       user: null,
       userRole: null,
-      auth: false,
+      auth: false
     }
   },
   methods: {

@@ -26,20 +26,8 @@
     <div v-if="user.isStudent">
       <table id="AufgabenDetails">
           <tr>
-            <th>Begonnen am</th>
-            <td>Datum1</td>
-          </tr>
-          <tr>
             <th>Status</th>
             <td>Abgegeben</td>
-          </tr>
-          <tr>
-            <th>Beendet am</th>
-            <td>Datum 2</td>
-          </tr>
-          <tr>
-            <th>Verbrauchte Zeit</th>
-            <td>5 Tage</td>
           </tr>
           <tr>
             <th>Punkte</th>
@@ -56,6 +44,9 @@
       <router-link to="/feedback">Feedback einsehen</router-link>
 
     </div>
+
+    <router-link id="kursLink" :to="{ name: 'courseStud', params:{ id: id}}">Zurück zum {{bezeichnung}}</router-link>
+
   </div>
 </template>
 
@@ -64,7 +55,10 @@
 <script>
 export default {
   name: 'ExcerciseViewStud',
-  props: ['id'],
+  props: [
+    'id',
+    'bezeichnung'
+  ],
   data() {
     return {
       studenten: [
@@ -83,7 +77,7 @@ export default {
 </script> 
 
 
-<style>
+<style scoped>
 
 #aufgabe{
   text-decoration: underline;
@@ -99,6 +93,10 @@ export default {
 
 h2{
   margin-left: 0px;
+}
+
+#kursLink {
+  margin-top: 20px;
 }
 
 </style>
