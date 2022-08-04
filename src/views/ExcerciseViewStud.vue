@@ -40,11 +40,18 @@
       </table>
 
       <h3>Lösung einreichen</h3>
-      <input type="file"><br><br>
+        <label>Lösung
+          <input type="file" @change="handleFileUpload( $event )"/>
+        </label>
+        <br><br>
+        <button v-on:click="submitFile()">Submit</button>
+      
+      
+      <br><br>
       <router-link class="routerlink" to="/feedback">Feedback einsehen</router-link>
       <br><br>
     </div>
-
+    <br><br>
     <router-link class="routerlink" :to="{ name: 'courseStud', params:{ id: id}}">Zurück zum {{bezeichnung}}</router-link>
 
   </div>
@@ -53,6 +60,10 @@
 
 
 <script>
+
+import { saveAs } from 'file-saver';
+// FileSaver saveAs(Blob/File/Url, optional DOMString filename, optional Object { autoBom })
+
 export default {
   name: 'ExcerciseViewStud',
   props: [
@@ -68,7 +79,8 @@ export default {
         {id: 1, vorname: 'Max', name:'Mustermann', matrikelnummer: 111111, status: "Bearbeitet", punkte: "5.0/7.0"}
       ],
       user: null,
-      userRole: ""
+      userRole: "",
+      file: ""
     }
   },
   methods: {
@@ -77,6 +89,41 @@ export default {
         console.log("User set");
         this.user = this.$store.state.user;
         this.userRole = this.user.realm_access.roles[0];
+      },
+
+      handleFileUpload( event ){
+				this.file = event.target.files[0];
+			},
+			
+			submitFile(){
+        console.log("File_Name: " + this.file.name);
+
+        var JSZip = require("jszip");
+
+        var zip = new JSZip();
+
+        // Submission.xml muss hier hinzugefügt werden
+        zip.file(this.file.name, this.file);
+
+        // Generate a directorys within the Zip file structure
+        var task = zip.folder("task");
+        var submission = zip.folder("submission");
+
+        
+
+        // task.zip muss hier eingebaut werden
+        task.file(this.file.name, this.file, {base64: true});
+
+        // submission.sql muss hier eingebaut werden
+        submission.file(this.file.name, this.file, {base64: true});
+
+        // Generate the zip file asynchronously
+        zip.generateAsync({type:"blob"})
+        .then(function(content) {
+            // Force down of the Zip file
+            saveAs(content, "test.zip");
+        });
+
       }
 
     },

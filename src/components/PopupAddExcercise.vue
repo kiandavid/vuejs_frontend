@@ -12,9 +12,9 @@
       <input class="form-control" id="punkte_max" required v-model="aufgabe.punkte_max" name="punkte_max" />
     </div>
     <div class="form-group">
-      <label for="aufgabenpfad">Dateipfad der Aufgabe:</label><br>
-      <input type="text" class="form-control" id="aufgabenpfad" required v-model="aufgabe.aufgabenpfad"
-        name="aufgabenpfad" />
+      <label for="aufgabe">Aufgabendatei:</label><br>
+      <input type="text" class="form-control" id="aufgabe" v-model="aufgabe.aufgabe"
+        name="aufgabe" />
     </div>
 
     <button @click="saveAufgabe()" class="btn">Aufgabe speichern</button>
@@ -35,7 +35,7 @@ export default {
         id: null,
         bezeichnung: "",
         punkte_max: null,
-        aufgabenpfad: "",
+        aufgabe: "",
         kursId: this.$parent.kurs.id
       }
     }
@@ -50,11 +50,12 @@ export default {
 
     // Speichert die Aufgabe im ausgewählten Kurs
     saveAufgabe() {
-      if (this.aufgabe.bezeichnung != "" && this.aufgabe.aufgabenpfad != "" && this.aufgabe.punkte_max != null) {
+      if (this.aufgabe.bezeichnung != "" && this.aufgabe.punkte_max != null) {
+        // && this.aufgabe.aufgabe != ""
         var data = {
           bezeichnung: this.aufgabe.bezeichnung,
           punkte_max: this.aufgabe.punkte_max,
-          aufgabenpfad: this.aufgabe.aufgabenpfad,
+          aufgabe: this.aufgabe.aufgabe,
           kursId: this.aufgabe.kursId
         };
         AufgabeDataService.create(data)
@@ -76,7 +77,7 @@ export default {
       this.aufgabe.id = null;
       this.aufgabe.bezeichnung = "";
       this.aufgabe.punkte_max = null;
-      this.aufgabe.aufgabenpfad = "";
+      this.aufgabe.aufgabe = "";
     }
   }
 }

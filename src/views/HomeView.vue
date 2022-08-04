@@ -170,7 +170,7 @@ img{
 
 .courses-container{
   margin-top: 40px;
-  margin-left: 40px;
+  /* margin-left: 40px; */
   text-decoration: none;
   display: flex;
   justify-content: space-between;
