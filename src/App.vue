@@ -148,10 +148,6 @@ body {
 }
 
 
-h2 {
-  margin-left: 40px;
-}
-
 
 
 #logout {

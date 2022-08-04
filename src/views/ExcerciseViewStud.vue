@@ -7,7 +7,7 @@
 
 
     <!-- Aufgabenübersicht des Dozenten -->
-    <table id="tabelleAufgabe" v-if="!user.isStudent">
+    <table id="tabelleAufgabe" v-if="userRole=='Dozent'">
       <tr>
         <th>Student</th>
         <th>Matrikelnummer</th>
@@ -23,7 +23,7 @@
     </table>
 
     <!-- Sicht der Studenten -->
-    <div v-if="user.isStudent">
+    <div v-if="userRole=='Student'">
       <table id="AufgabenDetails">
           <tr>
             <th>Status</th>
@@ -41,11 +41,11 @@
 
       <h3>Lösung einreichen</h3>
       <input type="file"><br><br>
-      <router-link to="/feedback">Feedback einsehen</router-link>
-
+      <router-link class="routerlink" to="/feedback">Feedback einsehen</router-link>
+      <br><br>
     </div>
 
-    <router-link id="kursLink" :to="{ name: 'courseStud', params:{ id: id}}">Zurück zum {{bezeichnung}}</router-link>
+    <router-link class="routerlink" :to="{ name: 'courseStud', params:{ id: id}}">Zurück zum {{bezeichnung}}</router-link>
 
   </div>
 </template>
@@ -67,12 +67,24 @@ export default {
         {id: 1, vorname: 'Max', name:'Mustermann', matrikelnummer: 111111, status: "Bearbeitet", punkte: "5.0/7.0"},
         {id: 1, vorname: 'Max', name:'Mustermann', matrikelnummer: 111111, status: "Bearbeitet", punkte: "5.0/7.0"}
       ],
-      user: {
-        name: "Zanjani",
-        isStudent: false
-      }
+      user: null,
+      userRole: ""
     }
-  }
+  },
+  methods: {
+      // Funktion um das User-Objekt aus dem State (von Keycloak) zu setzen
+      setUser() {
+        console.log("User set");
+        this.user = this.$store.state.user;
+        this.userRole = this.user.realm_access.roles[0];
+      }
+
+    },
+    // Holt alle Kurse aus der Datenbank und setzt den User
+    mounted() {
+      this.setUser();
+    }
+  
 }
 </script> 
 
@@ -94,9 +106,9 @@ export default {
 h2{
   margin-left: 0px;
 }
-
-#kursLink {
+.routerlink {
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 </style>

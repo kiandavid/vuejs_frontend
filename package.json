@@ -14,7 +14,8 @@
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vuejs-logger": "^1.5.5",
-    "vuex": "^4.0.0"
+    "vuex": "^4.0.0",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

@@ -1,6 +1,6 @@
 <template>
-  <div> 
-    <h2 v-if="userRole!='Master'" id="homeTitel">Meine Kurse</h2>
+  <div class="container"> 
+    <h2 v-if="userRole!='Master'">Meine Kurse</h2>
 
     <!-- Master: Benutzerverwaltung -->
     <MasterControls v-if="userRole=='Master'"></MasterControls>
@@ -35,6 +35,7 @@
       </div>
     </div>
 
+
     <!-- Dozent: Popup für die Kurs Kontrolle -->
     <PopupCourseControl/>
 
@@ -48,8 +49,12 @@
 import PopupCourseControl from "@/components/PopupCourseControl.vue";
 import MasterControls from "@/components/MasterControls.vue";
 
+
+
 // Services
 import KursDataService from "../services/KursDataService";
+
+// import GraderService from "@/services/GraderService";
 
 export default {
     name: "HomeView",
@@ -75,7 +80,7 @@ export default {
         submittedAdd: true,
         submittedUpdate: true,
         user: null,
-        userRole: null
+        userRole: null,
       }
     },
 
@@ -128,7 +133,6 @@ export default {
         this.userRole = this.user.realm_access.roles[0];
       },
 
-
     },
     // Holt alle Kurse aus der Datenbank und setzt den User
     mounted() {
@@ -141,7 +145,7 @@ export default {
 
 <style scoped>
 
-.master{
+.container{
   margin-left: 40px;
 }
 
@@ -149,30 +153,6 @@ export default {
   margin-left: 0px;
 }
 
-.form-group{
-  margin-left: 40px;
-  margin-bottom: 20px;
-}
-
-.btn-success{
-  margin-left: 40px;
-}
-
-#homeTitel{
-  margin-left: 40px;
-}
-
-h2{
-  margin-left: 40px;
-}
-
-h3{
-  margin-left: 40px;
-}
-
-#KursBtn{
-  margin-left: 40px;
-}
 
 .listItem{
   text-decoration: none;
@@ -187,9 +167,6 @@ img{
   cursor: pointer;
 }
 
-#query{
-  margin-left: 40px;
-}
 
 .courses-container{
   margin-top: 40px;
@@ -198,6 +175,5 @@ img{
   display: flex;
   justify-content: space-between;
 }
-
 
 </style>
