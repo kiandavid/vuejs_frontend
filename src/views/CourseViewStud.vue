@@ -8,11 +8,13 @@
       </div>
       <div v-if="userRole=='Dozent'">
         <button @click="addAufgabe()">Aufgabe hinzufügen</button>
+        <button @click="printAufgaben()">Aufgabe printen</button>
       </div>
 
       <div class="excercises-container" v-for="aufgabe in aufgaben" :key="aufgabe.id">
         <router-link class="listItem" :to="{ name: 'excerciseStud', params:{ id: id, bezeichnung: kurs.bezeichnung}}">       
           <strong >{{aufgabe.bezeichnung}}</strong>
+          <!-- <strong >{{aufgabe.aufgabe.name}}</strong> -->
         </router-link>
       </div>
     </div>
@@ -27,6 +29,9 @@
 import KursDataService from '@/services/KursDataService';
 
 import PopupAddExcercise from '@/components/PopupAddExcercise.vue';
+
+// import { saveAs } from 'file-saver';
+
 
 export default {
   name: 'CourseViewStud',
@@ -67,6 +72,28 @@ export default {
 
     addAufgabe(){
         this.submittedAdd = false;
+    },
+
+    printAufgaben(){
+      // console.log(JSON.stringify(this.aufgaben[1].aufgabe,null,4));
+      // console.log(this.aufgaben[0].aufgaben.name);
+      let buff = this.aufgaben[1].aufgabe;
+      const blob = new Blob([buff]); // JavaScript Blob
+
+      var reader = new FileReader();
+        reader.readAsText(blob);
+        reader.onloadend = function(){
+
+    
+            console.log("Ausgabe "+reader.result);
+         
+        };
+
+      // var file = new File([buff], "task.zip", {type: "bin", lastModified: Date.now()});
+      // console.log("Test: "+ file.text());
+      // console.log("Test: "+ file);
+      // console.log("Test: "+ file.name);
+      // saveAs(file, file.name);
     }
   },
   mounted() {

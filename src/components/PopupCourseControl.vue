@@ -153,8 +153,5 @@ export default {
   margin-right: 20px;
 }
 
-.pop-up{
-  margin-left: 40px;
-}
 
 </style>

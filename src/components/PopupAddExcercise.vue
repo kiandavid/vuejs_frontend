@@ -13,8 +13,8 @@
     </div>
     <div class="form-group">
       <label for="aufgabe">Aufgabendatei:</label><br>
-      <input type="text" class="form-control" id="aufgabe" v-model="aufgabe.aufgabe"
-        name="aufgabe" />
+      <input type="file" class="form-control" id="aufgabe" name="aufgabe" @change="handleFileUpload( $event )"/>
+        
     </div>
 
     <button @click="saveAufgabe()" class="btn">Aufgabe speichern</button>
@@ -35,7 +35,7 @@ export default {
         id: null,
         bezeichnung: "",
         punkte_max: null,
-        aufgabe: this.$parent.file,
+        aufgabe: "",
         kursId: this.$parent.kurs.id
       }
     }
@@ -48,10 +48,13 @@ export default {
       this.flushAufgabe();
     },
 
+    handleFileUpload( event ){
+				this.aufgabe.aufgabe = event.target.files[0];
+		},
+
     // Speichert die Aufgabe im ausgewählten Kurs
     saveAufgabe() {
-      if (this.aufgabe.bezeichnung != "" && this.aufgabe.punkte_max != null) {
-        // && this.aufgabe.aufgabe != ""
+      if (this.aufgabe.bezeichnung != "" && this.aufgabe.punkte_max != null  && this.aufgabe.aufgabe != "") {
         var data = {
           bezeichnung: this.aufgabe.bezeichnung,
           punkte_max: this.aufgabe.punkte_max,

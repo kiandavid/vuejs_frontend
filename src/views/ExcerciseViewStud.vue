@@ -91,6 +91,7 @@ export default {
         this.userRole = this.user.realm_access.roles[0];
       },
 
+      // setzt die Datei 
       handleFileUpload( event ){
 				this.file = event.target.files[0];
 			},
