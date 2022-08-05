@@ -9,7 +9,7 @@ class DozentDataService {
     create(data) {
         return http.post("/dozenten", data);
     }
-    create(data) {
+    addKurs(id, data) {
         return http.post(`/dozenten/${id}`, data);
     }
     update(id, data) {

@@ -35,7 +35,7 @@ export default {
         id: null,
         bezeichnung: "",
         punkte_max: null,
-        aufgabe: "",
+        aufgabe: this.$parent.file,
         kursId: this.$parent.kurs.id
       }
     }

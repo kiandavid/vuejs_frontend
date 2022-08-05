@@ -9,7 +9,7 @@ class KursDataService {
     create(data) {
         return http.post("/kurse", data);
     }
-    create(data) {
+    addStudent(id, data) {
         return http.post(`/kurse/${id}`, data);
     }
     update(id, data) {
