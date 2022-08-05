@@ -9,6 +9,9 @@ class KursDataService {
     create(data) {
         return http.post("/kurse", data);
     }
+    create(data) {
+        return http.post(`/kurse/${id}`, data);
+    }
     update(id, data) {
         return http.put(`/kurse/${id}`, data);
     }
