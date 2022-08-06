@@ -37,7 +37,6 @@
 
 <script>
 
-import * as main from '../main.js'
 
 import PopupUserControl from './PopupUserControl.vue';
 
@@ -80,11 +79,8 @@ export default {
         .catch(e => {
           console.log(e);
         });
-    },
-
-    switchUserRole(){
-      main.switchUserRole();		
     }
+
 	},
   mounted() {
     // this.getStudenten();

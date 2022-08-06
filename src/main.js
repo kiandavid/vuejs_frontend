@@ -16,9 +16,7 @@ function instantiateVueApp() {
 
 // Gibt den Access Token als JSON zurück
 export function getUserToken() {
-    // console.log("tokenParsed: " + JSON.stringify(keycloak.tokenParsed, null, 4));
-    let token = keycloak.tokenParsed;
-    return token;
+    return keycloak.tokenParsed;
 }
 
 export function switchUserRole() {
