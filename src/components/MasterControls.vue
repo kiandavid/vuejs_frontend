@@ -61,6 +61,7 @@ export default {
       this.submittedAdd = false;
     },
     
+    // lädt alle Dozenten aus der Datenbank
 		getDozenten(){
       this.dozenten = DozentDataService.getAll()
         .then(response => {
@@ -71,6 +72,7 @@ export default {
         });
     },
 
+    // lädt alle Studenten aus der Datenbank
     getStudenten(){
       this.studenten = StudentDataService.getAll()
         .then(response => {
