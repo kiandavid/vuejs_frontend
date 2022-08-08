@@ -42,13 +42,6 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  /* text-align: center; */
-  color: black;
-}
 
 .first-feedback {
   border-style: solid;
@@ -71,11 +64,4 @@ export default {
   width: 40%;
 }
 
-.isMaster {
-  font: blue;
-  font-weight: bold;
-  background-color: white;
-  margin-right: auto;
-  padding: 0 10px;
-}
 </style>

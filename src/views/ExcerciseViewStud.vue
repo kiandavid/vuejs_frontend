@@ -62,7 +62,6 @@
 <script>
 
 import { saveAs } from 'file-saver';
-// FileSaver saveAs(Blob/File/Url, optional DOMString filename, optional Object { autoBom })
 
 export default {
   name: 'ExcerciseViewStud',
@@ -80,7 +79,9 @@ export default {
       ],
       user: null,
       userRole: "",
-      file: ""
+      file: "",
+      submissionXML: "",
+      aufgabe: ""
     }
   },
   methods: {
@@ -104,19 +105,18 @@ export default {
         var zip = new JSZip();
 
         // Submission.xml muss hier hinzugefügt werden
-        zip.file(this.file.name, this.file);
+        zip.file("submission.xml", this.submissionXML);
 
-        // Generate a directorys within the Zip file structure
+        // Generate directorys within the Zip file structure
         var task = zip.folder("task");
         var submission = zip.folder("submission");
 
-        
 
         // task.zip muss hier eingebaut werden
-        task.file(this.file.name, this.file, {base64: true});
+        task.file("task.zip", this.file, {base64: true});
 
         // submission.sql muss hier eingebaut werden
-        submission.file(this.file.name, this.file, {base64: true});
+        submission.file("submission.sql", this.file, {base64: true});
 
         // Generate the zip file asynchronously
         zip.generateAsync({type:"blob"})

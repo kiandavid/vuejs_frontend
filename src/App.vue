@@ -23,8 +23,8 @@
         <div class="navItem" v-if="$route.name == 'courseStud' && userRole=='Dozent'">
           <router-link to="/auswertung">Kursauswertung</router-link>
         </div>
-        <div class="navItem" v-if="$route.name == 'excerciseStud'">
-          <router-link to="/course/1">Kurs</router-link>
+        <div class="navItem">
+          <router-link to="/excercise/1">Aufgabe</router-link>
         </div>
       </div>
       <div class="content">

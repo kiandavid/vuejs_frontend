@@ -54,7 +54,6 @@ import MasterControls from "@/components/MasterControls.vue";
 // Services
 import KursDataService from "../services/KursDataService";
 
-// import GraderService from "@/services/GraderService";
 
 export default {
     name: "HomeView",

@@ -12,12 +12,19 @@
         <button v-on:click="submitFile()">Submit</button>
       </div>
     </div>
+    <FeedbackDetails></FeedbackDetails>
   </div>
 </template>
 
 <script>
+// import GraderService from '@/services/GraderService';
+import FeedbackDetails from '@/components/FeedbackDetails.vue';
+
 export default {
     name: "FeedbackView",
+    components: {
+      FeedbackDetails
+    },
     data() {
       return {
         // XML-Datei
@@ -59,11 +66,10 @@ export default {
          
         };
         
-        // ["test-response"] 
 
      
 
-        // GraderService.create(formData)
+        // GraderService.submit(this.file)
 				// .then(response => {
         //   console.log(response.data);
         // })
