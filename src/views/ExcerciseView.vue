@@ -52,7 +52,7 @@
       <br><br>
     </div>
     <br><br>
-    <router-link class="routerlink" :to="{ name: 'courseStud', params:{ id: id}}">Zurück zum {{bezeichnung}}</router-link>
+    <router-link class="routerlink" :to="{ name: 'course', params:{ id: id}}">Zurück zum {{bezeichnung}}</router-link>
 
   </div>
 </template>
@@ -64,7 +64,7 @@
 import { saveAs } from 'file-saver';
 
 export default {
-  name: 'ExcerciseViewStud',
+  name: 'ExcerciseView',
   props: [
     'id',
     'bezeichnung'

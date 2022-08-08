@@ -12,7 +12,7 @@
       </div>
 
       <div class="excercises-container" v-for="aufgabe in aufgaben" :key="aufgabe.id">
-        <router-link class="listItem" :to="{ name: 'excerciseStud', params:{ id: id, bezeichnung: kurs.bezeichnung}}">       
+        <router-link class="listItem" :to="{ name: 'excercise', params:{ id: id, bezeichnung: kurs.bezeichnung}}">       
           <strong >{{aufgabe.bezeichnung}}</strong>
           <!-- <strong >{{aufgabe.aufgabe.name}}</strong> -->
         </router-link>
@@ -34,7 +34,7 @@ import PopupAddExcercise from '@/components/PopupAddExcercise.vue';
 
 
 export default {
-  name: 'CourseViewStud',
+  name: 'CourseView',
   props: ['id'],
   components: {
     PopupAddExcercise
