@@ -23,7 +23,7 @@
       <div v-if="userRole!='Master'">
         <div class="courses-container"  v-for="kurs in kurse" :key="kurs.id">
           <div>
-              <router-link class="listItem" :to="{ name: 'courseStud', params:{ id: kurs.id}}">
+            <router-link class="listItem" :to="{ name: 'KursSeite', params:{ id: kurs.id}}">
               <strong >{{kurs.bezeichnung}}</strong>
             </router-link>
           </div>
@@ -56,7 +56,7 @@ import KursDataService from "../services/KursDataService";
 
 
 export default {
-    name: "HomeView",
+    name: "StartSeite",
     components: {
     PopupCourseControl,
     MasterControls

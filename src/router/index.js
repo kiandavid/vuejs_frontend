@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import CourseView from '../views/CourseView.vue'
-import ExcerciseView from '../views/ExcerciseView.vue'
+import StartSeite from '../views/StartSeite.vue'
+import KursSeite from '../views/KursSeite.vue'
+import AufgabenSeite from '../views/AufgabenSeite.vue'
 import PunkteUebersicht from '../views/Student/PunkteUebersicht.vue'
 import FeedbackView from '../views/Student/FeedbackView.vue'
 import KursAuswertung from '../views/Dozent/KursAuswertung.vue'
 import KursTeilnehmer from '../views/Dozent/KursTeilnehmer.vue'
-import ProfileView from '../views/ProfileView.vue'
+import ProfilSeite from '../views/ProfilSeite.vue'
 // import TutorialsList from '../components/TutorialsList.vue'
 // import Tutorial from '../components/Tutorials.vue'
 // import AddTutorial from '../components/AddTutorial.vue'
@@ -15,18 +15,18 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: StartSeite
   },
   {
-    path: '/course/:id',
-    name: 'course',
-    component: CourseView,
+    path: '/kurs/:id',
+    name: 'kurs',
+    component: KursSeite,
     props: true
   },
   {
-    path: '/excercise/:id',
-    name: 'excercise',
-    component: ExcerciseView,
+    path: '/aufgabe/:id',
+    name: 'aufgabe',
+    component: AufgabenSeite,
     props: true
   },
   {
@@ -55,8 +55,8 @@ const routes = [
   },
   {
     path: '/profil',
-    name: 'ProfilView',
-    component: ProfileView,
+    name: 'ProfilSeite',
+    component: ProfilSeite,
     // props: true
   }
   // , {

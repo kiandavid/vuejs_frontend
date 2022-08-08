@@ -52,7 +52,7 @@
       <br><br>
     </div>
     <br><br>
-    <router-link class="routerlink" :to="{ name: 'course', params:{ id: id}}">Zurück zum {{bezeichnung}}</router-link>
+    <router-link class="routerlink" :to="{ name: 'kursSeite', params:{ id: id}}">Zurück zum {{bezeichnung}}</router-link>
 
   </div>
 </template>
