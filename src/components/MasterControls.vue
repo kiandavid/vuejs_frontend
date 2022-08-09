@@ -2,6 +2,7 @@
   <!-- Master: Benutzerverwaltung -->
     <div class="master" v-if="submittedStud && submittedDoz && submittedDelete">
       <h3 id="master_h3">Übersicht der Benutzer</h3>
+      <button @click="getUsers()">Refresh</button><br><br>
       <table>
         <tr>
           <th>Vorname</th>
@@ -108,11 +109,16 @@ export default {
         this.currentDozent = data;
       }
       this.submittedDelete = false;
+    },
+
+    // holt alle Benutzer aus der Datenbank
+    getUsers(){
+      this.getStudenten();
+      this.getDozenten();
     }
 	},
   mounted() {
-    this.getStudenten();
-    this.getDozenten();
+    this.getUsers();
   }
 }
 </script>

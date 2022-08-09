@@ -1,8 +1,9 @@
 <template>
   <div>
+		<h2>Bitte bestätigen Sie den Vorgang</h2>
 		<span v-if="isStudent">Möchten den Studenten {{nachname}} wirklich löschen?</span>
-		<span v-if="!isStudent">Möchten den Dozenten {{nachname}} wirklich löschen?</span>
-		<button @click="deleteUser()">Ja</button>
+		<span v-if="!isStudent">Möchten den Dozenten {{nachname}} wirklich löschen?</span><br><br>
+		<button id="ja" @click="deleteUser()">Ja</button>
 		<button @click="cancel()">Nein</button>
 	</div>
 </template>
@@ -24,12 +25,12 @@ export default {
 		deleteUser(){
 			if(this.isStudent) {
 				StudentDataService.delete(this.student.id);
-				this.$parent.getStudenten();
 				alert("Der Student " + this.student.nachname + " wurde gelöscht!");
+				this.$parent.getStudenten();
 			} else {
 				DozentDataService.delete(this.dozent.id);
-				this.$parent.getDozenten();
 				alert("Der Dozent " + this.dozent.nachname + " wurde gelöscht!");
+				this.$parent.getDozenten();
 			}
 			this.$parent.submittedDelete = true;
 		},
@@ -45,12 +46,16 @@ export default {
 			this.nachname = this.student.nachname;
 		} else {
 			this.dozent = this.$parent.currentDozent;
-			this.nachname = this.student.nachname;
+			this.nachname = this.dozent.nachname;
 		}
 	}
 }
 </script>
 
 <style>
+
+#ja{
+	margin-right: 20px;
+}
 
 </style>

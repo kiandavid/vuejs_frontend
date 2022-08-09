@@ -50,6 +50,7 @@
       <div class="form-group">
         <label for="studiengang">Studiengang:</label><br>
         <select name="studiengang" id="studiengang">
+          <option value="">Bitte auswählen</option>
           <option value="BIN">BIN</option>
           <option value="MDI">MDI</option>
         </select>
@@ -78,10 +79,9 @@ export default {
       }
     }, 
     methods: {
-
       // Updated den Studenten in der Datenbank
       saveStudent(){
-        if(this.student.vorname && this.student.nachname && this.student.email && this.student.matrikelnummer && this.student.studiengang) {
+        if(this.student.vorname && this.student.nachname && this.student.email && this.student.matrikelnummer) {
           StudentDataService.update(this.$parent.currentStudent.id, this.student)
             .then(response => {
               console.log(response.message);
