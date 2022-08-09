@@ -1,6 +1,6 @@
 <template>
   <!-- Master: Benutzerverwaltung -->
-    <div class="master" v-if="submittedStud && submittedDoz">
+    <div class="master" v-if="submittedStud && submittedDoz && submittedDelete">
       <h3 id="master_h3">Übersicht der Benutzer</h3>
       <table>
         <tr>
@@ -17,7 +17,7 @@
           <td>Student</td>
           <td>   
             <img src="../assets/pen.png" alt="Edit" width="20" @click="updateStud(pers)" >&nbsp;
-            <img src="../assets/trash.png" alt="Delete" width="20" @click="deleteStudById(pers)"></td>
+            <img src="../assets/trash.png" alt="Delete" width="20" @click="deleteById(pers, true)"></td>
         </tr>
         <tr class="benutzer-container" v-for="pers in dozenten" :key="pers.id">
           <td>{{pers.vorname}}</td>
@@ -26,13 +26,14 @@
           <td>Dozent</td>
           <td>
             <img src="../assets/pen.png" alt="Edit" width="20" @click="updateDoz(pers)" >&nbsp;
-            <img src="../assets/trash.png" alt="Delete" width="20" @click="deleteDozById(pers)">
+            <img src="../assets/trash.png" alt="Delete" width="20" @click="deleteById(pers, false)">
           </td>
         </tr>
       </table>
     </div>
     <PopupStudentModi v-if="!submittedStud"></PopupStudentModi>
     <PopupDozentModi v-if="!submittedDoz"></PopupDozentModi>
+    <PopupDeleteUser v-if="!submittedDelete"></PopupDeleteUser>
 </template>
 
 <script>
@@ -40,6 +41,7 @@
 
 import PopupStudentModi from './PopupStudentModi.vue';
 import PopupDozentModi from './PopupDozentModi.vue';
+import PopupDeleteUser from './PopupDeleteUser.vue';
 
 import StudentDataService from '@/services/StudentDataService';
 import DozentDataService from "../services/DozentDataService";
@@ -47,7 +49,8 @@ import DozentDataService from "../services/DozentDataService";
 export default {
   components: {
     PopupStudentModi,
-    PopupDozentModi
+    PopupDozentModi,
+    PopupDeleteUser
   },
   data(){
     return {
@@ -55,8 +58,10 @@ export default {
       dozenten: [],
       submittedStud: true,
       submittedDoz: true,
+      submittedDelete: true,
       currentStudent: null,
       currentDozent: null,
+      isStudent: null
     }
   },
 	methods: {
@@ -88,18 +93,21 @@ export default {
       this.submittedStud = false;
     },
 
-    deleteStudById(){
-      // Bestätigungsfenster öffnen
-    },
-
     // Speichert die des Studenten und öffnet das Popup 
     updateDoz(dozent){
       this.currentDozent = dozent;
       this.submittedDoz = false;
     },
 
-    deleteDozById(){
-      // Bestätigungsfenster öffnen
+    // Öffnet das Bestätigungsfenster fürs Löschen
+    deleteById(data, bool){
+      this.isStudent = bool;
+      if(bool) {
+        this.currentStudent = data;
+      } else {
+        this.currentDozent = data;
+      }
+      this.submittedDelete = false;
     }
 	},
   mounted() {
