@@ -23,9 +23,9 @@
         <div class="navItem" v-if="$route.name == 'kurs' && userRole=='Dozent'">
           <router-link to="/auswertung">Kursauswertung</router-link>
         </div>
-        <div class="navItem">
+        <!-- <div class="navItem">
           <router-link to="/aufgabe/1">Aufgabe</router-link>
-        </div>
+        </div> -->
       </div>
       <div class="content">
           <router-view />
