@@ -12,7 +12,7 @@
       </div>
 
       <div class="excercises-container" v-for="aufgabe in aufgaben" :key="aufgabe.id">
-        <router-link class="listItem" :to="{ name: 'AufgabenSeite', params:{ id: id, bezeichnung: kurs.bezeichnung}}">       
+        <router-link class="listItem" :to="{ name: 'aufgabe', params:{ id: id, bezeichnung: kurs.bezeichnung}}">       
           <strong >{{aufgabe.bezeichnung}}</strong>
         </router-link>
       </div>

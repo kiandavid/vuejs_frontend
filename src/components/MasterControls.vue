@@ -62,7 +62,8 @@ export default {
       submittedDelete: true,
       currentStudent: null,
       currentDozent: null,
-      isStudent: null
+      isStudent: null,
+      profil: false
     }
   },
 	methods: {

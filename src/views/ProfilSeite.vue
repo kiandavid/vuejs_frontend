@@ -1,12 +1,94 @@
 <template>
     <div class="profile-container">
         <h2>Profil vervollständigen</h2>
+
+				<PopupDozentModi v-if="userRole=='Dozent'"></PopupDozentModi>
+				<PopupStudentModi v-if="userRole=='Student'"></PopupStudentModi>
     </div>
 </template>
 
 <script>
+import PopupDozentModi from '@/components/PopupDozentModi.vue'
+import PopupStudentModi from '@/components/PopupStudentModi.vue'
+
+import StudentDataService from '@/services/StudentDataService';
+
+
 export default {
-    name: "ProfilSeite"
+  name: "ProfilSeite",
+	components: {
+		PopupDozentModi,
+		PopupStudentModi
+	},
+	data(){
+		return{
+			userRole: null,
+			currentStudent: {
+				id: null,
+				vorname: "",
+				nachname: "",
+				email: "",
+				matrikelnummer: null,
+				studiengang: ""
+			},
+			currentDozent: {
+				id: null,
+				vorname: "",
+				nachname: "",
+				email: "",
+				titel: ""
+			},
+			submittedDoz: true,
+			submittedStud: true,
+			profil: true
+		}
+	},
+	methods: {
+    // Funktion um das User-Objekt aus dem State zu setzen
+    setUserRoleAndMail() {
+      let userTemp = this.$store.state.user;
+      this.userRole = userTemp.realm_access.roles[0];
+			this.currentStudent.email = userTemp.email;
+    },
+
+		setCurrentUser(){
+      let userTemp = this.$store.state.user;
+			if(this.userRole=="Student") {
+				this.currentStudent.vorname = userTemp.given_name;
+				this.currentStudent.nachname = userTemp.family_name;
+				this.currentStudent.email = userTemp.email;
+			} else {
+				this.currentDozent.vorname = userTemp.given_name;
+				this.currentDozent.nachname = userTemp.family_name;
+				this.currentDozent.email = userTemp.email;
+			}
+		},
+
+		// dummy Methoden
+		getStudenten(){
+			this.submittedStud = false;
+		},
+		getDozenten(){
+			this.submittedStud = false;
+		},
+
+		// Es wird überprüft 
+		findByMail(){
+			StudentDataService.findByEmail(this.currentStudent.email)
+				.then(response => {
+				
+					this.currentStudent = response.data[0];
+					console.log(JSON.stringify(this.currentStudent,null,2));
+			})
+			.catch(e => {
+			console.log(e);
+			})
+    	}
+	},
+	mounted(){
+		this.setUserRoleAndMail();
+		this.findByMail();
+	}
 }
 </script>
 

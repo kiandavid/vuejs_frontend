@@ -36,7 +36,7 @@
           name="nachname"
         />
       </div>
-      <div class="form-group">
+      <div class="form-group" v-if="!profil">
         <label for="email">Email:</label><br>
         <input
           type="text"
@@ -48,7 +48,7 @@
         />
       </div>
       <button @click="saveDozent()" class="btn">Änderungen Speichern</button>
-      <button @click="cancel()" class="btn">Abbrechen</button>
+      <button v-if="!profil" @click="cancel()" class="btn">Abbrechen</button>
     </div>
   </div>
 </template>
@@ -67,6 +67,7 @@ export default {
           nachname: "",
           email: ""
         },
+        profil: null
       }
     }, 
     methods: {
@@ -104,6 +105,8 @@ export default {
     },
     mounted(){
       this.setDozent(this.$parent.currentDozent);
+      this.profil = this.$parent.profil;
+      console.log(this.profil);
     }
 }
 </script>

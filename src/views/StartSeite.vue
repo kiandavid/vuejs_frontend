@@ -8,7 +8,7 @@
 
     <!-- Student: Suchfeld der Kurse -->
     <div id="kurssuche" v-if="userRole=='Student'">
-      <input type="search" id="query" placeholder="Kurs suchen...">
+      <input type="search" v-model="suchEingabe" id="query" placeholder="Kurs suchen...">
       <button @click="getCoursebyName()">Suchen</button>
     </div>
 
@@ -21,21 +21,19 @@
 
       <!-- Dozent & Student: Kursliste -->
       <div v-if="userRole!='Master'">
-        <div class="courses-container"  v-for="kurs in kurse" :key="kurs.id">
+        <div class="courses-container"  v-for="k in kurse" :key="k.id">
           <div>
-            <router-link class="listItem" :to="{ name: 'KursSeite', params:{ id: kurs.id}}">
-              <strong >{{kurs.bezeichnung}}</strong>
+            <router-link class="listItem" :to="{ name: 'kurs', params:{ id: k.id}}">
+              <strong >{{k.bezeichnung}}</strong>
             </router-link>
           </div>
           <div id="controls" v-if="userRole=='Dozent'">
-            <img src="../assets/pen.png" alt="Edit" width="20" @click="update(kurs)" >&nbsp;
-            <img src="../assets/trash.png" alt="Delete" width="20" @click="deleteById(kurs.id, kurs.bezeichnung)">
+            <img src="../assets/pen.png" alt="Edit" width="20" @click="update(k)" >&nbsp;
+            <img src="../assets/trash.png" alt="Delete" width="20" @click="deleteById(k.id, k.bezeichnung)">
           </div> 
         </div>
       </div>
     </div>
-
-
     <!-- Dozent: Popup für die Kurs Kontrolle -->
     <PopupCourseControl/>
 
@@ -63,14 +61,8 @@ export default {
 },
     data() {
       return {
-        studenten: [],
-        dozenten: [],
         kurse: [],
-        kurs: {
-          id: null,
-          bezeichnung: "",
-          semester: ""
-        },
+        meineKurse: [],
         currentKurs: {
           id: null,
           bezeichnung: "",
@@ -80,13 +72,23 @@ export default {
         submittedUpdate: true,
         user: null,
         userRole: null,
+        suchEingabe: ""
       }
     },
 
     methods: {
       // Sucht Kurse nach Namen, Funktion der Studentensicht
       getCoursebyName(){
-        console.log("Suche nach Kurs");
+        console.log(this.suchEingabe);
+        KursDataService.findByBezeichnung(this.suchEingabe)
+          .then(response => {
+            this.kurse = response.data;
+            console.log(response.data);
+          })
+          .catch(e => {
+            console.log(e);
+          });        
+        // this.suchEingabe = "";
       },
 
       // Öffnet das Add-Pop-up Fenster 
@@ -94,7 +96,7 @@ export default {
         console.log("Dozent: "+ JSON.stringify(this.dozenten, null, 4));
       },
 
-
+     
       // Öffnet das Add-Pop-up Fenster 
       addKurs(){
         this.submittedAdd = false;
@@ -118,7 +120,6 @@ export default {
       KursDataService.getAll()
         .then(response => {
           this.kurse = response.data;
-          // console.log(response.data);
         })
         .catch(e => {
           console.log(e);

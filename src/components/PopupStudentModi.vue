@@ -25,7 +25,7 @@
           name="nachname"
         />
       </div>
-      <div class="form-group">
+      <div class="form-group" v-if="!profil">
         <label for="email">Email:</label><br>
         <input
           type="text"
@@ -56,7 +56,7 @@
         </select>
       </div>
       <button @click="saveStudent()" class="btn">Änderungen Speichern</button>
-      <button @click="cancel()" class="btn">Abbrechen</button>
+      <button v-if="!profil" @click="cancel()" class="btn">Abbrechen</button>
     </div>
   </div>
 </template>
@@ -70,31 +70,54 @@ export default {
     data() {
       return {
         student: {
+          id: null,
           vorname: "",
           nachname: "",
           email: "",
           matrikelnummer: null,
           studiengang: ""
         },
+        profil: null
       }
     }, 
     methods: {
-      // Updated den Studenten in der Datenbank
+      // Speichert Student in der Datenbank
       saveStudent(){
-        if(this.student.vorname && this.student.nachname && this.student.email && this.student.matrikelnummer) {
-          StudentDataService.update(this.$parent.currentStudent.id, this.student)
-            .then(response => {
-              console.log(response.message);
-              this.$parent.getStudenten();
-              this.$parent.submittedStud = true;
-              alert("Student "+ this.student.nachname +" wurde erfolgreich geändert!");
-            })
-            .catch(e => {
-              console.log(e);
-            });
+        if(!this.$parent.currentStudent.id){
+          this.createStudent();
         } else {
-            alert("Bitte füllen Sie das Formular vollständig aus!");
+          if(this.student.vorname && this.student.nachname && this.student.matrikelnummer) {
+            this.updateStudent();        
+          } else {
+              alert("Bitte füllen Sie das Formular vollständig aus!");
+          }
         }
+      },
+
+      // Legt ein neues Studentenobjekt in der Datenbank an
+      createStudent(){
+        StudentDataService.create(this.student)
+          .then(response => {
+            this.student = response.data;
+            alert("Student "+ this.student.nachname +" wurde erfolgreich geändert!");
+          })
+          .catch(e => {
+            console.log(e);
+          });        
+      },
+
+      // Updated ein Studentenobjekt in der Datenbank
+      updateStudent(){
+        StudentDataService.update(this.$parent.currentStudent.id, this.student)
+          .then(response => {
+            console.log(response.message);
+            this.$parent.getStudenten();
+            this.$parent.submittedStud = true;
+            alert("Student "+ this.student.nachname +" wurde erfolgreich geändert!");
+          })
+          .catch(e => {
+            console.log(e);
+          });        
       },
 
       // Schließt das Pop-up-Fenster
@@ -104,15 +127,17 @@ export default {
 
       // setter für das lokale Studenten-Objekt
       setStudent(data){
+        this.student.id = data.id;
         this.student.vorname = data.vorname;
         this.student.nachname = data.nachname;
         this.student.email = data.email;
         this.student.matrikelnummer = data.matrikelnummer;
         this.student.studiengang = data.studiengang;
-      }
+      },
     },
     mounted(){
-      this.setStudent(this.$parent.currentStudent);
+      setTimeout(() => this.setStudent(this.$parent.currentStudent), 200);
+      this.profil = this.$parent.profil;
     }
 }
 </script>
