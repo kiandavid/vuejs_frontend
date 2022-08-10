@@ -1,9 +1,8 @@
 <template>
     <div class="profile-container">
         <h2>Profil vervollständigen</h2>
-
-				<PopupDozentModi ref="dozent" v-if="userRole=='Dozent'"></PopupDozentModi>
-				<PopupStudentModi ref="student" v-if="userRole=='Student'"></PopupStudentModi>
+		<PopupDozentModi ref="dozent" v-if="userRole=='Dozent'"></PopupDozentModi>
+		<PopupStudentModi ref="student" v-if="userRole=='Student'"></PopupStudentModi>
     </div>
 </template>
 

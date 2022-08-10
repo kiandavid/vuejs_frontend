@@ -2,7 +2,7 @@
   <div class="container"> 
     <h2 v-if="userRole!='Master'">Meine Kurse</h2>
     
-    <h4 id="warning" v-if="!profilDone" >Bitte vervollständigen Sie ihr Benutzerprofil!</h4>
+    <h4 id="warning" v-if="!profilDone && userRole!='Master'">Bitte vervollständigen Sie ihr Benutzerprofil!</h4>
 
     <!-- Master: Benutzerverwaltung -->
     <MasterControls v-if="userRole=='Master'"></MasterControls>
@@ -139,6 +139,9 @@ export default {
         console.log("User set");
         this.user = this.$store.state.user;
         this.userRole = this.user.realm_access.roles[0];
+        console.log("Alle Rollen: " + this.user.realm_access.roles);
+        console.log("Rolle: " + this.user.realm_access.roles[0]);
+
         this.checkProfil();
       },
 

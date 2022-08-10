@@ -25,7 +25,7 @@
           name="nachname"
         />
       </div>
-      <div class="form-group" v-if="!profil">
+      <!-- <div class="form-group" v-if="!profil">
         <label for="email">Email:</label><br>
         <input
           type="text"
@@ -35,7 +35,7 @@
           v-model="student.email"
           name="email"
         />
-      </div>
+      </div> -->
       <div class="form-group">
         <label for="matrikelnummer">Matrikelnummer:</label><br>
         <input
@@ -144,7 +144,7 @@ export default {
       isSetup() {
         console.log('User in Popup set!');
         this.setStudent(this.$parent.currentStudent);
-      } 
+      }
     }
 }
 </script>

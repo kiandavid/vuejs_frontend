@@ -36,7 +36,7 @@
           name="nachname"
         />
       </div>
-      <div class="form-group" v-if="!profil">
+      <!-- <div class="form-group" v-if="!profil">
         <label for="email">Email:</label><br>
         <input
           type="text"
@@ -46,7 +46,7 @@
           v-model="dozent.email"
           name="email"
         />
-      </div>
+      </div> -->
       <button @click="saveDozent()" class="btn">Änderungen Speichern</button>
       <button v-if="!profil" @click="cancel()" class="btn">Abbrechen</button>
     </div>

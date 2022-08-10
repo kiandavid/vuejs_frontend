@@ -54,7 +54,7 @@ export default {
 
     // Speichert die Aufgabe im ausgewählten Kurs
     saveAufgabe() {
-      if (this.aufgabe.bezeichnung != "" && this.aufgabe.punkte_max != null  && this.aufgabe.aufgabe != "") {
+      if (this.aufgabe.bezeichnung && this.aufgabe.punkte_max && this.aufgabe.aufgabe) {
         var data = {
           bezeichnung: this.aufgabe.bezeichnung,
           punkte_max: this.aufgabe.punkte_max,
