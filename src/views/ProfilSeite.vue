@@ -2,8 +2,8 @@
     <div class="profile-container">
         <h2>Profil vervollständigen</h2>
 
-				<PopupDozentModi v-if="userRole=='Dozent'"></PopupDozentModi>
-				<PopupStudentModi v-if="userRole=='Student'"></PopupStudentModi>
+				<PopupDozentModi ref="dozent" v-if="userRole=='Dozent'"></PopupDozentModi>
+				<PopupStudentModi ref="student" v-if="userRole=='Student'"></PopupStudentModi>
     </div>
 </template>
 
@@ -61,11 +61,13 @@ export default {
 				this.currentStudent.vorname = userTemp.given_name;
 				this.currentStudent.nachname = userTemp.family_name;
 				this.currentStudent.email = userTemp.email;
+				this.$refs.student.isSetup = true;
 			} else {
 				this.currentDozent.vorname = userTemp.given_name;
 				this.currentDozent.nachname = userTemp.family_name;
 				this.currentDozent.email = userTemp.email;
-				console.log("testo_ " + JSON.stringify(this.currentDozent,null,2));
+				this.$refs.dozent.isSetup = true;
+				// console.log("Profil: " + JSON.stringify(this.currentDozent,null,2));
 			}
 		},
 
@@ -85,6 +87,7 @@ export default {
 					if(antwort){
 						this.currentStudent =  antwort;
 						// console.log("testo: " + JSON.stringify(this.currentStudent,null,2));
+						this.$refs.student.isSetup = true;
 					} else {
 						this.setCurrentUser();
 					}
@@ -101,6 +104,7 @@ export default {
 					if(antwort){
 						this.currentDozent =  antwort;
 						// console.log("testo: " + JSON.stringify(this.currentDozent,null,2));
+						this.$refs.dozent.isSetup = true;
 					} else {
 						this.setCurrentUser();
 					}

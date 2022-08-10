@@ -2,7 +2,7 @@
   <div>
     <!--Pop-up für die Änderung des Studenten -->
     <div class="pop-up">
-      <h3>Student ändern</h3>
+      <h3 v-if="!profil">Student ändern</h3>
       <div class="form-group">
         <label for="vorname">Vorname:</label><br>
         <input
@@ -77,7 +77,8 @@ export default {
           matrikelnummer: null,
           studiengang: ""
         },
-        profil: null
+        profil: null,
+        isSetup: false
       }
     }, 
     methods: {
@@ -133,12 +134,17 @@ export default {
         this.student.email = data.email;
         this.student.matrikelnummer = data.matrikelnummer;
         this.student.studiengang = data.studiengang;
-        console.log("pop"+JSON.stringify(this.student,null,2));
+        // console.log("Popup: "+JSON.stringify(this.student,null,2));
       },
     },
     mounted(){
-      setTimeout(() => this.setStudent(this.$parent.currentStudent), 200);
       this.profil = this.$parent.profil;
+    },
+    watch: {   
+      isSetup() {
+        console.log('User in Popup set!');
+        this.setStudent(this.$parent.currentStudent);
+      } 
     }
 }
 </script>

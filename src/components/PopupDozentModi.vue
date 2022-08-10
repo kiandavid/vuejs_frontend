@@ -2,7 +2,7 @@
   <div>
     <!--Pop-up für die Änderung des Dozenten -->
     <div class="pop-up">
-      <h3>Dozent ändern</h3>
+      <h3 v-if="!profil">Dozent ändern</h3>
       <div class="form-group">
         <label for="titel">Titel:</label><br>
         <input
@@ -67,7 +67,8 @@ export default {
           nachname: "",
           email: ""
         },
-        profil: null
+        profil: null,
+        isSetup: false
       }
     }, 
     methods: {
@@ -125,8 +126,14 @@ export default {
       }
     },
     mounted(){
-      setTimeout(() => this.setDozent(this.$parent.currentDozent), 400);
+      // setTimeout(() => this.setDozent(this.$parent.currentDozent), 500);
       this.profil = this.$parent.profil;
+    },
+    watch: {   
+      isSetup() {
+        console.log('User in Popup set!');
+        this.setDozent(this.$parent.currentDozent);
+      } 
     }
 }
 </script>

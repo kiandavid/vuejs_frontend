@@ -1,6 +1,8 @@
 <template>
   <div class="container"> 
     <h2 v-if="userRole!='Master'">Meine Kurse</h2>
+    
+    <h4 id="warning" v-if="!profilDone" >Bitte vervollständigen Sie ihr Benutzerprofil!</h4>
 
     <!-- Master: Benutzerverwaltung -->
     <MasterControls v-if="userRole=='Master'"></MasterControls>
@@ -51,7 +53,8 @@ import MasterControls from "@/components/MasterControls.vue";
 
 // Services
 import KursDataService from "../services/KursDataService";
-
+import StudentDataService from "@/services/StudentDataService";
+import DozentDataService from "@/services/DozentDataService";
 
 export default {
     name: "StartSeite",
@@ -72,7 +75,8 @@ export default {
         submittedUpdate: true,
         user: null,
         userRole: null,
-        suchEingabe: ""
+        suchEingabe: "",
+        profilDone: true
       }
     },
 
@@ -131,8 +135,48 @@ export default {
         console.log("User set");
         this.user = this.$store.state.user;
         this.userRole = this.user.realm_access.roles[0];
+        this.checkProfil();
       },
 
+      // Student wird nach seiner Mail gesucht
+      findStudByMail(){
+        StudentDataService.findByEmail(this.user.email)
+          .then(response => {
+            let antwort = response.data[0];
+            if(antwort){
+              // save in Store
+            } else {
+              this.profilDone = false;
+            }
+          })
+          .catch(e => {
+            console.log(e);
+          })
+      },
+      // Dozent wird nach seiner Mail gesucht 
+      findDozByMail(){
+        DozentDataService.findByEmail(this.user.email)
+          .then(response => {
+            let antwort = response.data[0];
+            if(antwort){
+              // save in Store
+            } else {
+              this.profilDone = false;
+            }
+          })
+          .catch(e => {
+            console.log(e);
+          })
+      },
+
+      // Es wird überprüft ob ein Benutzer sein Profil bereits vervollständigt hat
+      checkProfil(){
+        if (this.userRole=="Student"){
+          this.findStudByMail();
+        } else {
+          this.findDozByMail();
+        }
+      },
     },
     // Holt alle Kurse aus der Datenbank und setzt den User
     mounted() {
@@ -167,6 +211,9 @@ img{
   cursor: pointer;
 }
 
+#warning{
+  color: red;
+}
 
 .courses-container{
   margin-top: 40px;
