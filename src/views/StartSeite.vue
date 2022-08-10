@@ -9,13 +9,13 @@
 
 
     <!-- Student: Suchfeld der Kurse -->
-    <div id="kurssuche" v-if="userRole=='Student'">
+    <div id="kurssuche" v-if="profilDone && userRole=='Student'">
       <input type="search" v-model="suchEingabe" id="query" placeholder="Kurs suchen...">
       <button @click="getCoursebyName()">Suchen</button>
     </div>
 
     <!-- Dozent & Student: Kursansicht-->
-    <div v-if="submittedAdd && submittedUpdate">
+    <div v-if="profilDone && submittedAdd && submittedUpdate">
       <!-- Dozent: Add Button für Kurse -->
       <div v-if="userRole=='Dozent'">
         <button id="KursBtn" @click="addKurs()">Hinzufügen</button>
@@ -37,7 +37,7 @@
       </div>
     </div>
     <!-- Dozent: Popup für die Kurs Kontrolle -->
-    <PopupCourseControl/>
+    <PopupCourseControl v-if="userRole=='Dozent'"></PopupCourseControl>
 
   </div>
 </template>

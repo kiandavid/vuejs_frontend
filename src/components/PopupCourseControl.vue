@@ -108,7 +108,7 @@ export default {
 
       // Updatet den Kurs in der DB
       updateKurs(){
-        KursDataService.update(this.kurs.bezeichnung , this.$parent.currentKurs)
+        KursDataService.update(this.$parent.currentKurs.id , this.$parent.currentKurs)
           .then(response => {
             // console.log(response.data);
             this.message = 'The Course ' + response.data.bezeichnung  +' was updated successfully!';
@@ -116,7 +116,6 @@ export default {
           .catch(e => {
             console.log(e);
           });
-          // this.$parent.getAllCourses();
           alert(this.$parent.currentKurs.bezeichnung + " wurde geändert!");
           this.$parent.submittedUpdate = true;
       },

@@ -1,8 +1,8 @@
 <template>
   <div class="excercise-container">
-    <h2>Aufgabe {{id}}</h2>
+    <h2>{{aufgabe.bezeichnung}}</h2>
 
-    <strong id="aufgabe">Aufgabenstellung:</strong><br>
+    <strong id="aufgabe">Aufgabenstellung:</strong><br><br>
     <span>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</span><br><br>
 
 
