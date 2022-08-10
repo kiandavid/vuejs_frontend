@@ -12,9 +12,15 @@
       </div>
 
       <div class="excercises-container" v-for="aufgabe in aufgaben" :key="aufgabe.id">
-        <router-link class="listItem" :to="{ name: 'aufgabe', params:{ id: aufgabe.id, bezeichnung: kurs.bezeichnung, kursId: kurs.id}}">       
-          <strong >{{aufgabe.bezeichnung}}</strong>
-        </router-link>
+        <div>
+          <router-link class="listItem" :to="{ name: 'aufgabe', params:{ id: aufgabe.id, bezeichnung: kurs.bezeichnung, kursId: kurs.id}}">       
+            <strong >{{aufgabe.bezeichnung}}</strong>
+          </router-link>
+        </div>
+        <div id="controls" v-if="userRole=='Dozent'">
+          <img src="../assets/pen.png" alt="Edit" width="20" @click="update(aufgabe)" >&nbsp;
+          <img src="../assets/trash.png" alt="Delete" width="20" @click="deleteById(aufgabe.id, aufgabe.bezeichnung)">
+        </div> 
       </div>
     </div>
 
@@ -133,6 +139,17 @@ export default {
 .listItem{
   text-decoration: none;
   font-size: 24px;
+}
+
+#controls{
+  margin-right: 800px;
+}
+
+.excercises-container{
+  margin-top: 40px;
+  text-decoration: none;
+  display: flex;
+  justify-content: space-between;
 }
 
 

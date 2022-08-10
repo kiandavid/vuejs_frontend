@@ -35,7 +35,7 @@ export default {
         id: null,
         bezeichnung: "",
         punkte_max: null,
-        aufgabe: "",
+        aufgabe: {},
         kursId: this.$parent.kurs.id
       }
     }
@@ -49,8 +49,15 @@ export default {
     },
 
     handleFileUpload( event ){
-				this.aufgabe.aufgabe = event.target.files[0];
-		},
+        this.aufgabe.aufgabe = event.target.files[0];
+        // var reader = new FileReader();
+        // reader.readAsArrayBuffer(this.aufgabe.aufgabe);
+
+        // setTimeout(() => {
+        //   this.aufgabe.aufgabe = reader.result;
+        //   console.log(this.aufgabe.aufgabe);
+        // }, 200); 
+    },
 
     // Speichert die Aufgabe im ausgewählten Kurs
     saveAufgabe() {
@@ -64,12 +71,10 @@ export default {
         AufgabeDataService.create(data)
           .then(response => {
             this.aufgabe.id = response.data.id;
-            console.log(response.data);
           })
           .catch(e => {
             console.log("Error: " + e);
           });
-          this.$parent.getKursById(this.aufgabe.kursId);
           this.cancel();
       } else {
         alert("Bitte vervollständigen Sie das Formular!");
