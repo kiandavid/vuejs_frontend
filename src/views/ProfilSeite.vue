@@ -57,6 +57,7 @@ export default {
 				this.currentStudent.vorname = userTemp.given_name;
 				this.currentStudent.nachname = userTemp.family_name;
 				this.currentStudent.email = userTemp.email;
+				console.log("testo_ " + JSON.stringify(this.currentStudent,null,2));
 			} else {
 				this.currentDozent.vorname = userTemp.given_name;
 				this.currentDozent.nachname = userTemp.family_name;
@@ -76,16 +77,21 @@ export default {
 		findByMail(){
 			StudentDataService.findByEmail(this.currentStudent.email)
 				.then(response => {
-				
-					this.currentStudent = response.data[0];
-					console.log(JSON.stringify(this.currentStudent,null,2));
+					let antwort = response.data[0];
+					if(antwort){
+						this.currentStudent =  antwort;
+						console.log("testo_ " + JSON.stringify(this.currentStudent,null,2));
+					} else {
+						this.setCurrentUser();
+					}
+
 			})
 			.catch(e => {
 			console.log(e);
 			})
-    	}
+		}
 	},
-	mounted(){
+	beforeMount(){
 		this.setUserRoleAndMail();
 		this.findByMail();
 	}

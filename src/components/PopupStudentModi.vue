@@ -133,6 +133,7 @@ export default {
         this.student.email = data.email;
         this.student.matrikelnummer = data.matrikelnummer;
         this.student.studiengang = data.studiengang;
+        console.log("pop"+JSON.stringify(this.student,null,2));
       },
     },
     mounted(){
