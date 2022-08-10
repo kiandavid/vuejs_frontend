@@ -25,7 +25,7 @@
       <div v-if="userRole!='Master'">
         <div class="courses-container"  v-for="k in kurse" :key="k.id">
           <div>
-            <router-link class="listItem" :to="{ name: 'kurs', params:{ id: k.id}}">
+            <router-link class="listItem" :to="{ name: 'kurs', params:{ id: k.id }}">
               <strong >{{k.bezeichnung}}</strong>
             </router-link>
           </div>
@@ -84,15 +84,19 @@ export default {
       // Sucht Kurse nach Namen, Funktion der Studentensicht
       getCoursebyName(){
         console.log(this.suchEingabe);
-        KursDataService.findByBezeichnung(this.suchEingabe)
-          .then(response => {
-            this.kurse = response.data;
-            console.log(response.data);
-          })
-          .catch(e => {
-            console.log(e);
-          });        
-        // this.suchEingabe = "";
+        if(this.suchEingabe){
+          KursDataService.findByBezeichnung(this.suchEingabe)
+            .then(response => {
+              this.kurse = response.data;
+              console.log(response.data);
+            })
+            .catch(e => {
+              console.log(e);
+            });        
+          this.suchEingabe = "";
+        } else {
+          alert("Bitte Kurs eingeben!");
+        }
       },
 
       // Öffnet das Add-Pop-up Fenster 
@@ -182,6 +186,11 @@ export default {
     mounted() {
       this.getAllCourses();
       setTimeout(() => this.setUser(), 100);
+    },
+    watch: {
+      kurse(){
+        this.getAllCourses();
+      }
     }
 }
 </script> 

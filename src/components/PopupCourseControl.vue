@@ -92,12 +92,13 @@ export default {
           KursDataService.create(data)
             .then(response => {
               this.kurs.id = response.data.id;
-              console.log(response.data);
+              // console.log(response.data);
             })
             .catch(e => {
               console.log(e);
             });
-          this.$parent.getAllCourses();
+          // this.$parent.getAllCourses();
+          alert(this.kurs.bezeichnung  + " wurde erstellt!");
           this.flushKurs();
           this.$parent.submittedAdd = true;
         } else{
@@ -107,17 +108,17 @@ export default {
 
       // Updatet den Kurs in der DB
       updateKurs(){
-        KursDataService.update(this.$parent.currentKurs.id, this.$parent.currentKurs)
-        .then(response => {
-          console.log(response.data);
-          this.message = 'The Course was updated successfully!';
-        })
-        .catch(e => {
-          console.log(e);
-        });
-        this.$parent.getAllCourses();
-        alert("Kurs "+ this.$parent.currentKurs.bezeichnung + " wurde geändert!");
-        this.$parent.submittedUpdate = true;
+        KursDataService.update(this.kurs.bezeichnung , this.$parent.currentKurs)
+          .then(response => {
+            // console.log(response.data);
+            this.message = 'The Course ' + response.data.bezeichnung  +' was updated successfully!';
+          })
+          .catch(e => {
+            console.log(e);
+          });
+          // this.$parent.getAllCourses();
+          alert(this.$parent.currentKurs.bezeichnung + " wurde geändert!");
+          this.$parent.submittedUpdate = true;
       },
 
       // Setzt den Kursdaten der Erstellung im Formular zurück
@@ -137,7 +138,6 @@ export default {
       cancel(){
         this.$parent.submittedAdd = true;
         this.$parent.submittedUpdate = true;
-        this.$parent.getAllCourses();
       },
     }
 }

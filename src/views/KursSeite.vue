@@ -8,11 +8,11 @@
       </div>
       <div v-if="userRole=='Dozent'">
         <button @click="addAufgabe()">Aufgabe hinzufügen</button>
-        <button @click="printAufgaben()">Aufgabe printen</button>
+        <!-- <button @click="printAufgaben()">Aufgabe printen</button> -->
       </div>
 
       <div class="excercises-container" v-for="aufgabe in aufgaben" :key="aufgabe.id">
-        <router-link class="listItem" :to="{ name: 'aufgabe', params:{ id: id, bezeichnung: kurs.bezeichnung}}">       
+        <router-link class="listItem" :to="{ name: 'aufgabe', params:{ id: aufgabe.id, bezeichnung: kurs.bezeichnung, kursId: kurs.id}}">       
           <strong >{{aufgabe.bezeichnung}}</strong>
         </router-link>
       </div>
@@ -33,7 +33,7 @@ import PopupAddExcercise from '@/components/PopupAddExcercise.vue';
 
 
 export default {
-  name: 'CourseView',
+  name: 'KursSeite',
   props: ['id'],
   components: {
     PopupAddExcercise
@@ -99,6 +99,11 @@ export default {
     console.log("Mounted");
     this.getKursById(this.kurs.id);
     this.setUserRole();
+  },
+  watch: {
+    aufgaben(){
+      this.getKursById(this.kurs.id);
+    }
   }
 }
 </script> 

@@ -52,7 +52,7 @@
       <br><br>
     </div>
     <br><br>
-    <router-link class="routerlink" :to="{ name: 'kursSeite', params:{ id: id}}">Zurück zum {{bezeichnung}}</router-link>
+    <router-link class="routerlink" :to="{ name: 'kurs', params:{ id: kursId}}">Zurück zum {{bezeichnung}}</router-link>
 
   </div>
 </template>
@@ -62,12 +62,14 @@
 <script>
 
 import { saveAs } from 'file-saver';
+import AufgabeDataService from '@/services/AufgabeDataService';
 
 export default {
-  name: 'ExcerciseView',
+  name: 'AufgabenSeite',
   props: [
     'id',
-    'bezeichnung'
+    'bezeichnung',
+    'kursId'
   ],
   data() {
     return {
@@ -81,7 +83,7 @@ export default {
       userRole: "",
       file: "",
       submissionXML: "",
-      aufgabe: ""
+      aufgabe: {}
     }
   },
   methods: {
@@ -91,6 +93,19 @@ export default {
         this.user = this.$store.state.user;
         this.userRole = this.user.realm_access.roles[0];
       },
+
+      // Holt die Aufgabe aus der Datenbank
+      getAufgabe(id){
+        AufgabeDataService.get(id)
+          .then(response => {
+            this.aufgabe = response.data;
+            console.log(JSON.stringify(response.data,null,2));
+          })
+          .catch(e => {
+            console.log(e);
+          })
+      },
+
 
       // setzt die Datei 
       handleFileUpload( event ){
@@ -124,13 +139,13 @@ export default {
             // Force down of the Zip file
             saveAs(content, "test.zip");
         });
-
       }
 
     },
     // Holt alle Kurse aus der Datenbank und setzt den User
     mounted() {
       this.setUser();
+      this.getAufgabe(this.id);
     }
   
 }
