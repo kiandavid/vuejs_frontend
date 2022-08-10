@@ -49,7 +49,7 @@
       </div>
       <div class="form-group">
         <label for="studiengang">Studiengang:</label><br>
-        <select name="studiengang" id="studiengang">
+        <select v-model="student.studiengang" name="studiengang" id="studiengang">
           <option value="">Bitte auswählen</option>
           <option value="BIN">BIN</option>
           <option value="MDI">MDI</option>
@@ -87,7 +87,7 @@ export default {
         if(!this.$parent.currentStudent.id){
           this.createStudent();
         } else {
-          if(this.student.vorname && this.student.nachname && this.student.matrikelnummer) {
+          if(this.student.vorname && this.student.nachname && this.student.matrikelnummer && this.student.studiengang) {
             this.updateStudent();        
           } else {
               alert("Bitte füllen Sie das Formular vollständig aus!");
