@@ -12,7 +12,7 @@ import PopupDozentModi from '@/components/PopupDozentModi.vue'
 import PopupStudentModi from '@/components/PopupStudentModi.vue'
 
 import StudentDataService from '@/services/StudentDataService';
-
+import DozentDataService from '@/services/DozentDataService';
 
 export default {
   name: "ProfilSeite",
@@ -48,7 +48,11 @@ export default {
     setUserRoleAndMail() {
       let userTemp = this.$store.state.user;
       this.userRole = userTemp.realm_access.roles[0];
-			this.currentStudent.email = userTemp.email;
+			if(this.userRole=="Student") {
+				this.currentStudent.email = userTemp.email;
+			} else {
+				this.currentDozent.email = userTemp.email;
+			}
     },
 
 		setCurrentUser(){
@@ -57,11 +61,11 @@ export default {
 				this.currentStudent.vorname = userTemp.given_name;
 				this.currentStudent.nachname = userTemp.family_name;
 				this.currentStudent.email = userTemp.email;
-				console.log("testo_ " + JSON.stringify(this.currentStudent,null,2));
 			} else {
 				this.currentDozent.vorname = userTemp.given_name;
 				this.currentDozent.nachname = userTemp.family_name;
 				this.currentDozent.email = userTemp.email;
+				console.log("testo_ " + JSON.stringify(this.currentDozent,null,2));
 			}
 		},
 
@@ -73,23 +77,49 @@ export default {
 			this.submittedStud = false;
 		},
 
-		// Es wird überprüft 
-		findByMail(){
+		// Student wird nach seiner Mail gesucht
+		findStudByMail(){
 			StudentDataService.findByEmail(this.currentStudent.email)
 				.then(response => {
 					let antwort = response.data[0];
 					if(antwort){
 						this.currentStudent =  antwort;
-						console.log("testo_ " + JSON.stringify(this.currentStudent,null,2));
+						// console.log("testo: " + JSON.stringify(this.currentStudent,null,2));
 					} else {
 						this.setCurrentUser();
 					}
+				})
+				.catch(e => {
+				console.log(e);
+				})
+		},
+		// Dozent wird nach seiner Mail gesucht 
+		findDozByMail(){
+			DozentDataService.findByEmail(this.currentDozent.email)
+				.then(response => {
+					let antwort = response.data[0];
+					if(antwort){
+						this.currentDozent =  antwort;
+						// console.log("testo: " + JSON.stringify(this.currentDozent,null,2));
+					} else {
+						this.setCurrentUser();
+					}
+				})
+				.catch(e => {
+				console.log(e);
+				})
+		},
 
-			})
-			.catch(e => {
-			console.log(e);
-			})
+		// Benutzer wird nach seiner Mail gesucht
+		findByMail(){
+			if (this.userRole=="Student"){
+				this.findStudByMail();
+			} else {
+				this.findDozByMail();
+			}
 		}
+
+
 	},
 	beforeMount(){
 		this.setUserRoleAndMail();

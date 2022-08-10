@@ -71,10 +71,33 @@ export default {
       }
     }, 
     methods: {
-
-      // Updated den Dozenten in der Datenbank
+      // Speichert Dozenten in der Datenbank
       saveDozent(){
-        if(this.dozent.vorname && this.dozent.nachname && this.dozent.email) {        
+        if(!this.$parent.currentDozent.id){
+          this.createDozent();
+        } else {
+          if(this.dozent.vorname && this.dozent.nachname) {
+            this.updateDozent();        
+          } else {
+              alert("Bitte füllen Sie das Formular vollständig aus!");
+          }
+        }
+      },
+
+      // Legt ein neues Dozentenobjekt in der Datenbank an
+      createDozent(){
+        DozentDataService.create(this.dozent)
+          .then(response => {
+            this.dozent = response.data;
+            alert("Dozent "+ this.dozent.nachname +" wurde erfolgreich geändert!");
+          })
+          .catch(e => {
+            console.log(e);
+          });        
+      },
+
+      // Updated ein Dozentenobjekt in der Datenbank
+      updateDozent(){
         DozentDataService.update(this.$parent.currentDozent.id, this.dozent)
           .then(response => {
             console.log(response.message);
@@ -84,10 +107,7 @@ export default {
           })
           .catch(e => {
             console.log(e);
-          });
-        } else {
-            alert("Bitte füllen Sie das Formular vollständig aus!");
-        }
+          });        
       },
 
       // Schließt das Pop-up-Fenster
@@ -101,12 +121,12 @@ export default {
         this.dozent.vorname = data.vorname;
         this.dozent.nachname = data.nachname;
         this.dozent.email = data.email;
+        // console.log("pop"+JSON.stringify(this.dozent,null,2));
       }
     },
     mounted(){
-      this.setDozent(this.$parent.currentDozent);
+      setTimeout(() => this.setDozent(this.$parent.currentDozent), 400);
       this.profil = this.$parent.profil;
-      console.log(this.profil);
     }
 }
 </script>
