@@ -103,7 +103,6 @@ export default {
             .then(response => {
               this.search = true;
               this.kurse = response.data;
-              // console.log(this.kurse);
             })
             .catch(e => {
               console.log(e);
@@ -126,7 +125,7 @@ export default {
           .catch(e => {
             console.log(e);
           })
-        this.meineKurse = null;
+        this.refresh();
         this.search = false;
       },
      
@@ -139,7 +138,7 @@ export default {
       deleteById(id, bezeichnung){
         KursDataService.delete(id, 0);
         alert("Kurs "+ bezeichnung + " wurde gelöscht!");
-        this.getAllCourses();
+        this.refresh();
       },
 
       // Setzt den ausgewählten Kurs und öffnent das Update-Pop-up
@@ -148,23 +147,12 @@ export default {
         this.submittedUpdate = false;
       },
 
-      // Liefert alle Kurse aus der DB
-      getAllCourses() {
-        KursDataService.getAll()
-          .then(response => {
-            this.kurse = response.data;
-          })
-          .catch(e => {
-            console.log(e);
-          });
-      },
-
       // Funktion um das User-Objekt aus dem State (von Keycloak) zu setzen
       setUser() {
-        console.log("User set");
         this.user = this.$store.state.user;
         this.userRole = this.user.realm_access.roles[0];
-        this.checkProfil();
+        this.refresh();
+        console.log("User set");
       },
 
       // Student wird nach seiner Mail gesucht
@@ -173,7 +161,6 @@ export default {
           .then(response => {
             let antwort = response.data[0];
             if(antwort){
-              this.meineKurse = antwort.kurs;
               // save in Store
               this.$store.dispatch('setStudent', antwort);
             } else {
@@ -190,8 +177,8 @@ export default {
           .then(response => {
             let antwort = response.data[0];
             if(antwort){
-            // save in Store
-            this.$store.dispatch('setDozent', antwort);
+              // save in Store
+              this.$store.dispatch('setDozent', antwort);
             } else {
               this.profilDone = false;
             }
@@ -205,21 +192,34 @@ export default {
       checkProfil(){
         if (this.userRole=="Student"){
           this.findStudByMail();
-          // console.log("Student: "+ JSON.stringify( this.$store.state.student,null,2));
         } else {
           this.findDozByMail();
-          // console.log("Dozent: "+ JSON.stringify( this.$store.state.dozent,null,2));
         }
       },
+
+      // Holt die Kurse des Benutzers
+      getMeineKurse(){
+        if(this.userRole=="Student"){
+          this.meineKurse = this.$store.state.student.kurs;
+        } else {
+          this.meineKurse = this.$store.state.dozent.kurs;
+        }
+      },
+
+      refresh(){
+        this.checkProfil();
+        setTimeout(() => this.getMeineKurse(), 500);
+        console.log("refresh");
+      }
+
     },
-    // Holt alle Kurse aus der Datenbank und setzt den User
     mounted() {
-      // this.getAllCourses();
       setTimeout(() => this.setUser(), 100);
     },
     watch: {
       meineKurse(){
-        this.findStudByMail();
+        this.getMeineKurse();
+        console.log("watch");
       }
     }
 }

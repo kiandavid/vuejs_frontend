@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <!-- Dozent: Pop-up für die Kurserstellung -->
     <div class="pop-up" v-if="!this.$parent.submittedAdd">
       <h3>Kurs hinzufügen</h3>
@@ -63,6 +62,7 @@
 <script>
 
 import KursDataService from '@/services/KursDataService';
+import DozentDataService from '@/services/DozentDataService';
 
 export default {
     name: "PopupCourseControl",
@@ -97,13 +97,28 @@ export default {
             .catch(e => {
               console.log(e);
             });
-          // this.$parent.getAllCourses();
+          setTimeout(() => this.addKursToDozent(this.$store.state.dozent.id), 100);
           alert(this.kurs.bezeichnung  + " wurde erstellt!");
           this.flushKurs();
           this.$parent.submittedAdd = true;
         } else{
           alert("Bitte vervollständigen Sie das Formular!");
         }
+      },
+
+      // Fügt dem Dozenten ein Kursobjekt hinzu
+      addKursToDozent(dozId){
+        const kurs = {
+            "kursId": this.kurs.id
+          };
+        DozentDataService.addKurs(dozId, kurs)
+          .then(res => {
+            res.data;
+            this.$parent.refresh();
+          })
+          .catch(e => {
+            console.log(e);
+          })
       },
 
       // Updatet den Kurs in der DB
@@ -117,6 +132,7 @@ export default {
             console.log(e);
           });
           alert(this.$parent.currentKurs.bezeichnung + " wurde geändert!");
+          this.$parent.refresh();
           this.$parent.submittedUpdate = true;
       },
 
