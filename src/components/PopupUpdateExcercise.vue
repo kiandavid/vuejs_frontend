@@ -1,7 +1,7 @@
 <template>
   <div class="container" v-if="!this.$parent.submittedAdd">
     <!-- <div class="container" > -->
-    <h3>Aufgabe hinzufügen</h3>
+    <h3>Aufgabe ändern</h3>
     <div class="form-group">
       <label for="bezeichnung">Bezeichnung:</label><br>
       <input type="text" class="form-control" id="bezeichnung" required v-model="aufgabe.bezeichnung"
