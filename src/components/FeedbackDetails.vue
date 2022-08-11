@@ -41,26 +41,28 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 .first-feedback {
   border-style: solid;
   border-width: 2px;
   background-color: bisque;
-  /* margin-left: 30px; */
-  margin: 40px;
+  /* margin: 40px; */
   margin-bottom: 0;
   width: 40%;
   cursor: pointer;
 }
 
+.bewertungsaspekt-container{
+  margin-top: 20px;
+}
+
 .feedback-container {
   border-style: solid;
   border-width: 2px;
-  /* margin-left: 30px; */
   margin-bottom: 1px;
+  margin-left: 0px;
   margin-top: 1px;
-  margin-left: 40px;
   width: 40%;
 }
 

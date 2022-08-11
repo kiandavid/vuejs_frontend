@@ -27,29 +27,27 @@
       <table id="AufgabenDetails">
           <tr>
             <th>Status</th>
-            <td>Abgegeben</td>
+            <td>{{status}}</td>
           </tr>
           <tr>
             <th>Punkte</th>
-            <td>5.50/7.00</td>
+            <td>{{punkte}} / {{punkte_max}}.0</td>
           </tr>
           <tr>
             <th>Bewertung</th>
-            <td>79.5%</td>
+            <td>{{bewertung}}</td>
           </tr>
       </table>
 
       <h3>Lösung einreichen</h3>
-        <label>Lösung
-          <input type="file" @change="handleFileUpload( $event )"/>
-        </label>
-        <br><br>
-        <button v-on:click="submitFile()">Submit</button>
+      <input type="file" @change="handleFileUpload( $event )"/>
+      <br><br>
+      <button v-on:click="submitFile()">Lösung einreichen</button>
       
       
-      <br><br>
-      <router-link class="routerlink" to="/feedback">Feedback einsehen</router-link>
-      <br><br>
+      <br><br><br><br>
+      <router-link class="routerlink" :to="{ name: 'FeedbackStud', params:{ response: responseData }}">Feedback einsehen</router-link>
+      
     </div>
     <br><br>
     <router-link class="routerlink" :to="{ name: 'kurs', params:{ id: kursId}}">Zurück zum {{bezeichnung}}</router-link>
@@ -61,7 +59,6 @@
 
 <script>
 
-import { saveAs } from 'file-saver';
 import AufgabeDataService from '@/services/AufgabeDataService';
 
 export default {
@@ -83,7 +80,13 @@ export default {
       userRole: "",
       file: "",
       submissionXML: "",
-      aufgabe: {}
+      responseData: {},
+      aufgabe: {},
+      status: "Nicht abgegeben",
+      punkte: "-",
+      punkte_max: null,
+      bewertung: "0.0%"
+
     }
   },
   methods: {
@@ -99,6 +102,7 @@ export default {
         AufgabeDataService.get(id)
           .then(response => {
             this.aufgabe = response.data;
+            this.punkte_max = response.data.punkte_max;
             console.log(JSON.stringify(response.data,null,2));
           })
           .catch(e => {
@@ -112,36 +116,36 @@ export default {
 				this.file = event.target.files[0];
 			},
 			
-			submitFile(){
-        console.log("File_Name: " + this.file.name);
+		// 	reicheLösungEin(){
+    //     console.log("File_Name: " + this.file.name);
+    //     var JSZip = require("jszip");
+    //     var zip = new JSZip();
+    //     // Submission.xml muss hier hinzugefügt werden
+    //     zip.file("submission.xml", this.submissionXML);
+    //     // Generate directorys within the Zip file structure
+    //     var task = zip.folder("task");
+    //     var submission = zip.folder("submission");
+    //     // task.zip muss hier eingebaut werden
+    //     task.file("task.zip", this.file, {base64: true});
+    //     // submission.sql muss hier eingebaut werden
+    //     submission.file("submission.sql", this.file, {base64: true});
 
-        var JSZip = require("jszip");
-
-        var zip = new JSZip();
-
-        // Submission.xml muss hier hinzugefügt werden
-        zip.file("submission.xml", this.submissionXML);
-
-        // Generate directorys within the Zip file structure
-        var task = zip.folder("task");
-        var submission = zip.folder("submission");
-
-
-        // task.zip muss hier eingebaut werden
-        task.file("task.zip", this.file, {base64: true});
-
-        // submission.sql muss hier eingebaut werden
-        submission.file("submission.sql", this.file, {base64: true});
-
-        // Generate the zip file asynchronously
-        zip.generateAsync({type:"blob"})
-        .then(function(content) {
-            // Force down of the Zip file
-            saveAs(content, "test.zip");
-        });
-      }
+    //     // Generate the zip file asynchronously
+    //     zip.generateAsync({type:"blob"})
+    //       .then(function(content) {
+    //         GraderService.submit(content)
+    //         .then(response => {
+    //           this.responseData = response.data;
+    //         })
+    //         .catch(e => {
+    //           console.log("Fehler: " + e);
+    //         });
+    //       });
+    //   }
 
     },
+
+
     // Holt alle Kurse aus der Datenbank und setzt den User
     mounted() {
       this.setUser();

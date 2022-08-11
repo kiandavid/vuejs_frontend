@@ -39,7 +39,7 @@ const routes = [
     path: '/feedback',
     name: 'FeedbackStud',
     component: FeedbackView,
-    // props: true
+    props: true
   },
   {
     path: '/auswertung',
