@@ -100,6 +100,7 @@ export default {
         StudentDataService.create(this.student)
           .then(response => {
             this.student = response.data;
+            this.$store.dispatch('setStudent', this.student);
             alert("Student "+ this.student.nachname +" wurde erfolgreich geändert!");
           })
           .catch(e => {
@@ -113,6 +114,7 @@ export default {
           .then(response => {
             console.log(response.message);
             this.$parent.getStudenten();
+            this.$store.dispatch('setStudent', response.data);
             this.$parent.submittedStud = true;
             alert("Student "+ this.student.nachname +" wurde erfolgreich geändert!");
           })

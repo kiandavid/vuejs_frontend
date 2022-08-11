@@ -90,6 +90,7 @@ export default {
         DozentDataService.create(this.dozent)
           .then(response => {
             this.dozent = response.data;
+            this.$store.dispatch('setDozent', this.dozent);
             alert("Dozent "+ this.dozent.nachname +" wurde erfolgreich geändert!");
           })
           .catch(e => {
@@ -103,6 +104,7 @@ export default {
           .then(response => {
             console.log(response.message);
             this.$parent.getDozenten();
+            this.$store.dispatch('setDozent', response.data);
             this.$parent.submittedDoz = true;
             alert("Dozent "+ this.dozent.nachname +" wurde erfolgreich geändert!");
           })

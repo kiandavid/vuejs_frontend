@@ -4,7 +4,17 @@
     
       <div class="course-container">
         <h2 id="course-title">{{ kurs.bezeichnung }}</h2>
-        <span> Semester: {{kurs.semester}}</span>
+        <div class="flex-container">
+          <div>
+            <span> Semester: {{kurs.semester}}</span>
+          </div>
+          <div id="ausschreiben">
+            <router-link to="/">
+              <strong @click="ausschreiben(kurs.id)">Ausschreiben</strong>
+            </router-link>
+          </div>
+        </div>
+        
       </div>
       <div v-if="userRole=='Dozent'">
         <button @click="addAufgabe()">Aufgabe hinzufügen</button>
@@ -69,6 +79,13 @@ export default {
         .catch(e => {
           console.log(e);
         });
+    },
+
+    ausschreiben(kursId){
+      KursDataService.delete(kursId, this.$store.state.student.id)
+        .catch(e => {
+          console.log(e);
+        })
     },
 
     setUserRole() {
@@ -152,6 +169,14 @@ export default {
   justify-content: space-between;
 }
 
+.flex-container{
+  display: flex;
+  justify-content: space-between;
+}
+
+#ausschreiben{
+  margin-right: 200px;
+}
 
 </style>
 

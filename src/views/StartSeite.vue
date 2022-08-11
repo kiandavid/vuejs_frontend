@@ -21,15 +21,29 @@
         <button id="KursBtn" @click="addKurs()">Hinzufügen</button>
       </div>
 
+      <!--Student: Ergebnisiste der Kurse nach Suche -->
+      <div v-if="userRole=='Student' && search" class="searchKurse">
+        <button @click="ausblenden()" >Ausblenden</button>
+        <div class="courses-container"  v-for="k in kurse" :key="k.id">
+          <div>
+            <strong >{{k.bezeichnung}}</strong>
+          </div>
+          <div class="controls">
+            <button @click="einschreiben(k.id)" >Einschreiben</button>
+          </div>
+        </div>
+        <hr>
+      </div>
+
       <!-- Dozent & Student: Kursliste -->
       <div v-if="userRole!='Master'">
-        <div class="courses-container"  v-for="k in kurse" :key="k.id">
+        <div class="courses-container"  v-for="k in meineKurse" :key="k.id">
           <div>
             <router-link class="listItem" :to="{ name: 'kurs', params:{ id: k.id }}">
               <strong >{{k.bezeichnung}}</strong>
             </router-link>
           </div>
-          <div id="controls" v-if="userRole=='Dozent'">
+          <div class="controls" v-if="userRole=='Dozent'">
             <img src="../assets/pen.png" alt="Edit" width="20" @click="update(k)" >&nbsp;
             <img src="../assets/trash.png" alt="Delete" width="20" @click="deleteById(k.id, k.bezeichnung)">
           </div> 
@@ -76,19 +90,20 @@ export default {
         user: null,
         userRole: null,
         suchEingabe: "",
-        profilDone: true
+        profilDone: true,
+        search: false
       }
     },
 
     methods: {
       // Sucht Kurse nach Namen, Funktion der Studentensicht
       getCoursebyName(){
-        console.log(this.suchEingabe);
         if(this.suchEingabe){
           KursDataService.findByBezeichnung(this.suchEingabe)
             .then(response => {
+              this.search = true;
               this.kurse = response.data;
-              console.log(response.data);
+              // console.log(this.kurse);
             })
             .catch(e => {
               console.log(e);
@@ -99,11 +114,21 @@ export default {
         }
       },
 
-      // Öffnet das Add-Pop-up Fenster 
-      addUser(){
-        console.log("Dozent: "+ JSON.stringify(this.dozenten, null, 4));
+      ausblenden(){
+        this.search = false;
       },
 
+      einschreiben(id){
+        const studentId = {
+          "studentId":  this.$store.state.student.id
+        };
+        KursDataService.addStudent(id, studentId)
+          .catch(e => {
+            console.log(e);
+          })
+        this.meineKurse = null;
+        this.search = false;
+      },
      
       // Öffnet das Add-Pop-up Fenster 
       addKurs(){
@@ -112,7 +137,7 @@ export default {
 
       // Löscht einen Kurs nach ID
       deleteById(id, bezeichnung){
-        KursDataService.delete(id);
+        KursDataService.delete(id, 0);
         alert("Kurs "+ bezeichnung + " wurde gelöscht!");
         this.getAllCourses();
       },
@@ -125,13 +150,13 @@ export default {
 
       // Liefert alle Kurse aus der DB
       getAllCourses() {
-      KursDataService.getAll()
-        .then(response => {
-          this.kurse = response.data;
-        })
-        .catch(e => {
-          console.log(e);
-        });
+        KursDataService.getAll()
+          .then(response => {
+            this.kurse = response.data;
+          })
+          .catch(e => {
+            console.log(e);
+          });
       },
 
       // Funktion um das User-Objekt aus dem State (von Keycloak) zu setzen
@@ -139,9 +164,6 @@ export default {
         console.log("User set");
         this.user = this.$store.state.user;
         this.userRole = this.user.realm_access.roles[0];
-        console.log("Alle Rollen: " + this.user.realm_access.roles);
-        console.log("Rolle: " + this.user.realm_access.roles[0]);
-
         this.checkProfil();
       },
 
@@ -151,7 +173,9 @@ export default {
           .then(response => {
             let antwort = response.data[0];
             if(antwort){
+              this.meineKurse = antwort.kurs;
               // save in Store
+              this.$store.dispatch('setStudent', antwort);
             } else {
               this.profilDone = false;
             }
@@ -166,7 +190,8 @@ export default {
           .then(response => {
             let antwort = response.data[0];
             if(antwort){
-              // save in Store
+            // save in Store
+            this.$store.dispatch('setDozent', antwort);
             } else {
               this.profilDone = false;
             }
@@ -180,19 +205,21 @@ export default {
       checkProfil(){
         if (this.userRole=="Student"){
           this.findStudByMail();
+          // console.log("Student: "+ JSON.stringify( this.$store.state.student,null,2));
         } else {
           this.findDozByMail();
+          // console.log("Dozent: "+ JSON.stringify( this.$store.state.dozent,null,2));
         }
       },
     },
     // Holt alle Kurse aus der Datenbank und setzt den User
     mounted() {
-      this.getAllCourses();
+      // this.getAllCourses();
       setTimeout(() => this.setUser(), 100);
     },
     watch: {
-      kurse(){
-        this.getAllCourses();
+      meineKurse(){
+        this.findStudByMail();
       }
     }
 }
@@ -215,7 +242,7 @@ export default {
   font-size: 24px;
 }
 
-#controls{
+.controls{
   margin-right: 800px;
 }
 
@@ -233,6 +260,10 @@ img{
   text-decoration: none;
   display: flex;
   justify-content: space-between;
+}
+
+.searchKurse{
+  margin-top: 20px;
 }
 
 </style>

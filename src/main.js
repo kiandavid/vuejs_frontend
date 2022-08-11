@@ -19,10 +19,6 @@ export function getUserToken() {
     return keycloak.tokenParsed;
 }
 
-export function switchUserRole() {
-    keycloak.realmAccess.roles[0] = "Dozent";
-    console.log("User Role: " + keycloak.realmAccess.roles[0]);
-}
 
 
 // Meldet den Benutzer ab

@@ -15,8 +15,8 @@ class KursDataService {
     update(id, data) {
         return http.put(`/kurse/${id}`, data);
     }
-    delete(id) {
-        return http.delete(`/kurse/${id}`);
+    delete(id, studentId) {
+        return http.delete(`/kurse/${id}/${studentId}`);
     }
     deleteAll() {
         return http.delete(`/kurse`);
