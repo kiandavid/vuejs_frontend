@@ -8,7 +8,7 @@
           <div>
             <span> Semester: {{kurs.semester}}</span>
           </div>
-          <div id="ausschreiben">
+          <div id="ausschreiben" v-if="userRole=='Student'">
             <router-link to="/">
               <strong @click="ausschreiben(kurs.id)">Ausschreiben</strong>
             </router-link>
@@ -18,7 +18,7 @@
       </div>
       <div v-if="userRole=='Dozent'">
         <button @click="addAufgabe()">Aufgabe hinzufügen</button>
-        <!-- <button @click="printAufgaben()">Aufgabe printen</button> -->
+        <button @click="printAufgaben()">Aufgabe printen</button>
       </div>
 
       <div class="excercises-container" v-for="aufgabe in aufgaben" :key="aufgabe.id">
@@ -97,31 +97,13 @@ export default {
     },
 
     printAufgaben(){
-      // console.log(JSON.stringify(this.aufgaben[1].aufgabe,null,4));
-      // console.log(this.aufgaben[0].aufgaben.name);
-      let buff = this.aufgaben[1].aufgabe;
-      const blob = new Blob([buff]); // JavaScript Blob
-
-      var reader = new FileReader();
-        reader.readAsText(blob);
-        reader.onloadend = function(){
-
-    
-            console.log("Ausgabe "+reader.result);
-         
-        };
-
-      // var file = new File([buff], "task.zip", {type: "bin", lastModified: Date.now()});
-      // console.log("Test: "+ file.text());
-      // console.log("Test: "+ file);
-      // console.log("Test: "+ file.name);
-      // saveAs(file, file.name);
+      console.log(JSON.stringify(this.aufgaben,null,4));
     }
   },
   mounted() {
     console.log("Mounted");
-    this.getKursById(this.kurs.id);
     this.setUserRole();
+    this.getKursById(this.kurs.id);
   },
   watch: {
     aufgaben(){

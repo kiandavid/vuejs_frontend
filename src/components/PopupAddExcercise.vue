@@ -65,7 +65,7 @@ export default {
         var data = {
           bezeichnung: this.aufgabe.bezeichnung,
           punkte_max: this.aufgabe.punkte_max,
-          aufgabe: this.aufgabe.aufgabe,
+          aufgabe: this.aufgabe.aufgabe.name,
           kursId: this.aufgabe.kursId
         };
         AufgabeDataService.create(data)

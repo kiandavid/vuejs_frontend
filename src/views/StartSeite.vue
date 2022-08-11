@@ -11,7 +11,8 @@
     <!-- Student: Suchfeld der Kurse -->
     <div id="kurssuche" v-if="profilDone && userRole=='Student'">
       <input type="search" v-model="suchEingabe" id="query" placeholder="Kurs suchen...">
-      <button @click="getCoursebyName()">Suchen</button>
+      <button class="btn" @click="getCoursebyName()">Suchen</button>
+      <button class="btn" @click="refresh()">Refresh</button>
     </div>
 
     <!-- Dozent & Student: Kursansicht-->
@@ -19,6 +20,7 @@
       <!-- Dozent: Add Button für Kurse -->
       <div v-if="userRole=='Dozent'">
         <button id="KursBtn" @click="addKurs()">Hinzufügen</button>
+        <button class="btn" @click="refresh()">Refresh</button>
       </div>
 
       <!--Student: Ergebnisiste der Kurse nach Suche -->
@@ -152,7 +154,7 @@ export default {
         this.user = this.$store.state.user;
         this.userRole = this.user.realm_access.roles[0];
         this.refresh();
-        console.log("User set");
+        // console.log("2. User set");
       },
 
       // Student wird nach seiner Mail gesucht
@@ -163,6 +165,7 @@ export default {
             if(antwort){
               // save in Store
               this.$store.dispatch('setStudent', antwort);
+              // console.log("3. Studset");
             } else {
               this.profilDone = false;
             }
@@ -201,6 +204,7 @@ export default {
       getMeineKurse(){
         if(this.userRole=="Student"){
           this.meineKurse = this.$store.state.student.kurs;
+          // console.log("4." + JSON.stringify(this.meineKurse,null,4));
         } else {
           this.meineKurse = this.$store.state.dozent.kurs;
         }
@@ -208,8 +212,8 @@ export default {
 
       refresh(){
         this.checkProfil();
-        setTimeout(() => this.getMeineKurse(), 500);
-        console.log("refresh");
+        setTimeout(() => this.getMeineKurse(), 100);
+        // console.log("1. refresh");
       }
 
     },
@@ -219,7 +223,7 @@ export default {
     watch: {
       meineKurse(){
         this.getMeineKurse();
-        console.log("watch");
+        // console.log("5. watch");
       }
     }
 }
@@ -264,6 +268,10 @@ img{
 
 .searchKurse{
   margin-top: 20px;
+}
+
+.btn{
+  margin-left: 10px;
 }
 
 </style>
