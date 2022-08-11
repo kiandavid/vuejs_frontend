@@ -3,7 +3,9 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     user: null,
-    auth: false
+    auth: false,
+    student: null,
+    dozent: null
   },
 
   getters: {
@@ -16,6 +18,12 @@ export default createStore({
     },
     SET_AUTH(state, auth) {
       state.auth = auth;
+    },
+    SET_STUDENT(state, student) {
+      state.student = student;
+    },
+    SET_DOZENT(state, dozent) {
+      state.dozent = dozent;
     }
   },
 
@@ -26,6 +34,12 @@ export default createStore({
     },
     setAuth({ commit }, auth) {
       commit('SET_AUTH', auth);
+    },
+    setStudent({ commit }, student) {
+      commit('SET_STUDENT', student);
+    },
+    setDozent({ commit }, dozent) {
+      commit('SET_DOZENT', dozent);
     }
   },
 
