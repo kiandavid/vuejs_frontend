@@ -8,17 +8,17 @@
       <button @click="xmlAuslesen()">Bestätigen</button>
     </div>
     <div class="feedback">
-      <!-- <div class="item1"><FeedbackDetails ref="aspekt" index="0"></FeedbackDetails></div>
-      <div class="item2"><FeedbackDetails ref="aspekt" index="1"></FeedbackDetails></div> 
-      <div class="item3"><FeedbackDetails ref="aspekt" index="2"></FeedbackDetails></div>
-      <div class="item4"><FeedbackDetails ref="aspekt" index="3"></FeedbackDetails></div>  -->
+      <div class="item1"><FeedbackDetails ref="aspekt1" index="0"></FeedbackDetails></div>
+      <div class="item2"><FeedbackDetails ref="aspekt2" index="1"></FeedbackDetails></div> 
+      <div class="item3"><FeedbackDetails ref="aspekt3" index="2"></FeedbackDetails></div>
+      <div class="item4"><FeedbackDetails ref="aspekt4" index="3"></FeedbackDetails></div> 
     </div>
   </div>
 </template>
 
 <script>
 // import GraderService from '@/services/GraderService';
-// import FeedbackDetails from '@/components/FeedbackDetails.vue';
+import FeedbackDetails from '@/components/FeedbackDetails.vue';
 
 // import LoesungDataService from '@services/LoesungDataService';
 // import BewertungsaspektDataService from '@/services/BewertungsaspektDataService';
@@ -28,7 +28,7 @@ export default {
     name: "FeedbackView",
     // props: ['response'],
     components: {
-      // FeedbackDetails
+      FeedbackDetails
     },
     data() {
       return {
@@ -103,8 +103,32 @@ export default {
           }
           this.bewertungsaspekte[i] = bewertungsaspekt;
         }
-        console.log("Neues Array: " + JSON.stringify(this.bewertungsaspekte, null, 2));
+        // console.log("Neues Array: " + JSON.stringify(this.bewertungsaspekte, null, 2));
+        this.$refs.aspekt1.feedbackReady = true;
+        this.$refs.aspekt2.feedbackReady = true;
+        this.$refs.aspekt3.feedbackReady = true;
+        this.$refs.aspekt4.feedbackReady = true;
+        // this.loesungPersistieren();
       },
+
+      loesungPersistieren(){
+
+        // Hier weitermachen, vielleicht kann ich für die bezeichnung die aufgabenId.toString und den Nachnamen des Studenten reinklatschen
+        var loesungsString = this.responseJSON["response"]["separate-test-feedback"]["submission-feedback-list"]["student-feedback"][1]["content"]["_cdata"];
+        
+        var punkte_erreicht;
+
+        // Alles ab hier dann persisiteren
+
+        const loesung = {
+          "bezeichnung": "Lösung",
+          "punkte": punkte_erreicht
+        };
+        console.log(loesung);
+        console.log(loesungsString);
+      }
+
+
 
     //   getGraderFeedback(){
     //     GraderService.get(this.response.gradeProcessId)

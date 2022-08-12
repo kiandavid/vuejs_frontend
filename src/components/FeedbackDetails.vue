@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="bewertungsaspekt-container">
-      <div class="first-feedback">{{ bewertungsaspekt.typ }}</div><button @click="setAspekt()">Feedback</button>
+    <div class="bewertungsaspekt-container" v-if="feedbackReady" >
+      <div class="first-feedback">{{ bewertungsaspekte[index].typ }}</div>
       <div id="feedback_wrapper">
-        <div class="feedback-container" v-for="feedback in feedbacks" :key="feedback.id">
+        <div class="feedback-container" v-for="feedback in bewertungsaspekte[index].anmerkungen" :key="feedback.id">
           {{ feedback.anmerkung }}
         </div>
       </div>
@@ -17,26 +17,13 @@ export default {
   props: ["index"],
   data() {
     return {
-      bewertungsaspekt: {
-        typ: "",
-        punkte: null
-      },
-      anmerkungen: [
-        { id: 1, anmerkung: "Kosten ihres Statements: 3.0." },
-        { id: 2, anmerkung: "Absolute Kostenobergrenze ist: 2000." },
-        { id: 3, anmerkung: "Kosten der Musterlösung: 3.0." },
-        { id: 4, anmerkung: "Die Kosten der Abfrage sollte kleiner als 30.0 sein." },
-        { id: 5, anmerkung: "Die Kosten der Anfrage sind okay." }
-      ],
+      bewertungsaspekte: "",
       feedbackReady: false
     }
   },
   methods: {
     setAspekt(){
-      // var data = this.$parent.feedbackJSON[this.index];
-      console.log(JSON.stringify(this.$parent.feedbackJSON));
-      // this.bewertungsaspekt.typ = data._attributes.id;
-      // this.bewertungsaspekt.punkte = data["test-result"]["result"]["score"]["_text"];
+      this.bewertungsaspekte = this.$parent.bewertungsaspekte;
     }
   },
   watch: {
