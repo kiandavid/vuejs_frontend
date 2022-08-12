@@ -5,26 +5,26 @@
       <h3>Beispiel Feedback-Datei</h3>
       <input type="file" @change="handleFileUpload( $event )"/>
       <br><br>
-      <button v-on:click="feedbackAuslesen()">Bestätigen</button>
+      <button @click="feedbackAuslesen()">Bestätigen</button>
     </div>
     <div class="feedback">
-      <div id="item1"><FeedbackDetails></FeedbackDetails></div>
-      <div id="item2"><FeedbackDetails></FeedbackDetails></div>
-      <div id="item3"><FeedbackDetails></FeedbackDetails></div>
-      <div id="item4"><FeedbackDetails></FeedbackDetails></div>
+      <!-- <div class="item1"><FeedbackDetails ref="aspekt" index="0"></FeedbackDetails></div>
+      <div class="item2"><FeedbackDetails ref="aspekt" index="1"></FeedbackDetails></div> 
+      <div class="item3"><FeedbackDetails ref="aspekt" index="2"></FeedbackDetails></div>
+      <div class="item4"><FeedbackDetails ref="aspekt" index="3"></FeedbackDetails></div>  -->
     </div>
   </div>
 </template>
 
 <script>
 // import GraderService from '@/services/GraderService';
-import FeedbackDetails from '@/components/FeedbackDetails.vue';
+// import FeedbackDetails from '@/components/FeedbackDetails.vue';
 
 export default {
     name: "FeedbackView",
-    props: ['response'],
+    // props: ['response'],
     components: {
-      FeedbackDetails
+      // FeedbackDetails
     },
     data() {
       return {
@@ -50,7 +50,6 @@ export default {
         var reader = new FileReader();
         reader.readAsText(this.file);
         reader.onloadend = function(){
-
             // Liest den Text der XML-Datei
             this.xmlString = reader.result;
             // Konvertiert XML-Datei ins JSON-Format
@@ -60,22 +59,24 @@ export default {
             this.responseJSON = JSON.parse(response);
             // wählt das Feedback aus der Datei aus
             this.feedbackJSON = this.responseJSON["response"]["separate-test-feedback"]["tests-response"]["test-response"];
-      
-            let typ = this.feedbackJSON[0]._attributes.id;
-            let punkte = this.feedbackJSON[0]["test-result"]["result"]["score"]["_text"];
-            console.log("Bewertungsaspekt "+typ+" gibt "+ punkte +" Punkt(e)!");
-            console.log(JSON.stringify(this.feedbackJSON[0],null,2));
+            // Feedback auf der Konsole ausgeben
+            for (let i = 0; i < this.feedbackJSON.length; i++) {
+              let typ = this.feedbackJSON[i]._attributes.id;
+              let punkte = this.feedbackJSON[i]["test-result"]["result"]["score"]["_text"];
+              let anmerkungen = this.feedbackJSON[i]["test-result"]["feedback-list"];
+              console.log("Der Bewertungsaspekt "+ typ + " bringt "+ punkte + " Punkt(e)!");
+              let length = Object.keys(anmerkungen["student-feedback"]).length;
+              if(length==3){
+                console.log("Anmerkung: " + anmerkungen["student-feedback"]["content"]["_text"]);
+              } else {
+                for (let i = 0; i < length; i++) {
+                  console.log("Anmerkung: " + anmerkungen["student-feedback"][i]["content"]["_text"]);
+                } 
+              }
+
+            }
         };
 			},
-
-    //   // gibt Feedback aus
-    //   printFeedback(){
-    //     for (let i = 0; i < 4; i++) {
-    //       let typ = this.feedbackJSON[i]._attributes.id;
-    //       let punkte = this.feedbackJSON[i]["test-result"]["score"]["_text"];
-    //       console.log("Bewertungsaspekt "+typ+" gibt "+punkte+" Punkt(e)!");
-    //     } 
-    //   },
 
     //   getGraderFeedback(){
     //     GraderService.get(this.response.gradeProcessId)
@@ -96,36 +97,11 @@ export default {
 
 <style scoped>
 
-
-  /* .container{
-    background-color: blueviolet
-  } */
-
-  /* .file-upload{
-    background-color: aquamarine;
-  } */
-
   .feedback{
-    background-color: brown;
-    display: flex;
+    display: grid;
     grid-template-columns: 50% 50%;
     grid-template-rows: 50% 50%;
     height: 100%;
   }
 
-  #item1{
-    background-color: aqua;
-  }
-
-  #item2{
-    background-color: blue;
-  }
-
-  #item3{
-    background-color: blanchedalmond;
-  }
-
-  #item4{
-    background-color: forestgreen;
-  }
 </style>
