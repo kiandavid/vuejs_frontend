@@ -103,7 +103,7 @@ export default {
           .then(response => {
             this.aufgabe = response.data;
             this.punkte_max = response.data.punkte_max;
-            console.log(JSON.stringify(response.data,null,2));
+            // console.log(JSON.stringify(response.data,null,2));
           })
           .catch(e => {
             console.log(e);
