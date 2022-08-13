@@ -97,12 +97,17 @@ export default {
 
     printAufgaben(){
       console.log(JSON.stringify(this.aufgaben,null,4));
+    },
+
+    setCurrentKurs(){
+      this.$store.dispatch('setKurs', this.kurs);
     }
   },
   mounted() {
     console.log("Mounted");
     this.setUserRole();
     this.getKursById(this.kurs.id);
+    setTimeout(this.setCurrentKurs(), 200);
   },
   watch: {
     aufgaben(){

@@ -5,7 +5,8 @@ export default createStore({
     user: null,
     auth: false,
     student: null,
-    dozent: null
+    dozent: null,
+    kurs: null
   },
 
   getters: {
@@ -24,6 +25,9 @@ export default createStore({
     },
     SET_DOZENT(state, dozent) {
       state.dozent = dozent;
+    },
+    SET_KURS(state, kurs) {
+      state.kurs = kurs;
     }
   },
 
@@ -40,6 +44,9 @@ export default createStore({
     },
     setDozent({ commit }, dozent) {
       commit('SET_DOZENT', dozent);
+    },
+    setKurs({ commit }, kurs) {
+      commit('SET_KURS', kurs)
     }
   },
 

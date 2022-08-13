@@ -10,6 +10,7 @@
         <th>Student</th>
         <th>Matrikelnummer</th>
         <th>Studiengang</th>
+        <th>Studiengang</th>
       </tr>
       <tr class="teilnehmer-container" v-for="pers in teilnehmer" :key="pers.id">
         <td>{{pers.vorname}} {{pers.name}}</td>
