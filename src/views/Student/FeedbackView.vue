@@ -25,15 +25,15 @@
 </template>
 
 <script>
-// import GraderService from '@/services/GraderService';
 import FeedbackDetails from '@/components/FeedbackDetails.vue';
-import LoesungDataService from '@/services/LoesungDataService';
-import BewertungsaspektDataService from '@/services/BewertungsaspektDataService';
-import FeedbackDataService from '@/services/FeedbackDataService';
 
-// import LoesungDataService from '@services/LoesungDataService';
+import LoesungDataService from '@/services/LoesungDataService';
 // import BewertungsaspektDataService from '@/services/BewertungsaspektDataService';
 // import FeedbackDataService from '@/services/FeedbackDataService';
+
+// import GraderService from '@/services/GraderService';
+
+
 
 export default {
   name: "FeedbackView",
@@ -52,7 +52,9 @@ export default {
       // Array mit den Bewertungsaspekten
       feedbackJSON: {},
       // Neues Array der Bewertungsaspekte
-      bewertungsaspekte: []
+      bewertungsaspekte: [],
+      // Id der Loesung
+      loesungsId: null
     }
   },
   methods: {
@@ -101,7 +103,11 @@ export default {
 
         let length = Object.keys(anmerkungen["student-feedback"]).length;
         if (length == 3) {
-          bewertungsaspekt.anmerkungen[0] = anmerkungen["student-feedback"]["content"]["_text"];
+          let anmerkung = {
+              "id": 1,
+              "anmerkung": anmerkungen["student-feedback"]["content"]["_text"]
+          };
+          bewertungsaspekt.anmerkungen[0] = anmerkung;
         } else {
           for (let j = 0; j < length; j++) {
             let anmerkung = {
@@ -110,7 +116,6 @@ export default {
             };
             bewertungsaspekt.anmerkungen[j] = anmerkung;
           }
-          // bewertungsaspekt.anmerkungen = arrayAnmerkungen;
         }
         this.bewertungsaspekte[i] = bewertungsaspekt;
       }
@@ -119,82 +124,93 @@ export default {
       this.$refs.aspekt2.feedbackReady = true;
       this.$refs.aspekt3.feedbackReady = true;
       this.$refs.aspekt4.feedbackReady = true;
-      // this.loesungPersistieren();
+      this.persistiereLoesung();
     },
 
-    loesungPersistieren() {
+    persistiereLoesung() {
 
-      // Hier weitermachen, vielleicht kann ich für die bezeichnung die aufgabenId.toString und den Nachnamen des Studenten reinklatschen
       var loesungsString = this.responseJSON["response"]["separate-test-feedback"]["submission-feedback-list"]["student-feedback"][1]["content"]["_cdata"];
 
       var aufgabenIdString = this.aufgabenId.toString();
       var nachnameStud = this.$store.state.student.nachname;
       var bezeichnung = "aufgabe_" + aufgabenIdString + "_" + nachnameStud;
-      var punkte_erreicht = 0.0;
+      var punkte_erreicht = 0;
       
-      console.log(loesung);
-      console.log(loesungsString);
-
       for(let i=0; i< this.bewertungsaspekte.length; i++){
-        punkte_erreicht += this.bewertungsaspekte[i].punkte;
+        punkte_erreicht += Number(this.bewertungsaspekte[i].punkte);
       }
-
-      // Alles ab hier dann persisiteren
 
       const loesung = {
         "bezeichnung": bezeichnung,
         "punkte": punkte_erreicht,
         "loesung": loesungsString,
-        "aufgabenId": this.aufgabenId,
+        "aufgabeId": Number(this.aufgabenId),
         "studentId": this.$store.state.student.id
       };
 
-      var loesungsId;
-
       LoesungDataService.create(loesung)
         .then(res =>{
-          console.log(res);
-          loesungsId = res.data.id;
+          this.loesungsId = res.data.id;
+          console.log("1 " + this.loesungsId);
+          this.persistiereBewertungsaspekte();
         })
         .catch(e => {
-          console.log(e);
-        })
+          console.log("Lösung: " + e);
+        })      
+    },
 
-       for(let i=0; i< this.bewertungsaspekte.length; i++){
-          const bewertungsaspekt = {
-            "typ": this.bewertungsaspekte[i].typ,
-            "punkte": this.bewertungsaspekte[i].punkte,
-            "loesungsId": loesungsId
-          };
+    persistiereBewertungsaspekte(){
 
-          var aspektId;
+      console.log("2 " + this.loesungsId);
 
-          BewertungsaspektDataService.create(bewertungsaspekt)
-            .then(res => {
-              console.log(res);
-              aspektId = res.data.id;
-            })
-            .catch(e => {
-              console.log(e);
-            })
 
-          for(let j=0; j< this.bewertungsaspekte.anmerkungen.length; j++){
-            const feedback = {
-              "anmerkung": this.bewertungsaspekte.anmerkungen[j],
-              "aspektId": aspektId
-            }
+      for(let i=0; i< this.bewertungsaspekte.length; i++){
+        const bewertungsaspekt = {
+          "typ": this.bewertungsaspekte[i].typ,
+          "punkte": this.bewertungsaspekte[i].punkte,
+          "loesungId": this.loesungsId
+        };
 
-            FeedbackDataService.create(feedback)
-              .then(res => {
-                console.log(res);
-              })
-              .catch(e => {
-                console.log(e);
-              })
-          }
-        } 
+        console.log(JSON.stringify(bewertungsaspekt,null,2));
+
+      //   var aspektId = null;
+
+      //   BewertungsaspektDataService.create(bewertungsaspekt)
+      //     .then(res => {
+      //       console.log(JSON.stringify(res.data,null,2));
+      //       aspektId = res.data.id;
+      //     })
+      //     .catch(e => {
+      //       console.log("Aspekt: " + e);
+      //     })
+
+      //   console.log("AspektId: "+aspektId);
+
+
+        // for(let j=0; j< this.bewertungsaspekte[i].anmerkungen.length; j++){
+        //   const feedback = {
+        //     "anmerkung": this.bewertungsaspekte[i].anmerkungen[j],
+        //     "bewertungsaspektId": aspektId
+        //   }
+
+        //   console.log(JSON.stringify(feedback,null,2));
+
+        //   FeedbackDataService.create(feedback)
+        //     .then(res => {
+        //       console.log(JSON.stringify(res.data,null,2));
+        //     })
+        //     .catch(e => {
+        //       console.log("Feedback: " + e);
+        //     })
+        // }
+      }
     }
+  
 
+      
+      
+    
+    
 
 
     //   getGraderFeedback(){

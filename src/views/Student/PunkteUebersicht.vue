@@ -3,7 +3,7 @@
     <h2>Punkteübersicht - {{kurs.bezeichnung}}</h2>
     <h4>Meine Punkte</h4>
     <!-- Aufgabenübersicht des Dozenten -->
-    <table class="punkte" v-if="userRole=='Student'">
+    <table class="punkte" v-if="userRole=='Student' && dataLoaded">
       <tr>
         <th>Aufgabe</th>
         <th>Status</th>
@@ -30,7 +30,8 @@ export default {
   data() {
     return {
       kurs: null,
-      student: null
+      student: null,
+      dataLoaded: false
     }
   },
   methods: {
@@ -38,6 +39,7 @@ export default {
       StudentDataService.get(this.$store.state.student.id)
         .then(res => {
           this.student = res.data;
+          this.dataLoaded = true;
         })
         .catch(e =>{
           console.log(e);
