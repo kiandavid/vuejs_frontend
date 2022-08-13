@@ -46,7 +46,7 @@
       
       
       <br><br><br><br>
-      <router-link class="routerlink" :to="{ name: 'FeedbackStud', params:{ response: responseData }}">Feedback einsehen</router-link>
+      <router-link class="routerlink" :to="{ name: 'FeedbackStud', params:{ response: responseData, aufgabenId: this.id }}">Feedback einsehen</router-link>
       
     </div>
     <br><br>

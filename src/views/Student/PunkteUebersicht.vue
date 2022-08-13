@@ -6,7 +6,8 @@
 
 <script>
 export default {
-   name: 'PunkteUebersicht'
+  props: ["kursId"],
+  name: 'PunkteUebersicht'
 }
 </script>
 
