@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container" v-if="submittedAdd && submittedUpdate">
+    <div class="container" v-if="submittedAdd && submittedUpdate && submittedDelete">
     
       <div class="course-container">
         <h2 id="course-title">{{ kurs.bezeichnung }}</h2>
@@ -28,14 +28,14 @@
         </div>
         <div id="controls" v-if="userRole=='Dozent'">
           <img src="../assets/pen.png" alt="Edit" width="20" @click="update(aufgabe)">&nbsp;
-          <img src="../assets/trash.png" alt="Delete" width="20" @click="deleteById(aufgabe.id, aufgabe.bezeichnung)">
+          <img src="../assets/trash.png" alt="Delete" width="20" @click="deleteExcercise(aufgabe)">
         </div> 
       </div>
     </div>
 
-    <PopupAddExcercise  v-if="!this.submittedAdd"></PopupAddExcercise>
-    <PopupUpdateExcercise  v-if="!this.submittedUpdate"></PopupUpdateExcercise>
-
+    <PopupAddExcercise  v-if="!submittedAdd"></PopupAddExcercise>
+    <PopupUpdateExcercise  v-if="!submittedUpdate"></PopupUpdateExcercise>
+    <PopupDeleteExcercise v-if="!submittedDelete"></PopupDeleteExcercise>
   </div>
 </template>
 
@@ -45,6 +45,7 @@ import KursDataService from '@/services/KursDataService';
 
 import PopupAddExcercise from '@/components/PopupAddExcercise.vue';
 import PopupUpdateExcercise from '@/components/PopupUpdateExcercise.vue';
+import PopupDeleteExcercise from '@/components/PopupDeleteExcercise.vue';
 
 // import { saveAs } from 'file-saver';
 
@@ -54,7 +55,8 @@ export default {
   props: ['id'],
   components: {
     PopupAddExcercise,
-    PopupUpdateExcercise
+    PopupUpdateExcercise,
+    PopupDeleteExcercise
   },
   data() {
     return {
@@ -67,6 +69,7 @@ export default {
       userRole: "",
       submittedAdd: true,
       submittedUpdate: true,
+      submittedDelete: true,
       currentAufgabe: {}
     }
   },    
@@ -96,6 +99,11 @@ export default {
     update(aufgabe){
       this.currentAufgabe = aufgabe;
       this.submittedUpdate = false;
+    },
+
+    deleteExcercise(aufgabe){
+      this.currentAufgabe = aufgabe;
+      this.submittedDelete = false;
     },
 
     setUserRole() {
