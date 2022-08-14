@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container" v-if="submittedAdd">
+    <div class="container" v-if="submittedAdd && submittedUpdate">
     
       <div class="course-container">
         <h2 id="course-title">{{ kurs.bezeichnung }}</h2>
@@ -27,13 +27,14 @@
           </router-link>
         </div>
         <div id="controls" v-if="userRole=='Dozent'">
-          <img src="../assets/pen.png" alt="Edit" width="20" @click="update(aufgabe)" >&nbsp;
+          <img src="../assets/pen.png" alt="Edit" width="20" @click="update(aufgabe)">&nbsp;
           <img src="../assets/trash.png" alt="Delete" width="20" @click="deleteById(aufgabe.id, aufgabe.bezeichnung)">
         </div> 
       </div>
     </div>
 
-    <PopupAddExcercise/>
+    <PopupAddExcercise  v-if="!this.submittedAdd"></PopupAddExcercise>
+    <PopupUpdateExcercise  v-if="!this.submittedUpdate"></PopupUpdateExcercise>
 
   </div>
 </template>
@@ -43,6 +44,7 @@
 import KursDataService from '@/services/KursDataService';
 
 import PopupAddExcercise from '@/components/PopupAddExcercise.vue';
+import PopupUpdateExcercise from '@/components/PopupUpdateExcercise.vue';
 
 // import { saveAs } from 'file-saver';
 
@@ -51,7 +53,8 @@ export default {
   name: 'KursSeite',
   props: ['id'],
   components: {
-    PopupAddExcercise
+    PopupAddExcercise,
+    PopupUpdateExcercise
   },
   data() {
     return {
@@ -62,7 +65,9 @@ export default {
         semester: ""
       },
       userRole: "",
-      submittedAdd: true
+      submittedAdd: true,
+      submittedUpdate: true,
+      currentAufgabe: {}
     }
   },    
   methods: {
@@ -86,6 +91,11 @@ export default {
         .catch(e => {
           console.log(e);
         })
+    },
+
+    update(aufgabe){
+      this.currentAufgabe = aufgabe;
+      this.submittedUpdate = false;
     },
 
     setUserRole() {

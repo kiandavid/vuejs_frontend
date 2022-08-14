@@ -1,5 +1,5 @@
 <template>
-  <div class="container" v-if="!this.$parent.submittedAdd">
+  <div class="container">
     <!-- <div class="container" > -->
     <h3>Aufgabe hinzufügen</h3>
     <div class="form-group">

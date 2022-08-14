@@ -1,5 +1,5 @@
 <template>
-  <div class="container" v-if="!this.$parent.submittedAdd">
+  <div class="container">
     <!-- <div class="container" > -->
     <h3>Aufgabe ändern</h3>
     <div class="form-group">
@@ -12,9 +12,11 @@
       <input class="form-control" id="punkte_max" required v-model="aufgabe.punkte_max" name="punkte_max" />
     </div>
     <div class="form-group">
-      <label for="aufgabe">Aufgabendatei:</label><br>
-      <input type="file" class="form-control" id="aufgabe" name="aufgabe" @change="handleFileUpload( $event )"/>
-        
+      <label for="aufgabe">Aufgabendatei:</label><br><br>
+      <div v-if="!updated">
+        <span>{{aufgabe.aufgabe}}</span><br><br>
+      </div>
+      <input type="file" class="form-control" id="aufgabe" name="aufgabe"  @change="handleFileUpload( $event )"/>
     </div>
 
     <button @click="saveAufgabe()" class="btn">Aufgabe speichern</button>
@@ -31,25 +33,21 @@ export default {
   name: "PopupAddExcercise",
   data() {
     return {
-      aufgabe: {
-        id: null,
-        bezeichnung: "",
-        punkte_max: null,
-        aufgabe: {},
-        kursId: this.$parent.kurs.id
-      }
+      aufgabe: {},
+      updated: false
     }
   },
   methods: {
 
     // Schließt das Pop-up-Fenster
     cancel() {
-      this.$parent.submittedAdd = true;
       this.flushAufgabe();
+      this.$parent.submittedUpdate = true;
     },
 
     handleFileUpload( event ){
         this.aufgabe.aufgabe = event.target.files[0];
+        this.updated = true;
     },
 
     // Speichert die Aufgabe im ausgewählten Kurs
@@ -59,16 +57,17 @@ export default {
           bezeichnung: this.aufgabe.bezeichnung,
           punkte_max: this.aufgabe.punkte_max,
           aufgabe: this.aufgabe.aufgabe.name,
-          kursId: this.aufgabe.kursId
+          kursId: this.$parent.kurs.id
         };
-        AufgabeDataService.create(data)
+        AufgabeDataService.update(this.aufgabe.id, data)
           .then(response => {
-            this.aufgabe.id = response.data.id;
+            console.log(JSON.stringify(response.data,null,4));
+            alert(this.aufgabe.bezeichnung + " wurde erfolgreich geändert!");
+            this.cancel();
           })
           .catch(e => {
             console.log("Error: " + e);
           });
-          this.cancel();
       } else {
         alert("Bitte vervollständigen Sie das Formular!");
       }
@@ -80,6 +79,9 @@ export default {
       this.aufgabe.punkte_max = null;
       this.aufgabe.aufgabe = "";
     }
+  },
+  mounted(){
+    this.aufgabe = this.$parent.currentAufgabe;
   }
 }
 </script>
