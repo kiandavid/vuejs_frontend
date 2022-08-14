@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="userRole=='Student'">
     <div class="file-upload">
       <h2>Feedback</h2>
       <h3>Beispiel Feedback-Datei</h3>
@@ -21,6 +21,7 @@
         <FeedbackDetails ref="aspekt4" index="3"></FeedbackDetails>
       </div>
     </div>
+    <button id="abgabeBtn" v-if="!loesungAbgegeben" @click="persistiereLoesung()">Lösung abgeben</button>
   </div>
 </template>
 
@@ -28,8 +29,9 @@
 import FeedbackDetails from '@/components/FeedbackDetails.vue';
 
 import LoesungDataService from '@/services/LoesungDataService';
-// import BewertungsaspektDataService from '@/services/BewertungsaspektDataService';
-// import FeedbackDataService from '@/services/FeedbackDataService';
+import BewertungsaspektDataService from '@/services/BewertungsaspektDataService';
+import FeedbackDataService from '@/services/FeedbackDataService';
+
 
 // import GraderService from '@/services/GraderService';
 
@@ -43,6 +45,7 @@ export default {
   },
   data() {
     return {
+      userRole: "",
       // XML-Datei
       file: '',
       // XML-Datei als String
@@ -54,7 +57,9 @@ export default {
       // Neues Array der Bewertungsaspekte
       bewertungsaspekte: [],
       // Id der Loesung
-      loesungsId: null
+      loesungsId: null,
+      loesungAbgegeben: false,
+      loesungen: []
     }
   },
   methods: {
@@ -91,7 +96,7 @@ export default {
         let typ = this.feedbackJSON[i]._attributes.id;
         let punkte = this.feedbackJSON[i]["test-result"]["result"]["score"]["_text"];
         let anmerkungen = this.feedbackJSON[i]["test-result"]["feedback-list"];
-        // console.log("Der Bewertungsaspekt "+ typ + " bringt "+ punkte + " Punkt(e)!");
+
         const bewertungsaspekt = {
           "id": i + 1,
           "typ": typ,
@@ -124,12 +129,13 @@ export default {
       this.$refs.aspekt2.feedbackReady = true;
       this.$refs.aspekt3.feedbackReady = true;
       this.$refs.aspekt4.feedbackReady = true;
-      this.persistiereLoesung();
     },
 
+    // Die Lösung wird persistiert
     persistiereLoesung() {
 
       var loesungsString = this.responseJSON["response"]["separate-test-feedback"]["submission-feedback-list"]["student-feedback"][1]["content"]["_cdata"];
+
 
       var aufgabenIdString = this.aufgabenId.toString();
       var nachnameStud = this.$store.state.student.nachname;
@@ -151,7 +157,6 @@ export default {
       LoesungDataService.create(loesung)
         .then(res =>{
           this.loesungsId = res.data.id;
-          console.log("1 " + this.loesungsId);
           this.persistiereBewertungsaspekte();
         })
         .catch(e => {
@@ -161,9 +166,6 @@ export default {
 
     persistiereBewertungsaspekte(){
 
-      console.log("2 " + this.loesungsId);
-
-
       for(let i=0; i< this.bewertungsaspekte.length; i++){
         const bewertungsaspekt = {
           "typ": this.bewertungsaspekte[i].typ,
@@ -171,47 +173,59 @@ export default {
           "loesungId": this.loesungsId
         };
 
-        console.log(JSON.stringify(bewertungsaspekt,null,2));
+        // console.log(JSON.stringify(bewertungsaspekt,null,2));
 
-      //   var aspektId = null;
+        var aspektId = null;
 
-      //   BewertungsaspektDataService.create(bewertungsaspekt)
-      //     .then(res => {
-      //       console.log(JSON.stringify(res.data,null,2));
-      //       aspektId = res.data.id;
-      //     })
-      //     .catch(e => {
-      //       console.log("Aspekt: " + e);
-      //     })
+        BewertungsaspektDataService.create(bewertungsaspekt)
+          .then(res => {
+            // console.log(JSON.stringify(res.data,null,2));
+            aspektId = res.data.id;
+            // console.log("AspektId 1: "+aspektId);
+            this.persistiereAnmerkungen(i, aspektId);
+          })
+          .catch(e => {
+            console.log("Aspekt: " + e);
+          })
 
-      //   console.log("AspektId: "+aspektId);
-
-
-        // for(let j=0; j< this.bewertungsaspekte[i].anmerkungen.length; j++){
-        //   const feedback = {
-        //     "anmerkung": this.bewertungsaspekte[i].anmerkungen[j],
-        //     "bewertungsaspektId": aspektId
-        //   }
-
-        //   console.log(JSON.stringify(feedback,null,2));
-
-        //   FeedbackDataService.create(feedback)
-        //     .then(res => {
-        //       console.log(JSON.stringify(res.data,null,2));
-        //     })
-        //     .catch(e => {
-        //       console.log("Feedback: " + e);
-        //     })
-        // }
       }
-    }
+    },
   
+    persistiereAnmerkungen(index, aspektId){
 
-      
-      
-    
-    
+      for(let j=0; j< this.bewertungsaspekte[index].anmerkungen.length; j++){
+        const feedback = {
+          "anmerkung": this.bewertungsaspekte[index].anmerkungen[j].anmerkung,
+          "bewertungsaspektId": aspektId
+        }
+        // console.log(JSON.stringify(feedback,null,2));
+        FeedbackDataService.create(feedback)
+          .catch(e => {
+            console.log("Feedback: " + e);
+          })
+      }
+      this.loesungAbgegeben = true;
+    },
 
+    checkForAbgabe(){
+      // var aufgabenId = Number(this.aufgabenId);
+      var studentId =  this.$store.state.student.id;
+
+      LoesungDataService.getAll()
+        .then(res =>{
+          this.loesungen = res.data;
+          for(let i=0; i<this.loesungen.length; i++){
+            if(this.loesungen[i].aufgabeId == this.aufgabenId && this.loesungen[i].studentId == studentId) {
+              // console.log(JSON.stringify(this.loesungen[i],null,2));
+              this.loesungAbgegeben = true;
+            } 
+          } 
+        })
+        .catch(e =>{
+          console.log(e);
+        })
+    }
+      
 
     //   getGraderFeedback(){
     //     GraderService.get(this.response.gradeProcessId)
@@ -222,13 +236,20 @@ export default {
     //       .catch(e => {
     //         console.log(e);
     //       })
-    //   }
-    // },
+    //   }    
+    
+    
 
-    // mounted(){
+
+
+  },
+  mounted(){
     //   this.getGraderFeedback();
+    this.userRole = this.$store.state.user.realm_access.roles[0];
+    this.checkForAbgabe();
   }
 }
+
 </script>
 
 <style scoped>
@@ -237,5 +258,9 @@ export default {
   grid-template-columns: 50% 50%;
   grid-template-rows: 50% 50%;
   height: 100%;
+}
+
+#abgabeBtn{
+  margin-top: 20px;
 }
 </style>

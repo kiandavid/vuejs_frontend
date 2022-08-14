@@ -1,7 +1,10 @@
 <template>
   <div>
     <div class="bewertungsaspekt-container" v-if="feedbackReady" >
-      <div class="first-feedback">{{ bewertungsaspekte[index].typ }} Punkte: {{bewertungsaspekte[index].punkte}}</div>
+      <div class="first-feedback">
+        <div>Bewertungsaspekt: {{ bewertungsaspekte[index].typ }}</div>
+        <div>Punkte: {{bewertungsaspekte[index].punkte}}</div>
+      </div>
       <div id="feedback_wrapper">
         <div class="feedback-container" v-for="feedback in bewertungsaspekte[index].anmerkungen" :key="feedback.id">
           {{ feedback.anmerkung }}
@@ -42,6 +45,8 @@ export default {
   background-color: bisque;
   margin-bottom: 0;
   width: 80%;
+  display: flex;
+  justify-content: space-between;
 }
 
 .bewertungsaspekt-container{
