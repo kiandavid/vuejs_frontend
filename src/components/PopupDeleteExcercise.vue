@@ -10,7 +10,7 @@
 <script>
 import AufgabeDataService from '@/services/AufgabeDataService';
 export default {
-  name: "PopupDeleteUser",
+  name: "PopupDeleteExcercise",
   data(){
 		return{
 			aufgabe: {}

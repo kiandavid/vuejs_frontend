@@ -16,7 +16,7 @@
     </div>
 
     <!-- Dozent & Student: Kursansicht-->
-    <div v-if="profilDone && submittedAdd && submittedUpdate">
+    <div v-if="profilDone && submittedAdd && submittedUpdate && submittedDelete">
       <!-- Dozent: Add Button für Kurse -->
       <div v-if="userRole=='Dozent'">
         <button id="KursBtn" @click="addKurs()">Hinzufügen</button>
@@ -47,14 +47,14 @@
           </div>
           <div class="controls" v-if="userRole=='Dozent'">
             <img src="../assets/pen.png" alt="Edit" width="20" @click="update(k)" >&nbsp;
-            <img src="../assets/trash.png" alt="Delete" width="20" @click="deleteById(k.id, k.bezeichnung)">
+            <img src="../assets/trash.png" alt="Delete" width="20" @click="deleteCourse(k)">
           </div> 
         </div>
       </div>
     </div>
     <!-- Dozent: Popup für die Kurs Kontrolle -->
     <PopupCourseControl v-if="userRole=='Dozent'"></PopupCourseControl>
-
+    <PopupDeleteCourse v-if="!submittedDelete"></PopupDeleteCourse>
   </div>
 </template>
 
@@ -63,7 +63,9 @@
 
 // Components
 import PopupCourseControl from "@/components/PopupCourseControl.vue";
+import PopupDeleteCourse from "@/components/PopupDeleteCourse.vue";
 import MasterControls from "@/components/MasterControls.vue";
+
 
 
 
@@ -76,7 +78,8 @@ export default {
     name: "StartSeite",
     components: {
     PopupCourseControl,
-    MasterControls
+    MasterControls,
+    PopupDeleteCourse
 },
     data() {
       return {
@@ -89,6 +92,7 @@ export default {
         },
         submittedAdd: true,
         submittedUpdate: true,
+        submittedDelete: true,
         user: null,
         userRole: null,
         suchEingabe: "",
@@ -137,10 +141,9 @@ export default {
       },
 
       // Löscht einen Kurs nach ID
-      deleteById(id, bezeichnung){
-        KursDataService.delete(id, 0);
-        alert("Kurs "+ bezeichnung + " wurde gelöscht!");
-        this.refresh();
+      deleteCourse(kurs){
+        this.currentKurs = kurs;
+        this.submittedDelete = false;
       },
 
       // Setzt den ausgewählten Kurs und öffnent das Update-Pop-up
