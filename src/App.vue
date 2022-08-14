@@ -190,4 +190,8 @@ body {
 button{
   cursor: pointer;
 }
+
+img{
+  cursor: pointer;
+}
 </style>
