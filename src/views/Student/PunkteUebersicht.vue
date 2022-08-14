@@ -1,9 +1,8 @@
 <template>
-  <div class="punkte-container">
+  <div class="punkte-container" v-if="userRole=='Student' && dataLoaded">
     <h2>Punkteübersicht - {{kurs.bezeichnung}}</h2>
-    <h4>Meine Punkte</h4>
-    <!-- Aufgabenübersicht des Dozenten -->
-    <table class="punkte" v-if="userRole=='Student' && dataLoaded">
+    <h3>Meine Punkte</h3>
+    <table class="punkte">
       <tr>
         <th>Aufgabe</th>
         <th>Status</th>
@@ -11,18 +10,19 @@
         <th>Bewertung</th>
       </tr>
       <!-- Evtl. dafür auch nochmal ein neues Array erstellen -->
-      <tr class="teilnehmer-container" v-for="aufgabe in student.aufgaben" :key="aufgabe.id">
+      <tr class="teilnehmer-container" v-for="(aufgabe, index) in aufgaben" :key="aufgabe.id">
         <td>{{aufgabe.bezeichnung}}</td>
-        <td>Wenn es ne Lösung gibt für die Aufgabe von dem Studenten, dann bearbeitet, sonst nicht bearbeitet</td>
-        <td>Erreichte Punkte der Lösung / {{aufgabe.punkte}}</td>
-        <td>Über computed erreichte/gesamtPunkte</td>
+        <td>{{status[index]}}</td>
+        <td>{{punkte_erreicht[index]}} / {{aufgabe.punkte_max}}</td>
+        <td>{{getBewertung(punkte_erreicht[index], aufgabe.punkte_max)}}</td>
       </tr>
     </table>
   </div>
 </template>
 
 <script>
-import StudentDataService from '@/services/StudentDataService';
+// import StudentDataService from '@/services/StudentDataService';
+import LoesungDataService from '@/services/LoesungDataService';
 
 export default {
   props: ["kursId"],
@@ -31,24 +31,52 @@ export default {
     return {
       kurs: null,
       student: null,
-      dataLoaded: false
+      dataLoaded: false,
+      userRole: "",
+      aufgaben: [],
+      status: [],
+      punkte_erreicht: []
     }
   },
   methods: {
-    getStudentData(){
-      StudentDataService.get(this.$store.state.student.id)
-        .then(res => {
-          this.student = res.data;
-          this.dataLoaded = true;
-        })
-        .catch(e =>{
-          console.log(e);
-        })
+    getStatus(){
+      for(let i=0; i < this.aufgaben.length; i++){
+        LoesungDataService.getAll()
+          .then(res =>{
+            let loesungen = res.data;
+            for(let j=0; j < loesungen.length; j++){
+              if(loesungen[j].aufgabeId == this.aufgaben[i].id && loesungen[j].studentId == this.student.id) {
+                this.status[i] = "Abgegeben";
+                var temp = Math.round(loesungen[j].punkte*100);
+                this.punkte_erreicht[i] = temp/100;
+              }               
+            }
+            if(!this.status[i]) {
+              this.status[i] = "Nicht abgegeben";
+              this.punkte_erreicht[i] = 0;
+            } 
+          })
+          .catch(e =>{
+            console.log(e);
+          })
+        this.dataLoaded = true;
+      }
+    },
+  
+    getBewertung(erreicht, maximum){
+      var punkte = Number(erreicht);
+      var punkte_max = Number(maximum);
+      var bewertung = Math.round((punkte/punkte_max)*100);
+      return bewertung + "%";
     }
   },
   mounted(){
     this.kurs = this.$store.state.kurs;
-    this.getStudentData();
+    this.userRole = this.$store.state.user.realm_access.roles[0];
+    this.student = this.$store.state.student;
+    this.aufgaben = this.kurs.aufgaben;
+    // console.log(JSON.stringify(this.aufgaben,null,2));
+    this.getStatus();
   }
     
 

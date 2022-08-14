@@ -74,6 +74,7 @@ export default {
             this.aufgaben = response.data.aufgaben;
             this.kurs.bezeichnung = response.data.bezeichnung;
             this.kurs.semester = response.data.semester;
+            this.setCurrentKurs();
         })
         .catch(e => {
           console.log(e);
@@ -100,14 +101,19 @@ export default {
     },
 
     setCurrentKurs(){
-      this.$store.dispatch('setKurs', this.kurs);
+      const currentKurs = {
+        "id": this.kurs.id,
+        "bezeichnung": this.kurs.bezeichnung,
+        "semester": this.kurs.semester,
+        "aufgaben": this.aufgaben
+      }
+      this.$store.dispatch('setKurs', currentKurs);
     }
   },
   mounted() {
     console.log("Mounted");
     this.setUserRole();
     this.getKursById(this.kurs.id);
-    setTimeout(this.setCurrentKurs(), 200);
   },
   watch: {
     aufgaben(){

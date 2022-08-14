@@ -56,8 +56,7 @@ export default {
       feedbackJSON: {},
       // Neues Array der Bewertungsaspekte
       bewertungsaspekte: [],
-      // Id der Loesung
-      loesungsId: null,
+ 
       loesungAbgegeben: false,
       loesungen: []
     }
@@ -156,21 +155,20 @@ export default {
 
       LoesungDataService.create(loesung)
         .then(res =>{
-          this.loesungsId = res.data.id;
-          this.persistiereBewertungsaspekte();
+          this.persistiereBewertungsaspekte(res.data.id);
         })
         .catch(e => {
           console.log("Lösung: " + e);
         })      
     },
 
-    persistiereBewertungsaspekte(){
+    persistiereBewertungsaspekte(loesungsId){
 
       for(let i=0; i< this.bewertungsaspekte.length; i++){
         const bewertungsaspekt = {
           "typ": this.bewertungsaspekte[i].typ,
           "punkte": this.bewertungsaspekte[i].punkte,
-          "loesungId": this.loesungsId
+          "loesungId": loesungsId
         };
 
         // console.log(JSON.stringify(bewertungsaspekt,null,2));
@@ -179,7 +177,7 @@ export default {
 
         BewertungsaspektDataService.create(bewertungsaspekt)
           .then(res => {
-            // console.log(JSON.stringify(res.data,null,2));
+            console.log(JSON.stringify(res.data,null,2));
             aspektId = res.data.id;
             // console.log("AspektId 1: "+aspektId);
             this.persistiereAnmerkungen(i, aspektId);
