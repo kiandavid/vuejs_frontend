@@ -44,14 +44,9 @@
       <br><br>
       <button v-on:click="submitFile()">Lösung einreichen</button>
       
-      
       <br><br><br><br>
       <router-link class="routerlink" :to="{ name: 'FeedbackStud', params:{ response: responseData, aufgabenId: this.id }}">Feedback einsehen</router-link>
-      
     </div>
-    <br><br>
-    <router-link class="routerlink" :to="{ name: 'kurs', params:{ id: kursId}}">Zurück zum {{bezeichnung}}</router-link>
-
   </div>
 </template>
 

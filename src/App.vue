@@ -23,9 +23,31 @@
         <div class="navItem" v-if="$route.name == 'kurs' && userRole=='Dozent'">
           <router-link to="/auswertung">Kursauswertung</router-link>
         </div>
-        <!-- <div class="navItem">
-          <router-link to="/aufgabe/1">Aufgabe</router-link>
-        </div> -->
+        <div class="navItem" v-if="$route.name == 'aufgabe'">
+          <router-link :to="{ name: 'kurs', params:{ id: this.$store.state.kurs.id }}">
+            {{getKursName()}}
+          </router-link>
+        </div>
+        <div class="navItem" v-if="$route.name == 'PunkteStud'">
+          <router-link :to="{ name: 'kurs', params:{ id: this.$store.state.kurs.id }}">
+            {{getKursName()}}
+          </router-link>
+        </div>        
+        <div class="navItem" v-if="$route.name == 'FeedbackStud'">
+          <router-link :to="{ name: 'kurs', params:{ id: this.$store.state.kurs.id }}">
+            {{getKursName()}}
+          </router-link>
+        </div>
+        <div class="navItem" v-if="$route.name == 'TeilnehmerDoz'">
+          <router-link :to="{ name: 'kurs', params:{ id: this.$store.state.kurs.id }}">
+            {{getKursName()}}
+          </router-link>
+        </div>        
+        <div class="navItem" v-if="$route.name == 'AuswertungDoz'">
+          <router-link :to="{ name: 'kurs', params:{ id: this.$store.state.kurs.id }}">
+            {{getKursName()}}
+          </router-link>
+        </div>                    
       </div>
       <div class="content">
           <router-view />
@@ -65,7 +87,18 @@ export default {
     setUser() {
       this.user = this.$store.state.user;
       this.userRole = this.user.realm_access.roles[0];
+    },
+
+    getKursRoute(){
+      var kurs = this.$store.state.kurs;
+      return "kurs/"+kurs.id;
+    },
+
+    getKursName(){
+      var kurs = this.$store.state.kurs;
+      return kurs.bezeichnung;
     }
+
   },
   // Auth wird hier bestätigt und User auf globalem User gesetzt
   mounted() {  

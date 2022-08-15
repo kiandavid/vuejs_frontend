@@ -21,6 +21,7 @@ export default {
 			KursDataService.delete(this.kurs.id,0);
 			alert("Der " + this.kurs.bezeichnung + " wurde gelöscht!");
 			this.$parent.refresh();
+			this.$store.state.kurs = null;
 			this.$parent.submittedDelete = true;
 		},
 
