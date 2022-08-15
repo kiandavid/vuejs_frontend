@@ -7,7 +7,7 @@
 
 
     <!-- Aufgabenübersicht des Dozenten -->
-    <table id="tabelleAufgabe" v-if="userRole=='Dozent'">
+    <table id="tabelleAufgabe" v-if="userRole=='Dozent' && dataReady">
       <tr>
         <th>Student</th>
         <th>Matrikelnummer</th>
@@ -15,10 +15,10 @@
         <th>Erreichte Punkte</th>
       </tr>
       <tr class="teilnehmer-container" v-for="pers in studenten" :key="pers.id">
-        <td>{{pers.vorname}} {{pers.name}}</td>
+        <td>{{pers.vorname}} {{pers.nachname}}</td>
         <td>{{pers.matrikelnummer}}</td>
-        <td>{{pers.status}}</td>
-        <td>{{pers.punkte}}</td>
+        <td>{{getStatus(pers.id)}}</td>
+        <td>{{getPunkte(pers.id)}} / {{punkte_max}}</td>
       </tr>
     </table>
 
@@ -55,6 +55,8 @@
 <script>
 
 import AufgabeDataService from '@/services/AufgabeDataService';
+import KursDataService from '@/services/KursDataService';
+import LoesungDataService from '@/services/LoesungDataService';
 
 export default {
   name: 'AufgabenSeite',
@@ -65,12 +67,7 @@ export default {
   ],
   data() {
     return {
-      studenten: [
-        {id: 1, vorname: 'Max', name:'Mustermann', matrikelnummer: 111111, status: "Bearbeitet", punkte: "5.0/7.0"},
-        {id: 1, vorname: 'Max', name:'Mustermann', matrikelnummer: 111111, status: "Bearbeitet", punkte: "5.0/7.0"},
-        {id: 1, vorname: 'Max', name:'Mustermann', matrikelnummer: 111111, status: "Bearbeitet", punkte: "5.0/7.0"},
-        {id: 1, vorname: 'Max', name:'Mustermann', matrikelnummer: 111111, status: "Bearbeitet", punkte: "5.0/7.0"}
-      ],
+      studenten: [],
       user: null,
       userRole: "",
       file: "",
@@ -80,8 +77,9 @@ export default {
       status: "Nicht abgegeben",
       punkte: "-",
       punkte_max: null,
-      bewertung: "0.0%"
-
+      bewertung: "0.0%",
+      loesungen: [],
+      dataReady: false
     }
   },
   methods: {
@@ -104,6 +102,50 @@ export default {
             console.log(e);
           })
       },
+
+      // Holt die Kursdaten mit den dazugehörigen Aufgaben des Kurses
+      getStudenten(id){
+        KursDataService.get(id)
+          .then(response => {
+              this.studenten = response.data.students;
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      },      
+
+      getStatus(studentId){
+        var status = "Nicht Abgegeben";
+        for(let j=0; j < this.loesungen.length; j++){
+          if(this.loesungen[j].aufgabeId == this.aufgabe.id && this.loesungen[j].studentId == studentId) {
+                status = "Abgegeben";
+              }               
+            }
+        return status;
+      },
+
+
+      getPunkte(studentId){
+        var punkte = 0;
+        for(let j=0; j < this.loesungen.length; j++){
+          if(this.loesungen[j].aufgabeId == this.aufgabe.id && this.loesungen[j].studentId == studentId) {
+                var temp = Math.round(this.loesungen[j].punkte*100);
+                punkte = temp/100;
+              }               
+            }
+        return punkte;        
+      },
+      
+      getAllLoesungen(){
+        LoesungDataService.getAll()
+          .then(res =>{
+            this.loesungen = res.data;
+            this.dataReady = true;
+          })
+          .catch(e => {
+            console.log(e);
+          })      
+      },      
 
 
       // setzt die Datei 
@@ -145,6 +187,8 @@ export default {
     mounted() {
       this.setUser();
       this.getAufgabe(this.id);
+      this.getStudenten(this.kursId);
+      this.getAllLoesungen();
     }
   
 }
