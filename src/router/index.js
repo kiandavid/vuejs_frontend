@@ -33,7 +33,6 @@ const routes = [
     path: '/punkte',
     name: 'PunkteStud',
     component: PunkteUebersicht,
-    // props: true
   },
   {
     path: '/feedback',
@@ -45,35 +44,17 @@ const routes = [
     path: '/auswertung',
     name: 'AuswertungDoz',
     component: KursAuswertung,
-    // props: true
   },
   {
     path: '/teilnehmer',
     name: 'TeilnehmerDoz',
     component: KursTeilnehmer,
-    // props: true
   },
   {
     path: '/profil',
     name: 'ProfilSeite',
     component: ProfilSeite,
-    // props: true
   }
-  // , {
-  //   path: "/tutorials",
-  //   name: "tutorials",
-  //   component: TutorialsList
-  // },
-  // {
-  //   path: "/tutorials/:id",
-  //   name: "tutorial-details",
-  //   component: Tutorial
-  // },
-  // {
-  //   path: "/add",
-  //   name: "add",
-  //   component: AddTutorial
-  // }
 ]
 
 const router = createRouter({

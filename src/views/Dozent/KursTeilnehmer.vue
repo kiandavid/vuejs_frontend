@@ -1,34 +1,46 @@
 <template>
   <div class="teilnehmer-container">
-    <h2>Kursteilnehmer</h2>
+    <div v-if="submittedRemove">
+      <h2>Kursteilnehmer</h2>
 
-    <button @click="addTeilnehmer()">Hinzufügen</button><br><br>
+      <button @click="addTeilnehmer()">Hinzufügen</button><br><br>
 
-    <!-- Kursliste für beide Rollen -->
-    <table id="tabelle">
-      <tr>
-        <th>Student</th>
-        <th>Matrikelnummer</th>
-        <th>Studiengang</th>
-        <th>Aktion</th>
-      </tr>
-      <tr class="teilnehmer-container" v-for="pers in teilnehmer" :key="pers.id">
-        <td>{{pers.vorname}} {{pers.name}}</td>
-        <td>{{pers.matrikelnummer}}</td>
-        <td>{{pers.studiengang}}</td>
-        <td><img src="@/assets/trash.png" alt="Delete" width="20" @click="removeTeilnehmer(pers)"></td>
-      </tr>
-    </table>
+      <!-- Kursliste für beide Rollen -->
+      <table id="tabelle">
+        <tr>
+          <th>Student</th>
+          <th>Matrikelnummer</th>
+          <th>Studiengang</th>
+          <th>Aktion</th>
+        </tr>
+        <tr class="teilnehmer-container" v-for="pers in teilnehmer" :key="pers.id">
+          <td>{{pers.vorname}} {{pers.name}}</td>
+          <td>{{pers.matrikelnummer}}</td>
+          <td>{{pers.studiengang}}</td>
+          <td><img src="@/assets/trash.png" alt="Delete" width="20" @click="removeTeilnehmer(pers)"></td>
+        </tr>
+      </table>
+    </div>
+    <PopupRemoveTeilnehmer v-if="!submittedRemove"></PopupRemoveTeilnehmer>
   </div>
 </template>
 
 <script>
 import KursDataService from '@/services/KursDataService';
+
+import PopupRemoveTeilnehmer from '@/components/PopupRemoveTeilnehmer.vue';
+
 export default {
   name: 'KursTeilnehmer',
+  components: {
+    PopupRemoveTeilnehmer
+  },
   data() {
     return {
-      teilnehmer: []
+      teilnehmer: [],
+      submittedAdd: true,
+      submittedRemove: true,
+      currentStudent: {}
     }
   },
   methods: {
@@ -46,14 +58,20 @@ export default {
     },
 
     removeTeilnehmer(student){
-      console.log("Remove " + student.vorname);
+      this.currentStudent = student;
+      this.submittedRemove = false;
       // Popup öffnen -> nach Bestätigung fragen und dann Kurs.removeStudent
     }
 
   },
   mounted(){
     this.getTeilnehmer();
-  } 
+  },
+  watch: {
+    teilnehmer(){
+      this.getTeilnehmer();
+    }
+  }
 }
 </script>
 
