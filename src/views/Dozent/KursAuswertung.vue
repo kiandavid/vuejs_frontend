@@ -2,8 +2,10 @@
   <div class="auswertung-container">
     <h2>Kursauswertung</h2>
 
-    <select name="Filter" id="sort">
-      <option value="sortiere">Sortiere...</option>
+    <select v-model="sort" name="Filter" id="sort">
+      <option value="-1">Sortiere...</option>
+      <option value="0">Alphabetisch</option>
+      <option value="3">Nach Punktzahl</option>
     </select><br><br>
 
     <table id="tabelle" v-if="dataReady">
@@ -37,7 +39,8 @@ export default {
       aufgaben: [],
       kurs: {},
       loesungen: [],
-      dataReady: false
+      dataReady: false,
+      sort: -1
     }
   },
   methods: {
@@ -86,18 +89,60 @@ export default {
       LoesungDataService.getAll()
         .then(res =>{
           this.loesungen = res.data;
-          this.dataReady = true;
+          if(!this.loesungen[0]) {
+            alert("Es wurden bisher keine Aufgaben angelegt!");
+          } else {
+            this.dataReady = true;
+          }
         })
         .catch(e => {
           console.log(e);
         })      
+    },
+
+    sortTable(index) {
+      var table, rows, switching, i, x, y, shouldSwitch;
+      table = document.getElementById("tabelle");
+      switching = true;
+      while (switching) {
+        switching = false;
+        rows = table.rows;
+
+        for (i = 1; i < (rows.length - 1); i++) {
+          shouldSwitch = false;
+          x = rows[i].getElementsByTagName("TD")[index];
+          y = rows[i + 1].getElementsByTagName("TD")[index];
+          if(index==0) {
+            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+              shouldSwitch = true;
+              break;
+            }
+          } else {
+            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+              shouldSwitch = true;
+              break;
+            }            
+          }
+        }
+        if (shouldSwitch) {
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
     }
+  }
+}    
   
   },
   mounted(){
     this.kurs = this.$store.state.kurs;
     this.getCourseData();
     this.getAllLoesungen();
+  },
+  watch:{
+    sort(){
+      if(this.sort>=0){
+        this.sortTable(this.sort);
+      }
+    }
   }
 }
 </script>

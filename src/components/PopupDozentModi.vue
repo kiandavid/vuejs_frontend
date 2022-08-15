@@ -107,6 +107,8 @@ export default {
             this.$store.dispatch('setDozent', response.data);
             this.$parent.submittedDoz = true;
             alert("Dozent "+ this.dozent.nachname +" wurde erfolgreich geändert!");
+            this.isSetup = false;
+
           })
           .catch(e => {
             console.log(e);
@@ -116,6 +118,7 @@ export default {
       // Schließt das Pop-up-Fenster
       cancel(){
         this.$parent.submittedDoz = true;
+        this.isSetup = false;
       },
 
       // setter für das lokale Dozenten-Objekt
@@ -133,7 +136,7 @@ export default {
     },
     watch: {   
       isSetup() {
-        console.log('User in Popup set!');
+        // console.log('User in Popup set!');
         this.setDozent(this.$parent.currentDozent);
       } 
     }

@@ -117,6 +117,7 @@ export default {
             this.$store.dispatch('setStudent', response.data);
             this.$parent.submittedStud = true;
             alert("Student "+ this.student.nachname +" wurde erfolgreich geändert!");
+            this.isSetup = false;
           })
           .catch(e => {
             console.log(e);
@@ -126,6 +127,7 @@ export default {
       // Schließt das Pop-up-Fenster
       cancel(){
         this.$parent.submittedStud = true;
+        this.isSetup = false;
       },
 
       // setter für das lokale Studenten-Objekt
@@ -144,7 +146,7 @@ export default {
     },
     watch: {   
       isSetup() {
-        console.log('User in Popup set!');
+        // console.log('User in Popup set!');
         this.setStudent(this.$parent.currentStudent);
       }
     }
