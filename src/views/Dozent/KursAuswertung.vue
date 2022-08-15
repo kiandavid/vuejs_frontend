@@ -6,8 +6,7 @@
       <option value="sortiere">Sortiere...</option>
     </select><br><br>
 
-    <!-- Kursliste für beide Rollen -->
-    <table id="tabelle">
+    <table id="tabelle" v-if="dataReady">
       <tr>
         <th>Student</th>
         <th>Matrikelnummer</th>
@@ -18,9 +17,9 @@
       <tr class="teilnehmer-container" v-for="pers in teilnehmer" :key="pers.id">
         <td>{{pers.vorname}} {{pers.nachname}}</td>
         <td>{{pers.matrikelnummer}}</td>
-        <td>{{getAnzahlAufgaben(pers.id)}} / {{aufgaben.length}}</td>
-        <td>{{pers.id}}</td>
-        <td></td>
+        <td>{{getAufgabenInfo(1, pers.id)}} / {{aufgaben.length}}</td>
+        <td>{{getAufgabenInfo(2, pers.id)}}</td>
+        <td>{{getAufgabenInfo(3, pers.id)}}</td>
       </tr>
     </table>
   </div>
@@ -34,15 +33,11 @@ export default {
   name: 'KursAuswertung',
   data() {
     return {
-      // studenten: [
-      //   {id: 1, vorname: 'Max', name:'Mustermann', matrikelnummer: 111111, anzahl: "9/10", punkte: "87%", bonus: "Ja"},
-      //   {id: 1, vorname: 'Max', name:'Mustermann', matrikelnummer: 111111, anzahl: "9/10", punkte: "87%", bonus: "Ja"},
-      //   {id: 1, vorname: 'Max', name:'Mustermann', matrikelnummer: 111111, anzahl: "9/10", punkte: "87%", bonus: "Ja"},
-      //   {id: 1, vorname: 'Max', name:'Mustermann', matrikelnummer: 111111, anzahl: "9/10", punkte: "87%", bonus: "Ja"},
-      // ],
       teilnehmer: [],
       aufgaben: [],
-      kurs: {}
+      kurs: {},
+      loesungen: [],
+      dataReady: false
     }
   },
   methods: {
@@ -55,30 +50,54 @@ export default {
         })
     },
 
-    getAnzahlAufgaben(studentId){
+    // Index gibt an welcher Wert zurückgeben wird
+    // Holt die Werte der letzten drei Spalten für jeden Studenten
+    getAufgabenInfo(index, studentId){
       let anzahlAufgaben = 0;
+      let punkteMaxGesamt = 0;
+      let punkteErreichtGesamt = 0;
       for(let i=0; i < this.aufgaben.length; i++) {
-        LoesungDataService.getAll()
-          .then(res =>{
-            for(let j=0; j < res.data.length; j++){
-              // console.log(JSON.stringify(res.data[j],null,2));
-              if(res.data[j].studentId == studentId && res.data[j].aufgabeId == this.aufgaben[i].id) {
-                anzahlAufgaben++;
-              }
-            }
-            console.log("anz2: "+ anzahlAufgaben);
-            return anzahlAufgaben;
-          })
-          .catch(e => {
-            console.log(e);
-          })
+        punkteMaxGesamt += Number(this.aufgaben[i].punkte_max);
+        for(let j=0; j < this.loesungen.length; j++){
+          if(this.loesungen[j].studentId == studentId && this.loesungen[j].aufgabeId == this.aufgaben[i].id) {
+            anzahlAufgaben++;
+            punkteErreichtGesamt += Number(this.loesungen[j].punkte);
+          }
+        }
       }
+      let punkteErr = Math.round(punkteErreichtGesamt*100);
+      let bewertung = Math.round(((punkteErr/100)/punkteMaxGesamt)*100);
+      let bonus = "Nein";
+      if(bewertung >= 60) {
+        bonus = "Ja";
+      }
+      
+      switch(index){
+        case 1:
+          return anzahlAufgaben;
+        case 2:
+          return bewertung+"%";
+        case 3: 
+          return bonus;
+      }
+    },
+
+    getAllLoesungen(){
+      LoesungDataService.getAll()
+        .then(res =>{
+          this.loesungen = res.data;
+          this.dataReady = true;
+        })
+        .catch(e => {
+          console.log(e);
+        })      
     }
   
   },
   mounted(){
     this.kurs = this.$store.state.kurs;
     this.getCourseData();
+    this.getAllLoesungen();
   }
 }
 </script>
