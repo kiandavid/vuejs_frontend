@@ -11,13 +11,6 @@
       <label for="punkte_max">Maximal erreichbare Punktzahl:</label><br>
       <input class="form-control" id="punkte_max" required v-model="aufgabe.punkte_max" name="punkte_max" />
     </div>
-    <div class="form-group">
-      <label for="aufgabe">Aufgabendatei:</label><br><br>
-      <div v-if="!updated">
-        <span>{{aufgabe.aufgabe}}</span><br><br>
-      </div>
-      <input type="file" class="form-control" id="aufgabe" name="aufgabe"  @change="handleFileUpload( $event )"/>
-    </div>
 
     <button @click="saveAufgabe()" class="btn">Aufgabe speichern</button>
     <button @click="cancel()" class="btn">Abbrechen</button>
@@ -52,12 +45,10 @@ export default {
 
     // Speichert die Aufgabe im ausgewählten Kurs
     saveAufgabe() {
-      if (this.aufgabe.bezeichnung && this.aufgabe.punkte_max && this.aufgabe.aufgabe) {
+      if (this.aufgabe.bezeichnung && this.aufgabe.punkte_max) {
         var data = {
           bezeichnung: this.aufgabe.bezeichnung,
           punkte_max: this.aufgabe.punkte_max,
-          aufgabe: this.aufgabe.aufgabe.name,
-          kursId: this.$parent.kurs.id
         };
         AufgabeDataService.update(this.aufgabe.id, data)
           .then(response => {

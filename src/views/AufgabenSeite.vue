@@ -23,19 +23,19 @@
     </table>
 
     <!-- Sicht der Studenten -->
-    <div v-if="userRole=='Student'">
+    <div v-if="userRole=='Student' && dataReady">
       <table id="AufgabenDetails">
           <tr>
             <th>Status</th>
-            <td>{{status}}</td>
+            <td>{{getStatus(this.$store.state.student.id)}}</td>
           </tr>
           <tr>
             <th>Punkte</th>
-            <td>{{punkte}} / {{punkte_max}}.0</td>
+            <td>{{getPunkte(this.$store.state.student.id)}} / {{aufgabe.punkte_max}}.0</td>
           </tr>
           <tr>
             <th>Bewertung</th>
-            <td>{{bewertung}}</td>
+            <td>{{getBewertung(this.$store.state.student.id)}}</td>
           </tr>
       </table>
 
@@ -45,7 +45,7 @@
       <button v-on:click="submitFile()">Lösung einreichen</button>
       
       <br><br><br><br>
-      <router-link class="routerlink" :to="{ name: 'FeedbackStud', params:{ response: responseData, aufgabenId: this.id }}">Feedback einsehen</router-link>
+      <router-link class="routerlink" :to="{ name: 'FeedbackStud', params:{ response: responseData, aufgabenId: this.id, loesung: file }}">Feedback einsehen</router-link>
     </div>
   </div>
 </template>
@@ -55,6 +55,7 @@
 <script>
 
 import AufgabeDataService from '@/services/AufgabeDataService';
+// import AufgabeDataService2 from '@/services/AufgabeDataService2';
 import KursDataService from '@/services/KursDataService';
 import LoesungDataService from '@/services/LoesungDataService';
 
@@ -135,6 +136,11 @@ export default {
             }
         return punkte;        
       },
+
+      getBewertung(id){
+        let bewertung = Math.round((this.getPunkte(id) / this.aufgabe.punkte_max)*100);
+        return bewertung+'%';
+      },
       
       getAllLoesungen(){
         LoesungDataService.getAll()
@@ -157,13 +163,25 @@ export default {
     //     console.log("File_Name: " + this.file.name);
     //     var JSZip = require("jszip");
     //     var zip = new JSZip();
+
     //     // Submission.xml muss hier hinzugefügt werden
+    //     AufgabeDataService2.get("Aufgaben\\submission.xml")
+    //        .then(res => {
+    //          this.submissionXML = res.data; 
+    //        })
     //     zip.file("submission.xml", this.submissionXML);
+
     //     // Generate directorys within the Zip file structure
     //     var task = zip.folder("task");
     //     var submission = zip.folder("submission");
+    // 
     //     // task.zip muss hier eingebaut werden
-    //     task.file("task.zip", this.file, {base64: true});
+    //     var taskFile;
+    //     AufgabeDataService2.get(this.aufgabe.aufgabe)
+    //        .then(res => {
+    //          taskFile = res.data; 
+    //        })
+    //     task.file("task.zip", taskFile, {base64: true});
     //     // submission.sql muss hier eingebaut werden
     //     submission.file("submission.sql", this.file, {base64: true});
 
@@ -171,7 +189,7 @@ export default {
     //     zip.generateAsync({type:"blob"})
     //       .then(function(content) {
     //         GraderService.submit(content)
-    //         .then(response => {
+    //          .then(response => {
     //           this.responseData = response.data;
     //         })
     //         .catch(e => {

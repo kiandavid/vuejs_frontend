@@ -14,12 +14,10 @@
     <div class="form-group">
       <label for="aufgabe">Aufgabendatei:</label><br>
       <input type="file" class="form-control" id="aufgabe" name="aufgabe" @change="handleFileUpload( $event )"/>
-        
     </div>
 
     <button @click="saveAufgabe()" class="btn">Aufgabe speichern</button>
     <button @click="cancel()" class="btn">Abbrechen</button>
-
   </div>
 </template>
 
@@ -50,17 +48,17 @@ export default {
 
     handleFileUpload( event ){
         this.aufgabe.aufgabe = event.target.files[0];
+        console.log(this.aufgabe.aufgabe);
     },
 
     // Speichert die Aufgabe im ausgewählten Kurs
     saveAufgabe() {
       if (this.aufgabe.bezeichnung && this.aufgabe.punkte_max && this.aufgabe.aufgabe) {
-        var data = {
-          bezeichnung: this.aufgabe.bezeichnung,
-          punkte_max: this.aufgabe.punkte_max,
-          aufgabe: this.aufgabe.aufgabe.name,
-          kursId: this.aufgabe.kursId
-        };
+        var data = new FormData();
+        data.append("bezeichnung", this.aufgabe.bezeichnung);
+        data.append("punkte_max", this.aufgabe.punkte_max);
+        data.append("aufgabe", this.aufgabe.aufgabe);
+        data.append("kursId", this.aufgabe.kursId);
         AufgabeDataService.create(data)
           .then(response => {
             this.aufgabe.id = response.data.id;

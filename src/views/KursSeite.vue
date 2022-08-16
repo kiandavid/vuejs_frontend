@@ -18,6 +18,7 @@
       </div>
       <div v-if="userRole=='Dozent'">
         <button @click="addAufgabe()">Aufgabe hinzufügen</button>
+        <!-- <button @click="test()">download test</button> -->
       </div>
 
       <div class="excercises-container" v-for="aufgabe in aufgaben" :key="aufgabe.id">
@@ -42,13 +43,13 @@
 
 <script>
 import KursDataService from '@/services/KursDataService';
+import AufgabeDataService2 from '@/services/AufgabeDataService2';
 
 import PopupAddExcercise from '@/components/PopupAddExcercise.vue';
 import PopupUpdateExcercise from '@/components/PopupUpdateExcercise.vue';
 import PopupDeleteExcercise from '@/components/PopupDeleteExcercise.vue';
 
 // import { saveAs } from 'file-saver';
-
 
 export default {
   name: 'KursSeite',
@@ -74,6 +75,19 @@ export default {
     }
   },    
   methods: {
+
+    test(){
+      AufgabeDataService2.get(this.aufgaben[2].aufgabe)
+        .then(res => {
+          console.log(res);
+        // var blob = new Blob([res.data], {type:'application/zip'});
+        // var file = new File([blob], "task.zip", {type: "application/zip"});
+        // saveAs(blob, "task.zip");
+        })
+        .catch(e => {
+          console.log(e);
+        })
+    },
 
     // Holt die Kursdaten mit den dazugehörigen Aufgaben des Kurses
     getKursById(id){

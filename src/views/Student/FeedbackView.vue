@@ -22,6 +22,7 @@
       </div>
     </div>
     <button id="abgabeBtn" v-if="!loesungAbgegeben" @click="persistiereLoesung()">Lösung abgeben</button>
+    <button id="abgabeBtn" @click="test()">Lösung anzeigen</button>
   </div>
 </template>
 
@@ -39,7 +40,7 @@ import FeedbackDataService from '@/services/FeedbackDataService';
 
 export default {
   name: "FeedbackView",
-  props: ['response', 'aufgabenId'],
+  props: ['response', 'aufgabenId', 'loesung'],
   components: {
     FeedbackDetails
   },
@@ -67,7 +68,14 @@ export default {
       this.file = event.target.files[0];
     },
 
-
+    test(){
+      var reader = new FileReader();
+      console.log(this.loesung);
+      console.log(this.loesung.type);
+      console.log(this.loesung.name);
+      reader.readAsText(this.loesung);
+      setTimeout(() => console.log(reader.result), 100);
+    },
 
     xmlAuslesen() {
       var reader = new FileReader();
