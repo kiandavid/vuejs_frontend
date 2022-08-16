@@ -22,7 +22,7 @@
       </div>
     </div>
     <button id="abgabeBtn" v-if="!loesungAbgegeben" @click="persistiereLoesung()">Lösung abgeben</button>
-    <button id="abgabeBtn" @click="test()">Lösung anzeigen</button>
+    <!-- <button id="abgabeBtn" @click="readLoesung()">Lösung anzeigen</button> -->
   </div>
 </template>
 
@@ -40,7 +40,7 @@ import FeedbackDataService from '@/services/FeedbackDataService';
 
 export default {
   name: "FeedbackView",
-  props: ['response', 'aufgabenId', 'loesung'],
+  props: ['response', 'aufgabenId'],
   components: {
     FeedbackDetails
   },
@@ -59,7 +59,8 @@ export default {
       bewertungsaspekte: [],
  
       loesungAbgegeben: false,
-      loesungen: []
+      loesungen: [],
+      loesungsString: ""
     }
   },
   methods: {
@@ -68,13 +69,15 @@ export default {
       this.file = event.target.files[0];
     },
 
-    test(){
+    readLoesung(){
       var reader = new FileReader();
-      console.log(this.loesung);
-      console.log(this.loesung.type);
-      console.log(this.loesung.name);
-      reader.readAsText(this.loesung);
-      setTimeout(() => console.log(reader.result), 100);
+      reader.readAsText(this.$store.state.loesung);
+      setTimeout(() => this.setLoesungsString(reader.result.slice(146)), 100);
+    },
+
+    setLoesungsString(loes){
+      this.loesungsString = loes;
+      // console.log(this.loesungsString);
     },
 
     xmlAuslesen() {
@@ -141,7 +144,7 @@ export default {
     // Die Lösung wird persistiert
     persistiereLoesung() {
 
-      var loesungsString = this.responseJSON["response"]["separate-test-feedback"]["submission-feedback-list"]["student-feedback"][1]["content"]["_cdata"];
+      // var loesungsString = this.responseJSON["response"]["separate-test-feedback"]["submission-feedback-list"]["student-feedback"][1]["content"]["_cdata"];
 
 
       var aufgabenIdString = this.aufgabenId.toString();
@@ -156,7 +159,7 @@ export default {
       const loesung = {
         "bezeichnung": bezeichnung,
         "punkte": punkte_erreicht,
-        "loesung": loesungsString,
+        "loesung": this.loesungsString,
         "aufgabeId": Number(this.aufgabenId),
         "studentId": this.$store.state.student.id
       };
@@ -253,6 +256,7 @@ export default {
     //   this.getGraderFeedback();
     this.userRole = this.$store.state.user.realm_access.roles[0];
     this.checkForAbgabe();
+    this.readLoesung();
   }
 }
 

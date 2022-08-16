@@ -7,6 +7,9 @@
         <div class="flex-container">
           <div>
             <span> Semester: {{kurs.semester}}</span>
+            <div v-for="doz in dozenten" :key="doz.id">
+              <span>Dozent: {{doz.titel}} {{doz.nachname}}</span>
+            </div>
           </div>
           <div id="ausschreiben" v-if="userRole=='Student'">
             <router-link to="/">
@@ -62,6 +65,7 @@ export default {
   data() {
     return {
       aufgaben: [],
+      dozenten: [],
       kurs: {
         id: this.id,
         bezeichnung: "",
@@ -93,6 +97,7 @@ export default {
     getKursById(id){
       KursDataService.get(id)
         .then(response => {
+            this.dozenten = response.data.dozents;
             this.aufgaben = response.data.aufgaben;
             this.kurs.bezeichnung = response.data.bezeichnung;
             this.kurs.semester = response.data.semester;

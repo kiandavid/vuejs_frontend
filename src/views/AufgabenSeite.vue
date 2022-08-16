@@ -42,10 +42,10 @@
       <h3>Lösung einreichen</h3>
       <input type="file" @change="handleFileUpload( $event )"/>
       <br><br>
-      <button v-on:click="submitFile()">Lösung einreichen</button>
+      <button @click="submitFile()">Lösung einreichen</button>
       
       <br><br><br><br>
-      <router-link class="routerlink" :to="{ name: 'FeedbackStud', params:{ response: responseData, aufgabenId: this.id, loesung: file }}">Feedback einsehen</router-link>
+      <router-link class="routerlink" :to="{ name: 'FeedbackStud', params:{ response: responseData, aufgabenId: this.id}}">Feedback einsehen</router-link>
     </div>
   </div>
 </template>
@@ -158,6 +158,10 @@ export default {
       handleFileUpload( event ){
 				this.file = event.target.files[0];
 			},
+
+      submitFile(){
+        this.$store.dispatch('setLoesung', this.file);
+      },
 			
 		// 	reicheLösungEin(){
     //     console.log("File_Name: " + this.file.name);
