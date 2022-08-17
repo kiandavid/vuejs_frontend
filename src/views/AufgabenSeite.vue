@@ -1,7 +1,9 @@
 <template>
   <div class="excercise-container">
+    <!-- Titel der Aufgabe -->
     <h2>{{aufgabe.bezeichnung}}</h2>
 
+    <!-- Aufgabenstellung (Aufgabendatei, kann noch nicht geöffnet werden) -->
     <strong id="aufgabe">Aufgabenstellung:</strong><br><br>
     <span>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</span><br><br>
 
@@ -22,7 +24,7 @@
       </tr>
     </table>
 
-    <!-- Sicht der Studenten -->
+    <!-- Aufgabenübersicht der Studenten -->
     <div v-if="userRole=='Student' && dataReady">
       <table id="AufgabenDetails">
           <tr>
@@ -39,12 +41,14 @@
           </tr>
       </table>
 
+      <!-- Student: Einrechen der Lösung -->
       <h3>Lösung einreichen</h3>
       <input type="file" @change="handleFileUpload( $event )"/>
       <br><br>
-      <button @click="submitFile()">Lösung einreichen</button>
+      <button @click="reicheLösungEin()">Lösung einreichen</button>
       
       <br><br><br><br>
+      <!-- Student: Link zur Feedbackseite -->
       <router-link class="routerlink" :to="{ name: 'FeedbackStud', params:{ response: responseData, aufgabenId: this.id}}">Feedback einsehen</router-link>
     </div>
   </div>
@@ -53,11 +57,13 @@
 
 
 <script>
-
+// Services
 import AufgabeDataService from '@/services/AufgabeDataService';
-// import AufgabeDataService2 from '@/services/AufgabeDataService2';
 import KursDataService from '@/services/KursDataService';
 import LoesungDataService from '@/services/LoesungDataService';
+
+// import AufgabeDataService2 from '@/services/AufgabeDataService2';
+
 
 export default {
   name: 'AufgabenSeite',
@@ -84,20 +90,24 @@ export default {
     }
   },
   methods: {
-      // Funktion um das User-Objekt aus dem State (von Keycloak) zu setzen
+      /**
+       * Das User-Objekt aus dem State (Keycloak-Access token) wird genutzt um 
+       * den Benutzer und seine Rolle lokal zu speichern.
+       */
       setUser() {
-        console.log("User set");
         this.user = this.$store.state.user;
         this.userRole = this.user.realm_access.roles[0];
       },
 
-      // Holt die Aufgabe aus der Datenbank
-      getAufgabe(id){
-        AufgabeDataService.get(id)
+      /**
+       * Holt die Aufgabe aus der Datenbank
+       * @param {number} aufgabenId - Id der Aufgabe
+       */
+      getAufgabe(aufgabenId){
+        AufgabeDataService.get(aufgabenId)
           .then(response => {
             this.aufgabe = response.data;
             this.punkte_max = response.data.punkte_max;
-            // console.log(JSON.stringify(response.data,null,2));
           })
           .catch(e => {
             console.log(e);
@@ -105,8 +115,12 @@ export default {
       },
 
       // Holt die Kursdaten mit den dazugehörigen Aufgaben des Kurses
-      getStudenten(id){
-        KursDataService.get(id)
+      /**
+       * Holt die Studenten eines Kurses aus der Datenbank
+       * @param {number} kursId - Id des Kurses in dem die Studenten sind
+       */
+      getStudenten(kursId){
+        KursDataService.get(kursId)
           .then(response => {
               this.studenten = response.data.students;
           })
@@ -115,6 +129,11 @@ export default {
           });
       },      
 
+      /**
+       * Gibt den Status der Abgabe einer Aufgabe zurück
+       * @param {number} studentId - Id des Studenten
+       * @return {string} status - Entweder "Nicht abgegeben" | "Abgegeben"
+       */
       getStatus(studentId){
         var status = "Nicht Abgegeben";
         for(let j=0; j < this.loesungen.length; j++){
@@ -125,7 +144,11 @@ export default {
         return status;
       },
 
-
+      /**
+       * Gibt die erreichte Punktzahl der Abgabe zurück
+       * @param {number} studentId - Id des Studenten
+       * @return {number} punkte - Auf zwei Nachkommastellen gerundet
+       */
       getPunkte(studentId){
         var punkte = 0;
         for(let j=0; j < this.loesungen.length; j++){
@@ -137,11 +160,17 @@ export default {
         return punkte;        
       },
 
+      /**
+       * Gibt die Bewertung der Abgabe zurück
+       * @param {number} studentId - Id des Studenten
+       * @return {string} bewertung - Prozentsatz: Erreichte Punkte / Maximal erreichbare Punkte
+       */
       getBewertung(id){
         let bewertung = Math.round((this.getPunkte(id) / this.aufgabe.punkte_max)*100);
         return bewertung+'%';
       },
       
+      // Holt Alle Lösungen aus der Datenbank
       getAllLoesungen(){
         LoesungDataService.getAll()
           .then(res =>{
@@ -153,59 +182,75 @@ export default {
           })      
       },      
 
-
-      // setzt die Datei 
+      /**
+       * Bei Auswahl einer Datei, wird diese lokal gesetzt
+       * @param {object} event - Event wird beim Hochladen einer Datei getriggert
+       */
       handleFileUpload( event ){
 				this.file = event.target.files[0];
 			},
 
-      submitFile(){
+    
+			/**
+       * Erstellt aus der abgegeben Lösung eine Zip-Datei
+       * Die Datei submission.xml und die Aufgabendatei "task.zip",
+       * können über den AufgabenDataService2 von Node.js geholt werden
+       * Die Dateien werden im Binärformat zurückgeschickt und müssen noch
+       * angepasst werden. 
+       */
+			reicheLösungEin(){
+        // Lösung wird im state gespeichert
         this.$store.dispatch('setLoesung', this.file);
-      },
-			
-		// 	reicheLösungEin(){
-    //     console.log("File_Name: " + this.file.name);
-    //     var JSZip = require("jszip");
-    //     var zip = new JSZip();
 
-    //     // Submission.xml muss hier hinzugefügt werden
-    //     AufgabeDataService2.get("Aufgaben\\submission.xml")
-    //        .then(res => {
-    //          this.submissionXML = res.data; 
-    //        })
-    //     zip.file("submission.xml", this.submissionXML);
+        var JSZip = require("jszip");
+        var zip = new JSZip();
 
-    //     // Generate directorys within the Zip file structure
-    //     var task = zip.folder("task");
-    //     var submission = zip.folder("submission");
-    // 
-    //     // task.zip muss hier eingebaut werden
-    //     var taskFile;
-    //     AufgabeDataService2.get(this.aufgabe.aufgabe)
-    //        .then(res => {
-    //          taskFile = res.data; 
-    //        })
-    //     task.file("task.zip", taskFile, {base64: true});
-    //     // submission.sql muss hier eingebaut werden
-    //     submission.file("submission.sql", this.file, {base64: true});
+        // submission.xml muss unter dem Pfad im Node.js-Verzeichnis zu finden sein
+        // Die zurückgebene Datei muss noch ins XML-Format übertragen werden
+        AufgabeDataService2.get("Aufgaben\\submission.xml")
+           .then(res => {
+             this.submissionXML = res.data; 
+           })
 
-    //     // Generate the zip file asynchronously
-    //     zip.generateAsync({type:"blob"})
-    //       .then(function(content) {
-    //         GraderService.submit(content)
-    //          .then(response => {
-    //           this.responseData = response.data;
-    //         })
-    //         .catch(e => {
-    //           console.log("Fehler: " + e);
-    //         });
-    //       });
-    //   }
+        // Submission.xml wird hier hinzugefügt 
+        zip.file("submission.xml", this.submissionXML);
+
+        // Es werden Ordner für die Aufgabe und Abgabe angelegt
+        var task = zip.folder("task");
+        var submission = zip.folder("submission");
+    
+        // Die zurückgebene Datei ist im Binärformat und muss umgewandelt werden
+        var taskFile;
+        AufgabeDataService2.get(this.aufgabe.aufgabe)
+           .then(res => {
+             taskFile = res.data; 
+           })
+          
+        // Aufgabe -und Abgabedateien werden in ihre Ordner eingefügt
+        task.file("task.zip", taskFile, {base64: true});
+        submission.file("submission.sql", this.file, {base64: true});
+
+        // ZIP-Datei wird erstellt und dem Grader-Service als Submission angehängt
+        zip.generateAsync({type:"blob"})
+          .then(function(content) {
+            GraderService.submit(content)
+             .then(response => {
+              this.responseData = response.data;
+            })
+            .catch(e => {
+              console.log("Fehler: " + e);
+            });
+          });
+      }
 
     },
 
 
     // Holt alle Kurse aus der Datenbank und setzt den User
+    /**
+     * Beim Aufruf der Seite wird der/die Benutzer(-rolle) aus dem state geholt
+     * Die Aufgabe, die Studenten und die Lösungen werden aus der Datenbank geholt
+     */
     mounted() {
       this.setUser();
       this.getAufgabe(this.id);

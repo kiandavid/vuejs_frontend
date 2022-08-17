@@ -1,5 +1,6 @@
 <template>
   <div class="punkte-container" v-if="userRole=='Student' && dataLoaded">
+  <!-- Übersicht der Punkte eines Kurses -->
     <h2>Punkteübersicht - {{kurs.bezeichnung}}</h2>
     <h3>Meine Punkte</h3>
     <table class="punkte">
@@ -9,7 +10,6 @@
         <th>Erreichte Punkte</th>
         <th>Bewertung</th>
       </tr>
-      <!-- Evtl. dafür auch nochmal ein neues Array erstellen -->
       <tr class="teilnehmer-container" v-for="(aufgabe, index) in aufgaben" :key="aufgabe.id">
         <td>{{aufgabe.bezeichnung}}</td>
         <td>{{status[index]}}</td>
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-// import StudentDataService from '@/services/StudentDataService';
+// Service
 import LoesungDataService from '@/services/LoesungDataService';
 
 export default {
@@ -39,6 +39,10 @@ export default {
     }
   },
   methods: {
+    /**
+     * Prüft den Abgabestatus für jede Aufgabe und speichert die erreichten Punkte
+     * für jede Aufgabe in einem Array
+     */
     getStatus(){
       for(let i=0; i < this.aufgaben.length; i++){
         LoesungDataService.getAll()
@@ -63,19 +67,29 @@ export default {
       }
     },
   
-    getBewertung(erreicht, maximum){
-      var punkte = Number(erreicht);
-      var punkte_max = Number(maximum);
+    /**
+     * Berechnet die Bewertung für jede Aufgabe anhand der übergebenen Paramter
+     * @param {string} punkteErreicht - Die erreichten Punkte einer Lösung
+     * @param {string} punkteMaximum - Die maximal erreichbaren Punkte einer Aufgabe
+     * @return {string} bewertung - Prozentsatz: punkteErreicht / punkteMaximum
+     */
+    getBewertung(punkteErreicht, punkteMaximum){
+      var punkte = Number(punkteErreicht);
+      var punkte_max = Number(punkteMaximum);
       var bewertung = Math.round((punkte/punkte_max)*100);
       return bewertung + "%";
     }
   },
+  /**
+   * Beim Aufruf der Seite wird der Kurs, die Benutzerolle, das Student-Objekt und
+   * die Aufgaben des Kurses aus dem globalen Speicher geholt. zuletzt wird der Status
+   * abgeholt. 
+   */
   mounted(){
     this.kurs = this.$store.state.kurs;
     this.userRole = this.$store.state.user.realm_access.roles[0];
     this.student = this.$store.state.student;
     this.aufgaben = this.kurs.aufgaben;
-    // console.log(JSON.stringify(this.aufgaben,null,2));
     this.getStatus();
   }
     

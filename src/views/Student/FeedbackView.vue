@@ -1,5 +1,6 @@
 <template>
   <div class="container" v-if="userRole=='Student'">
+  <!-- Aus Demo-Zwecken wird die Antwort vorerst nur hochgeladen -->
     <div class="file-upload">
       <h2>Feedback</h2>
       <h3>Beispiel Feedback-Datei</h3>
@@ -7,6 +8,7 @@
       <br><br>
       <button @click="xmlAuslesen()">Bestätigen</button>
     </div>
+    <!-- Das Feedback wird nach Bewertungsaspekt ausgeben -->
     <div class="feedback">
       <div class="item1">
         <FeedbackDetails ref="aspekt1" index="0"></FeedbackDetails>
@@ -21,19 +23,21 @@
         <FeedbackDetails ref="aspekt4" index="3"></FeedbackDetails>
       </div>
     </div>
+    <!-- Die Abgabe der Lösung ist nur möglich, wenn zu der Aufgabe bisher keine abgegeben wurde -->
     <button id="abgabeBtn" v-if="!loesungAbgegeben" @click="persistiereLoesung()">Lösung abgeben</button>
-    <!-- <button id="abgabeBtn" @click="readLoesung()">Lösung anzeigen</button> -->
   </div>
 </template>
 
 <script>
+// SFCs
 import FeedbackDetails from '@/components/FeedbackDetails.vue';
 
+// Services
 import LoesungDataService from '@/services/LoesungDataService';
 import BewertungsaspektDataService from '@/services/BewertungsaspektDataService';
 import FeedbackDataService from '@/services/FeedbackDataService';
 
-
+// Auskommentiert, solange die Bewertung über den Grader aSQLg noch nicht funktioniert
 // import GraderService from '@/services/GraderService';
 
 
@@ -64,30 +68,49 @@ export default {
     }
   },
   methods: {
-
+    /**
+       * Bei Auswahl einer Datei, wird diese lokal gesetzt
+       * @param {object} event - Event wird beim Hochladen einer Datei getriggert
+       */
     handleFileUpload(event) {
       this.file = event.target.files[0];
     },
 
+    /**
+     * Die abgegbene Lösung eines Studenten wird gelesen und die setLoesungsString-Methode aufgerufen
+     */
     readLoesung(){
       var reader = new FileReader();
       reader.readAsText(this.$store.state.loesung);
+      // Die Slice Methode muss evtl. rausgenommen oder angepasst werden
       setTimeout(() => this.setLoesungsString(reader.result.slice(146)), 100);
     },
 
-    setLoesungsString(loes){
-      this.loesungsString = loes;
-      // console.log(this.loesungsString);
+    /**
+     * Der String der ausgelesenen Lösung wird lokal gesetzt
+     * @param {string} loesungsString - Ergebnis des FileReaders
+     */
+    setLoesungsString(loesungsString){
+      this.loesungsString = loesungsString;
     },
 
+    /**
+     * Das Feedback des Graders im XML-format wird gelesen
+     * Anschließend wird das Ergebnis der Methode convertToJson() übergeben
+     */
     xmlAuslesen() {
       var reader = new FileReader();
       reader.readAsText(this.file);
       setTimeout(() => this.convertToJson(reader.result), 100);
     },
 
-    convertToJson(result) {
-      this.xmlString = result;
+    /**
+     * Konvertiert die den XML-String des FileReaders in ein JSON-Objekt
+     * anschließend wird die Methode neuesArrayGenerieren aufgerufen
+     * @param {string} xmlString - Ergebnis des FileReaders
+     */
+    convertToJson(xmlString) {
+      this.xmlString = xmlString;
 
       // Konvertiert XML-Datei ins JSON-Format
       var convert = require('xml-js');
@@ -100,6 +123,11 @@ export default {
       this.neuesArrayGenerieren();
     },
 
+    /**
+     * Aus dem JSON-Objekt des Feedbacks wird ein neues Array erstellt
+     * Das neue Array ist übersichtlicher und kann besser für die Darstellung 
+     * in den Kind-Komponenten genutzt werden 
+     */
     neuesArrayGenerieren() {
       // Für jeden Bewertungsaspekt soll ein Objekt im neuen Array angelegt werden
       for (let i = 0; i < this.feedbackJSON.length; i++) {
@@ -114,9 +142,10 @@ export default {
           "anmerkungen": []
         };
 
-        // let arrayAnmerkungen = [];
-
+        // Anzahl der Anmerkungen
         let length = Object.keys(anmerkungen["student-feedback"]).length;
+
+        // Eine Anmerkung wird dem Bewertungsaspekt hinzugefügt
         if (length == 3) {
           let anmerkung = {
               "id": 1,
@@ -124,6 +153,7 @@ export default {
           };
           bewertungsaspekt.anmerkungen[0] = anmerkung;
         } else {
+        // Mehrere Anmerkungen werden dem Bewertungsaspekt hinzugefügt
           for (let j = 0; j < length; j++) {
             let anmerkung = {
               "id": j + 1,
@@ -132,21 +162,24 @@ export default {
             bewertungsaspekt.anmerkungen[j] = anmerkung;
           }
         }
+        // Bewertungsapsekt wird dem neuen Array "bewertungsaspekte" hinzugefügt
         this.bewertungsaspekte[i] = bewertungsaspekt;
       }
-      // console.log("Neues Array: " + JSON.stringify(this.bewertungsaspekte, null, 2));
+      // Den Kind-Komponenten wird über ein Boolean mitgeteilt, dass das neue Array fertig erstellt ist
       this.$refs.aspekt1.feedbackReady = true;
       this.$refs.aspekt2.feedbackReady = true;
       this.$refs.aspekt3.feedbackReady = true;
       this.$refs.aspekt4.feedbackReady = true;
     },
 
-    // Die Lösung wird persistiert
+    /**
+     * Wenn die Lösung final eingereicht werden soll,
+     * wird zuerst die Lösung persistiert. Hier wird ein Objekt für die
+     * Lösung angelegt, welches in der Datenbank gespeichert wird. 
+     * Nach dem erfolgreichen Anlegen der Lösung wird die Methode
+     * persistiereBewertungsaspekte aufgerufen
+     */
     persistiereLoesung() {
-
-      // var loesungsString = this.responseJSON["response"]["separate-test-feedback"]["submission-feedback-list"]["student-feedback"][1]["content"]["_cdata"];
-
-
       var aufgabenIdString = this.aufgabenId.toString();
       var nachnameStud = this.$store.state.student.nachname;
       var bezeichnung = "aufgabe_" + aufgabenIdString + "_" + nachnameStud;
@@ -173,8 +206,14 @@ export default {
         })      
     },
 
+    /**
+     * @param {number} loesungsId - Id der neu angelegten Lösung
+     * Es werden Bewertungsaspekt-Objekte angelegt und in der Datenbank
+     * gespeichert. Die loesungsId ist ein Attribut der Bewertungsaspekt-Objekte.
+     * Somit entsteht in der Datenbank eine Beziehung zwischen der Lösung und den Bewertungsapsekten.
+     * Bei erfolgreicher Anlegung eines Bewertungsaspektes wird die Methode persistiereAnmerkungen aufgerufen.
+     */
     persistiereBewertungsaspekte(loesungsId){
-
       for(let i=0; i< this.bewertungsaspekte.length; i++){
         const bewertungsaspekt = {
           "typ": this.bewertungsaspekte[i].typ,
@@ -182,32 +221,30 @@ export default {
           "loesungId": loesungsId
         };
 
-        // console.log(JSON.stringify(bewertungsaspekt,null,2));
-
         var aspektId = null;
-
         BewertungsaspektDataService.create(bewertungsaspekt)
           .then(res => {
             console.log(JSON.stringify(res.data,null,2));
             aspektId = res.data.id;
-            // console.log("AspektId 1: "+aspektId);
             this.persistiereAnmerkungen(i, aspektId);
           })
           .catch(e => {
             console.log("Aspekt: " + e);
           })
-
       }
     },
   
+    /**
+     * Persistiert die Anmerkungen der Bewertungsaspekte
+     * @param {number} index - Index des zugehörigen Bewertungsaspektes im neuen Array
+     * @param {number} aspektId - Id des zugehörigen Bewertungsaspektes
+     */
     persistiereAnmerkungen(index, aspektId){
-
       for(let j=0; j< this.bewertungsaspekte[index].anmerkungen.length; j++){
         const feedback = {
           "anmerkung": this.bewertungsaspekte[index].anmerkungen[j].anmerkung,
           "bewertungsaspektId": aspektId
         }
-        // console.log(JSON.stringify(feedback,null,2));
         FeedbackDataService.create(feedback)
           .catch(e => {
             console.log("Feedback: " + e);
@@ -216,8 +253,13 @@ export default {
       this.loesungAbgegeben = true;
     },
 
+    /**
+     * Überprüft ob es in allen Lösungen eine gibt, die dem
+     * Studenten und dieser Aufgabe zuzuordnen ist.
+     * Ist, dass der Fall, wird ein Bool-Wert gesetzt, der 
+     * den Abgabe-button ausblendet.
+     */
     checkForAbgabe(){
-      // var aufgabenId = Number(this.aufgabenId);
       var studentId =  this.$store.state.student.id;
 
       LoesungDataService.getAll()
@@ -225,7 +267,6 @@ export default {
           this.loesungen = res.data;
           for(let i=0; i<this.loesungen.length; i++){
             if(this.loesungen[i].aufgabeId == this.aufgabenId && this.loesungen[i].studentId == studentId) {
-              // console.log(JSON.stringify(this.loesungen[i],null,2));
               this.loesungAbgegeben = true;
             } 
           } 
@@ -233,9 +274,12 @@ export default {
         .catch(e =>{
           console.log(e);
         })
-    }
+    },
       
-
+    /**
+     * Fragt dem Grader nach dem Feedback, mit der übergebenen gradeProcessId, ab.
+     * Anschließend wird das Feedback ausgelesen
+     */
     //   getGraderFeedback(){
     //     GraderService.get(this.response.gradeProcessId)
     //       .then(res => {
@@ -252,8 +296,13 @@ export default {
 
 
   },
+  /**
+   * Beim Aufruf der Seite wird, wenn die Bewertung funktioniert, das Feedback vom Grader abgeholt.
+   * Danach wird überpüft ob bereits eine Lösung abgegeben wurde. Zuletzt wird die Lösung des Studenten
+   * gelesen und lokal gesetzt. 
+   */
   mounted(){
-    //   this.getGraderFeedback();
+    // setTimeout(this.getGraderFeedback(), Number(this.response.estimatedSecondsRemaining))*1000;
     this.userRole = this.$store.state.user.realm_access.roles[0];
     this.checkForAbgabe();
     this.readLoesung();

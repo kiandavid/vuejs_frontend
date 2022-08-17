@@ -2,12 +2,14 @@
   <div class="auswertung-container">
     <h2>Kursauswertung</h2>
 
+    <!-- Sortier-Optionen -->
     <select v-model="sort" name="Filter" id="sort">
       <option value="-1">Sortiere...</option>
       <option value="0">Alphabetisch</option>
       <option value="3">Nach Punktzahl</option>
     </select><br><br>
 
+    <!-- Liste der Studenten und ihre Aufgaben -->
     <table id="tabelle" v-if="dataReady">
       <tr>
         <th>Student</th>
@@ -28,6 +30,7 @@
 </template>
 
 <script>
+// Services
 import KursDataService from '@/services/KursDataService';
 import LoesungDataService from '@/services/LoesungDataService';
 
@@ -44,17 +47,27 @@ export default {
     }
   },
   methods: {
+    /**
+     * Holt die Teilnehmer und die Aufgaben des ausgewählten Kurses
+     */
     getCourseData(){
       KursDataService.get(this.$store.state.kurs.id)
         .then(res =>{
           this.teilnehmer = res.data.students;
           this.aufgaben = res.data.aufgaben;
-          // console.log(JSON.stringify(this.aufgaben,null,4));
         })
     },
 
     // Index gibt an welcher Wert zurückgeben wird
     // Holt die Werte der letzten drei Spalten für jeden Studenten
+    /**
+     * gibt die Aufgabeninformationen eines Studenten wieder
+     * @param {number} index - 1|2|3 gibt an welche Aufgabeninformation zurückgegeben werden soll 
+     * @param {number} studentId - Id des Studenten 
+     * @return {number} anzahlAufgaben - index = 1, Anzahl der bearbeiteten Aufgaben
+     * @return {string} bewertung - index = 2, Prozentsatz aller erreichten Punkte und aller maximal erreichbaren
+     * @return {string} bonus - index = 3, "Ja" | "Nein" gibt an ob die Bonuspunkte erreicht wurden (Grenze bei 60%)
+     */
     getAufgabenInfo(index, studentId){
       let anzahlAufgaben = 0;
       let punkteMaxGesamt = 0;
@@ -85,6 +98,9 @@ export default {
       }
     },
 
+    /**
+     * Holt alle Lösungen aus der Datenbank und setzt diese lokal
+     */
     getAllLoesungen(){
       LoesungDataService.getAll()
         .then(res =>{
@@ -100,6 +116,10 @@ export default {
         })      
     },
 
+    /**
+     * Sortiert die Tabelle entweder alphabetisch oder nach der Bewertung
+     * @param {number} index, index == 0 für alpha; index == 3 für die Bewertung
+     */ 
     sortTable(index) {
       var table, rows, switching, i, x, y, shouldSwitch;
       table = document.getElementById("tabelle");
@@ -127,16 +147,25 @@ export default {
         if (shouldSwitch) {
           rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
           switching = true;
-    }
-  }
-}    
-  
+        }
+      }
+    }    
   },
+  /**
+   * Beim Aufruf der Seite wird der akutelle Kurs gesetzt
+   * Die Aufgaben, Studenten und Lösungen werden aus der Datenbank geholt
+   */
   mounted(){
     this.kurs = this.$store.state.kurs;
     this.getCourseData();
     this.getAllLoesungen();
   },
+  /**
+   * Beobachter für das Attribut sort
+   * Bei Änderung von sort wird die Methode
+   * sortTable() aufgerufen. Übergeben wird 
+   * sort als Index
+   */
   watch:{
     sort(){
       if(this.sort>=0){

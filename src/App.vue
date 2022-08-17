@@ -1,15 +1,18 @@
 <template>
   <div class="app-container">
     <div class="grid-container" v-if="auth">
+    <!-- Profil-Icon -->
       <div class="profil">
         <router-link to="/profil" v-if="userRole!='Master'">
           <img id="userIcon" src="./assets/profil.png" alt="Benutzerlogo">
         </router-link>
       </div>
+      <!-- Header mit Titel und Abmelde-Button -->
       <div class="header">
         <h2 id="title">Automatisierte SQL-Bewertung der Hochschule Hannover</h2>
         <button id="logout" @click="logoutFromKeycloak()">Abmelden</button>
       </div>
+      <!-- Navigationsleiste -->
       <div class="navigation">
         <div class="navItem" v-if="$route.path != '/'">
           <router-link to="/">Kurse</router-link>
@@ -49,10 +52,12 @@
           </router-link>
         </div>                    
       </div>
+      <!-- Content-Fenster in das alle anderen Seiten gerendert werden -->
       <div class="content">
           <router-view />
       </div>
     </div>
+    <!-- Nach Abmeldung wird ein Loading Screen angezeigt, bis die Keycloak-Fenster geladen sind -->
     <div class="loading_screen" v-if="!auth">
         <img src="./assets/loading.gif" alt="loading" width="80">
     </div>
@@ -77,30 +82,53 @@ export default {
   },
   methods: {
 
-    // Ruft die keycloak-logout-Methode aus der main.js auf 
+  
+    /**
+     * Setzt den Bool-Wert auth auf falsch, damit der Loading-Screen angezeigt wrid
+     * Danach wird die keycloak-logout-Methode aus main.js aufgerufen 
+     */
     logoutFromKeycloak() {
       this.auth = false;
       main.logout();
     },
 
-    // lokaler User+Userrolle <- store state user (von Keycloak)
+    /**
+       * Das User-Objekt aus dem State (Keycloak-Access token) wird genutzt um 
+       * den Benutzer und seine Rolle lokal zu speichern.
+       */
     setUser() {
       this.user = this.$store.state.user;
       this.userRole = this.user.realm_access.roles[0];
     },
 
+    /**
+     * Für die RouterLinks in der Navigationsleiste wird eine Route benötigt
+     * Diese wird für den aktuell ausgewählten Kurs zurückgegeben
+     * Der aktuelle Kurs ist im globalen Speicher (state) gespeichert
+     * @return {string} route - Route zum Kurs
+     */
     getKursRoute(){
       var kurs = this.$store.state.kurs;
       return "kurs/"+kurs.id;
     },
 
+    /**
+     * In der Navigationsleiste wird der Name des Kurses benötigt
+     * Dieser wird für den aktuell ausgewählten Kurs zurückgegeben
+     * @return {string} kurs.bezeichnung - Route zum Kurs
+     */
     getKursName(){
       var kurs = this.$store.state.kurs;
       return kurs.bezeichnung;
     }
 
   },
-  // Auth wird hier bestätigt und User auf globalem User gesetzt
+  /**
+   * Beim Aufruf der Anwendung wird der Bool-Wert auf wahr gesetzt und im State gepsiechert
+   * Danach wird die Methode zum Setzen des Benutzers um 0,1 Sekunden verzögert aufgerufen.
+   * Diese Verzögerung ist nötig, da der Keycloak-Access-token noch nicht im State gespeichert ist,
+   * wenn der mounted-hook aufgerufen wird. 
+   */
   mounted() {  
     this.$store.dispatch('setAuth', true);
     this.auth = this.$store.state.auth;
