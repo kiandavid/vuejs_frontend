@@ -60,7 +60,7 @@
 </template>
 
 <script>
-
+// Services
 import KursDataService from '@/services/KursDataService';
 import DozentDataService from '@/services/DozentDataService';
 
@@ -92,7 +92,6 @@ export default {
           KursDataService.create(data)
             .then(response => {
               this.kurs.id = response.data.id;
-              // console.log(response.data);
             })
             .catch(e => {
               console.log(e);
@@ -125,7 +124,6 @@ export default {
       updateKurs(){
         KursDataService.update(this.$parent.currentKurs.id , this.$parent.currentKurs)
           .then(response => {
-            // console.log(response.data);
             this.message = 'The Course ' + response.data.bezeichnung  +' was updated successfully!';
           })
           .catch(e => {
@@ -136,13 +134,14 @@ export default {
           this.$parent.submittedUpdate = true;
       },
 
-      // Setzt den Kursdaten der Erstellung im Formular zurück
+      // Setzt die Kursdaten der Erstellung im Formular zurück
       flushKurs(){
         this.kurs.bezeichnung = "",
         this.kurs.semester = "",
         this.kurs.id = null
       },
 
+      // setzt die Daten des aktuellen Kurses zurück
       flushCurrentKurs(){
         this.$parent.currentKurs.bezeichnung = "",
         this.$parent.currentKurs.semester = "",

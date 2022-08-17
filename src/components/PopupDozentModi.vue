@@ -36,17 +36,6 @@
           name="nachname"
         />
       </div>
-      <!-- <div class="form-group" v-if="!profil">
-        <label for="email">Email:</label><br>
-        <input
-          type="text"
-          class="form-control"
-          id="email"
-          required
-          v-model="dozent.email"
-          name="email"
-        />
-      </div> -->
       <button @click="saveDozent()" class="btn">Änderungen Speichern</button>
       <button v-if="!profil" @click="cancel()" class="btn">Abbrechen</button>
     </div>
@@ -54,7 +43,7 @@
 </template>
 
 <script>
-
+// Service
 import DozentDataService from '@/services/DozentDataService';
 
 export default {
@@ -127,16 +116,15 @@ export default {
         this.dozent.vorname = data.vorname;
         this.dozent.nachname = data.nachname;
         this.dozent.email = data.email;
-        // console.log("pop"+JSON.stringify(this.dozent,null,2));
       }
     },
+    // Beim Aufruf der Seite wird die Profil-Variable gesetzt
     mounted(){
-      // setTimeout(() => this.setDozent(this.$parent.currentDozent), 500);
       this.profil = this.$parent.profil;
     },
+    // Beobachter der das Dozenten-Objekt setzt, sobald isSetup geändert wird
     watch: {   
       isSetup() {
-        // console.log('User in Popup set!');
         this.setDozent(this.$parent.currentDozent);
       } 
     }

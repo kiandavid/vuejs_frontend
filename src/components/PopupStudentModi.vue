@@ -25,17 +25,6 @@
           name="nachname"
         />
       </div>
-      <!-- <div class="form-group" v-if="!profil">
-        <label for="email">Email:</label><br>
-        <input
-          type="text"
-          class="form-control"
-          id="email"
-          required
-          v-model="student.email"
-          name="email"
-        />
-      </div> -->
       <div class="form-group">
         <label for="matrikelnummer">Matrikelnummer:</label><br>
         <input
@@ -62,7 +51,7 @@
 </template>
 
 <script>
-
+// Service
 import StudentDataService from '@/services/StudentDataService';
 
 export default {
@@ -138,15 +127,15 @@ export default {
         this.student.email = data.email;
         this.student.matrikelnummer = data.matrikelnummer;
         this.student.studiengang = data.studiengang;
-        // console.log("Popup: "+JSON.stringify(this.student,null,2));
       },
     },
+    // Beim Aufruf der Seite wird die Profil-Variable gesetzt
     mounted(){
       this.profil = this.$parent.profil;
     },
+    // Beobachter der das Studenten-Objekt setzt, sobald isSetup geändert wird
     watch: {   
       isSetup() {
-        // console.log('User in Popup set!');
         this.setStudent(this.$parent.currentStudent);
       }
     }

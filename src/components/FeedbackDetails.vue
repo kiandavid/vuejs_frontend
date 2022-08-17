@@ -1,10 +1,13 @@
 <template>
   <div>
-    <div class="bewertungsaspekt-container" v-if="feedbackReady" >
+    <!-- Sobald das neue Array im Parent erstellt wurde, werden dessen Daten hier angezeigt -->
+    <div class="bewertungsaspekt-container" v-if="feedbackReady">
+      <!-- Info über den Bewertungsaspekt -->
       <div class="first-feedback">
         <div>Bewertungsaspekt: {{ bewertungsaspekte[index].typ }}</div>
         <div>Punkte: {{bewertungsaspekte[index].punkte}}</div>
       </div>
+      <!-- Container für die Anmerkungen -->
       <div id="feedback_wrapper">
         <div class="feedback-container" v-for="feedback in bewertungsaspekte[index].anmerkungen" :key="feedback.id">
           {{ feedback.anmerkung }}
@@ -25,11 +28,20 @@ export default {
     }
   },
   methods: {
+    /**
+     * Das Array der Bewertungsaspekte wird vom Parent übernommen
+     * Vom Parent wird der Index als prop übergeben
+     * Somit wird ein Bewertungsaspekt im Array ausgewäht
+     */
     setAspekt(){
       this.bewertungsaspekte = this.$parent.bewertungsaspekte;
     }
   },
   watch: {
+    /**
+     * ein Beobachter der das Bewertungsaspekt-Array setzt, 
+     * sobald die Variable feedbackReady vom Parent geändert wird
+     */
     feedbackReady(){
       this.setAspekt();
     }

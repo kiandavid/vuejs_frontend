@@ -7,9 +7,7 @@ import FeedbackView from '../views/Student/FeedbackView.vue'
 import KursAuswertung from '../views/Dozent/KursAuswertung.vue'
 import KursTeilnehmer from '../views/Dozent/KursTeilnehmer.vue'
 import ProfilSeite from '../views/ProfilSeite.vue'
-// import TutorialsList from '../components/TutorialsList.vue'
-// import Tutorial from '../components/Tutorials.vue'
-// import AddTutorial from '../components/AddTutorial.vue'
+
 
 const routes = [
   {

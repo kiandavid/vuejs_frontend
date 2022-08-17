@@ -2,11 +2,17 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+    // User-Objekt des Access-Tokens von Keycloak
     user: null,
+    // Boolean, ob der Benutzer authentifiziert und angemeldet ist
     auth: false,
+    // Studenten-Objekt des akutellen Benutzers
     student: null,
+    // Dozenten-Objekt des akutellen Benutzers
     dozent: null,
+    // Objekt des akutellen ausgewählten Kurses
     kurs: null,
+    // Aktuelle, abgegebene Lösung eines Studenten
     loesung: null
   },
 

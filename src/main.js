@@ -39,10 +39,10 @@ let initOptions = {
     url: 'http://localhost:8080/', realm: 'Grader', clientId: 'grader', onLoad: 'login-required'
 }
 
-
-// Initialisiert die Keycloak Instanz und öffnet das Login Fensters
+// Keycloak Instanz wird mit den Initialsierungsoptionen angelegt
 let keycloak = new Keycloak(initOptions);
 
+// Startet den Auth-Prozess und startet, bei erfolgreicher Auth, die Vue-Anwendung 
 keycloak.init({ onLoad: initOptions.onLoad }).then((auth) => {
     if (!auth) {
         window.location.reload();
@@ -52,7 +52,7 @@ keycloak.init({ onLoad: initOptions.onLoad }).then((auth) => {
         console.log('Authenticated');
     }
 
-    //Token Refresh
+    //Refreshed den Session Token
     setInterval(() => {
         keycloak.updateToken(70).then((refreshed) => {
             if (refreshed) {

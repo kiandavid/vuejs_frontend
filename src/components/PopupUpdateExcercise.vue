@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <!-- <div class="container" > -->
+    <!-- Popup zum Ändern einer Aufgabe -->
     <h3>Aufgabe ändern</h3>
     <div class="form-group">
       <label for="bezeichnung">Bezeichnung:</label><br>
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-
+// Service
 import AufgabeDataService from '@/services/AufgabeDataService';
 
 export default {
@@ -38,12 +38,9 @@ export default {
       this.$parent.submittedUpdate = true;
     },
 
-    handleFileUpload( event ){
-        this.aufgabe.aufgabe = event.target.files[0];
-        this.updated = true;
-    },
 
-    // Speichert die Aufgabe im ausgewählten Kurs
+
+    // Ändert die Aufgabe in der Datenbank
     saveAufgabe() {
       if (this.aufgabe.bezeichnung && this.aufgabe.punkte_max) {
         var data = {
@@ -64,6 +61,7 @@ export default {
       }
     },
 
+    // Setzt die ausgewählte Aufgabe zurück
     flushAufgabe() {
       this.aufgabe.id = null;
       this.aufgabe.bezeichnung = "";
@@ -71,6 +69,7 @@ export default {
       this.aufgabe.aufgabe = "";
     }
   },
+  // Beim Aufruf wird die Aufgabe gesetzt
   mounted(){
     this.aufgabe = this.$parent.currentAufgabe;
   }

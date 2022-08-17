@@ -1,4 +1,5 @@
 <template>
+	<!-- Bestätigung des Löschvorgangs  -->
   <div class="delete-container">
 		<h3>Bitte bestätigen Sie den Vorgang</h3>
 		<span>Möchten Sie den {{kurs.bezeichnung}} wirklich löschen?</span><br><br>
@@ -8,7 +9,9 @@
 </template>
 
 <script>
+// Service
 import KursDataService from '@/services/KursDataService';
+
 export default {
   name: "PopupDeleteCourse",
   data(){
@@ -17,6 +20,7 @@ export default {
     }
   },
 	methods: {
+		// Löscht den Kurs und schließt das Popup
 		deleteCourse(){
 			KursDataService.delete(this.kurs.id,0);
 			alert("Der " + this.kurs.bezeichnung + " wurde gelöscht!");
@@ -25,10 +29,12 @@ export default {
 			this.$parent.submittedDelete = true;
 		},
 
+		// Schließt das Popup
 		cancel(){
 			this.$parent.submittedDelete = true;
 		}
 	},
+	// Beim Aufruf der Seite wird der aktelle Kurs gesetzt
 	mounted(){
 		this.kurs = this.$parent.currentKurs;
 	}

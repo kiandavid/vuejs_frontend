@@ -1,5 +1,6 @@
 <template>
   <div>
+	<!-- Bestätigung des Löschvorgangs  -->
 		<h2>Bitte bestätigen Sie den Vorgang</h2>
 		<span v-if="isStudent">Möchten den Studenten {{nachname}} wirklich löschen?</span>
 		<span v-if="!isStudent">Möchten den Dozenten {{nachname}} wirklich löschen?</span><br><br>
@@ -9,8 +10,10 @@
 </template>
 
 <script>
+// Services
 import StudentDataService from '@/services/StudentDataService';
 import DozentDataService from "../services/DozentDataService";
+
 export default {
   name: "PopupDeleteUser",
   data(){
@@ -22,6 +25,7 @@ export default {
     }
   },
 	methods: {
+		// Löscht den Benutzer abhängig von der Benutzerrolle in der Datenbank
 		deleteUser(){
 			if(this.isStudent) {
 				StudentDataService.delete(this.student.id);
@@ -35,10 +39,12 @@ export default {
 			this.$parent.submittedDelete = true;
 		},
 
+		// schließt das Popup 
 		cancel(){
 			this.$parent.submittedDelete = true;
 		}
 	},
+	// Beim Aufruf wird, abhängig von der Benutzerolle, der Benutzer gesetzt
 	mounted(){
 		this.isStudent = this.$parent.isStudent;
 		if(this.isStudent) {

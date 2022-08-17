@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <!-- <div class="container" > -->
     <h3>Aufgabe hinzufügen</h3>
+    <!-- Formular für die Aufgabenattribute -->
     <div class="form-group">
       <label for="bezeichnung">Bezeichnung:</label><br>
       <input type="text" class="form-control" id="bezeichnung" required v-model="aufgabe.bezeichnung"
@@ -16,6 +16,7 @@
       <input type="file" class="form-control" id="aufgabe" name="aufgabe" @change="handleFileUpload( $event )"/>
     </div>
 
+    <!-- Kontroll Buttons -->
     <button @click="saveAufgabe()" class="btn">Aufgabe speichern</button>
     <button @click="cancel()" class="btn">Abbrechen</button>
   </div>
@@ -23,6 +24,7 @@
 
 <script>
 
+// Service
 import AufgabeDataService from '@/services/AufgabeDataService';
 
 export default {
@@ -40,18 +42,29 @@ export default {
   },
   methods: {
 
-    // Schließt das Pop-up-Fenster
+    // Schließt das Pop-up-Fenster und löscht die akutelle Aufgabe
     cancel() {
       this.$parent.submittedAdd = true;
       this.flushAufgabe();
     },
 
+    /**
+       * Bei Auswahl einer Datei, wird diese lokal gesetzt
+       * @param {object} event - Event wird beim Hochladen einer Datei getriggert
+       */
     handleFileUpload( event ){
         this.aufgabe.aufgabe = event.target.files[0];
-        console.log(this.aufgabe.aufgabe);
     },
 
     // Speichert die Aufgabe im ausgewählten Kurs
+    /**
+     * Speichert die Aufgabe in der Datenbank
+     * Die Input-Felder dürfen nicht leer sein, sonst wird eine Nachricht ausgegeben.
+     * Um die Aufgaben.zip auf dem lokalen Dateisystem
+     * über Node.js speichern zu können, müssen die Daten
+     * als FormData-Objekt geschickt werden.
+     * Abschließend wird das Popup geschlossen
+     */
     saveAufgabe() {
       if (this.aufgabe.bezeichnung && this.aufgabe.punkte_max && this.aufgabe.aufgabe) {
         var data = new FormData();
@@ -62,6 +75,7 @@ export default {
         AufgabeDataService.create(data)
           .then(response => {
             this.aufgabe.id = response.data.id;
+            alert("Die "+ this.aufgabe.bezeichnung +" wurde erfolgreich erstellt!");
           })
           .catch(e => {
             console.log("Error: " + e);
@@ -72,6 +86,10 @@ export default {
       }
     },
 
+    
+    /**
+     * Resetted die ausgewählte Aufgabe
+     */
     flushAufgabe() {
       this.aufgabe.id = null;
       this.aufgabe.bezeichnung = "";

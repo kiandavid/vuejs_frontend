@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <!-- <div class="container" > -->
     <h3>Teilnehmer dem Kurs hinzufügen</h3>
+    <!-- Suche Student nach E-Mail-->
     <div class="form-group">
       <label for="bezeichnung">E-Mail-Adresse des Studenten:</label><br>
       <input type="email" class="form-control" id="bezeichnung" required v-model="email"
@@ -9,6 +9,7 @@
     </div>
 		<span v-if="studentFound">Student {{student.nachname}} wurde gefunden!</span><br><br>
 
+    <!-- Kontroll Buttons -->
     <button @click="sucheStudent()" class="btn">Student suchen</button>
     <button @click="addStudent()" class="btn">Teilnehmer hinzufügen</button>
     <button @click="cancel()" class="btn">Abbrechen</button>
@@ -17,6 +18,7 @@
 </template>
 
 <script>
+// Services
 import KursDataService from '@/services/KursDataService';
 import StudentDataService from '@/services/StudentDataService';
 
@@ -31,12 +33,15 @@ export default {
   },
   methods: {
 
-    // Schließt das Pop-up-Fenster
+    // Schließt das Pop-up-Fenster und setzt die E-Mail zurück
     cancel() {
       this.$parent.submittedAdd = true;
       this.email = "";
     },
 
+    /**
+     * Sucht anhand der Mail nach dem Studenten in der Datenbank 
+     */
 		sucheStudent(){
 			StudentDataService.findByEmail(this.email)
 				.then(res =>{
@@ -52,6 +57,10 @@ export default {
 				})
 		},
 
+    /**
+     * Fügt dem Kurs den gefundenen Studenten hinzu
+     * Es werden Meldungen dem Benutzer ausgegeben
+     */
     addStudent() {
       if (this.email) {
 				const studentId ={

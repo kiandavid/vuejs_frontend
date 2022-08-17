@@ -2,7 +2,7 @@
   <!-- Master: Benutzerverwaltung -->
     <div class="master" v-if="submittedStud && submittedDoz && submittedDelete">
       <h3 id="master_h3">Übersicht der Benutzer</h3>
-      <!-- <button @click="getUsers()">Refresh</button><br><br> -->
+      <!-- Lister aller Stundenten und Dozenten -->
       <table>
         <tr>
           <th>Vorname</th>
@@ -28,6 +28,7 @@
           <td>{{pers.email}}</td>
           <td>Dozent</td>
           <td>-</td>
+          <!-- Icons zum Ändern und Löschen der Benutzer -->
           <td>
             <img src="../assets/pen.png" alt="Edit" width="20" @click="updateDoz(pers)" >&nbsp;
             <img src="../assets/trash.png" alt="Delete" width="20" @click="deleteById(pers, false)">
@@ -35,6 +36,8 @@
         </tr>
       </table>
     </div>
+    <!-- Popups zum Modifizieren und Löschen der Nutzer -->
+    <!-- Über das ref-Attribut, kann auf die Kind-Komponenten zugegriffen werden -->
     <PopupStudentModi ref="student" v-show="!submittedStud"></PopupStudentModi>
     <PopupDozentModi ref="dozent" v-show="!submittedDoz"></PopupDozentModi>
     <PopupDeleteUser v-if="!submittedDelete"></PopupDeleteUser>
@@ -42,11 +45,12 @@
 
 <script>
 
-
+// Single File Components
 import PopupStudentModi from './PopupStudentModi.vue';
 import PopupDozentModi from './PopupDozentModi.vue';
 import PopupDeleteUser from './PopupDeleteUser.vue';
 
+// Services
 import StudentDataService from '@/services/StudentDataService';
 import DozentDataService from "@/services/DozentDataService";
 
@@ -92,27 +96,43 @@ export default {
         });
     },
 
-    // Speichert die des Studenten und öffnet das Popup 
+    /**
+     * setzt den ausgewählten Studenten als akutelles Objekt
+     * Informiert die Kind-Komponente über den isSetup-Bool-Wert
+     * über das setzen des akutellen Objekts und öffnet über 
+     * den Bool-Wert submittedStud das Popup-Fenster
+     */
     updateStud(student){
       this.currentStudent = student;
       this.$refs.student.isSetup = true;
       this.submittedStud = false;
     },
 
-    // Speichert die des Studenten und öffnet das Popup 
+    /**
+     * setzt den ausgewählten Dozenten als akutelles Objekt
+     * Informiert die Kind-Komponente über den isSetup-Bool-Wert
+     * über das setzen des akutellen Objekts und öffnet über 
+     * den Bool-Wert submittedDoz das Popup-Fenster
+     */
     updateDoz(dozent){
       this.currentDozent = dozent;
       this.$refs.dozent.isSetup = true;
       this.submittedDoz = false;
     },
 
-    // Öffnet das Bestätigungsfenster fürs Löschen
-    deleteById(data, bool){
-      this.isStudent = bool;
+    /**
+     * Nimmt das akutelle Nutzerobjekt und den Bool-Wert isStudent entgegen.
+     * Abhängig von der Benutzerrolle wird das akutelle Benutzerobjekt gesetzt.
+     * Anschließend wird das Popup zu Löschen geöffnet.
+     * @param {object} currentUser - Objekt des ausgewählten Studenten oder Dozenten
+     * @param {boolean} isStudent - gibt an ob es sich um einen Studenten oder Dozenten handelt
+     */
+    deleteById(currentUser, isStudent){
+      this.isStudent = isStudent;
       if(bool) {
-        this.currentStudent = data;
+        this.currentStudent = currentUser;
       } else {
-        this.currentDozent = data;
+        this.currentDozent = currentUser;
       }
       this.submittedDelete = false;
     },
@@ -123,6 +143,7 @@ export default {
       this.getDozenten();
     }
 	},
+  // beim Aufruf der Komponente werden alle Benutzer aus der Datenbank geholt
   mounted() {
     this.getUsers();
   }
